@@ -94,3 +94,55 @@ Next Action:
 ETA:
 2026-06-11
 
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-12
+
+Current Task:
+Configure VS Code debugging for local Development execution of Account API, Notification API, and Web Admin while PostgreSQL and Redis run in Docker.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the solution, project launch profiles, application settings, dependency configuration, Docker ports, and output assemblies.
+- Updated local .vscode/launch.json with individual Account API, Notification API, and Web Admin configurations.
+- Added compound configurations for Full Solution and Backend APIs.
+- Added .vscode/tasks.json for solution build and optional PostgreSQL/Redis Docker start/stop tasks.
+- Configured Account API on localhost:9010, Notification API on localhost:9020, and Web Admin on localhost:9080.
+- Configured Development environment, PostgreSQL localhost:5433, Redis localhost:6379, and local API endpoint overrides.
+- Verified VS Code JSON syntax.
+- Verified dotnet build: succeeded with 0 warnings and 0 errors.
+- Verified PostgreSQL and Redis Docker containers are running and healthy/available.
+- Smoke-tested all three applications; Account API, Notification API, and Web Admin returned HTTP 200.
+
+Issue / Blocker:
+- No runtime blocker.
+- The repository .gitignore excludes the .vscode directory, so launch.json and tasks.json are local-only unless repository tracking policy is changed.
+
+Need Decision:
+- Decide whether shared VS Code configuration should be committed by adding an explicit .gitignore exception for selected .vscode files.
+
+Risk:
+- Other developers will not receive the VS Code debug configuration through Git while .vscode remains ignored.
+
+Next Action:
+- Use the "Development: Full Solution" compound in VS Code after PostgreSQL and Redis are running.
+- Confirm whether launch.json and tasks.json should become shared repository configuration.
+
+ETA:
+2026-06-12
+
