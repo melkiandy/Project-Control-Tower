@@ -47,3 +47,50 @@ Next Action:
 
 ETA:
 2026-06-11
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-11
+
+Current Task:
+Convert the BAN Option A Phase 1 and Phase 1 timeline documents from Markdown into Microsoft Word format for stakeholder discussion.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Created docs/project-makasar/BAN-Option-A-Phase-1.docx.
+- Created docs/project-makasar/Timeline-Phase-1-Option-A.docx.
+- Preserved headings, lists, and tables from the Markdown source.
+- Reopened and validated both DOCX files using Microsoft Word.
+- Verified BAN output: 6 pages and 3 tables.
+- Verified timeline output: 5 pages and 4 tables.
+
+Issue / Blocker:
+- No blocker.
+
+Need Decision:
+- Stakeholder review is required for the BAN confirmation points and timeline baseline.
+
+Risk:
+- Content remains a discussion draft until commercial value, kickoff date, signatories, and business configuration are confirmed.
+
+Next Action:
+- Discuss both Word documents with Pak Hadi and stakeholders.
+- Record agreed revisions and finalize the BAN and calendar-based timeline.
+
+ETA:
+2026-06-11
+
