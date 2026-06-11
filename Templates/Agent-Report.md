@@ -1,0 +1,37 @@
+# CONTROL TOWER REPORT
+
+Agent:
+[Agent Name]
+
+Project:
+[Project Name]
+
+Date:
+[YYYY-MM-DD]
+
+Current Task:
+[Task]
+
+Status:
+[Not Started / Planning / On Progress / Testing / Blocked / Done / On Hold]
+
+Progress:
+[0-100%]
+
+Completed:
+-
+
+Issue / Blocker:
+-
+
+Need Decision:
+-
+
+Risk:
+-
+
+Next Action:
+-
+
+ETA:
+[YYYY-MM-DD]
