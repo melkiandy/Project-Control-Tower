@@ -461,3 +461,49 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-15
+
+Current Task:
+Remove restricted commercial information from the operational daily timeline shared with Pak Yusri and the IT team.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Removed the complete Commercial Recommendation row from the Setup sheet in Timeline-Phase-1-Option-A-Daily.xlsx.
+- Renumbered the remaining Google Sheets guidance row and updated the Setup filter range.
+- Verified that neither the commercial label nor the commercial amount remains anywhere in the workbook XML.
+- Published the sanitized workbook and verified that the published file hash matches the validated working copy.
+- Established the information boundary: operational timeline and delivery progress for Pak Yusri/IT team; commercial recommendations only for Pak Hadi and authorized top management.
+
+Issue / Blocker:
+- No blocker.
+
+Need Decision:
+- Confirm the authorized recipients for commercial documents and whether a separate restricted management folder/access policy will be used.
+
+Risk:
+- Commercial information may still be exposed if proposal, BAN, PKS, or management reports are shared using the same permissions as the operational timeline.
+
+Next Action:
+- Share only the sanitized Timeline-Phase-1-Option-A-Daily.xlsx with Pak Yusri and the IT team.
+- Keep pricing, payment terms, and commercial recommendations in restricted documents accessible only to Pak Hadi and authorized top management.
+- Review Google Drive sharing permissions before distributing project documents.
+
+ETA:
+2026-06-15
