@@ -246,3 +246,58 @@ Next Action:
 
 ETA:
 2026-06-12
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-15
+
+Current Task:
+Review the Phase 1 Software Development Cooperation Agreement draft (PKS - TukangSoftware #01.docx) and explain its readiness, contractual gaps, and project risks.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the full agreement body, header, and internal DOCX structure.
+- Confirmed the document covers scope, timeline, payment, party obligations, change requests, intellectual property, confidentiality, warranty, termination, disputes, and five supporting appendices.
+- Identified incomplete contract fields: agreement number formatting, project dates, total value, payment percentages, invoice due period, warranty period, NDA duration, and competent District Court.
+- Identified missing or weak controls for acceptance criteria, UAT sign-off, milestone evidence, delay dependencies, change-request workflow, tax treatment, late payment, suspension rights, termination settlement, force majeure procedure, liability limits, data protection, security incidents, backup/hosting responsibility, open-source licensing, repository handover, and post-go-live support.
+- Identified ambiguity in intellectual-property wording between usage rights, copyright/economic-right transfer, source-code ownership, pre-existing components, and third-party components.
+- Identified drafting and presentation issues including merged words, inconsistent terminology, typo "Souce Code", placeholder contact number, and incomplete party identity/address details.
+- Cross-checked relevant Indonesian legal context using the current ITE, Copyright, Personal Data Protection, and Stamp Duty laws from the official BPK regulation database.
+
+Issue / Blocker:
+- The draft is not ready for signature while commercial, schedule, warranty, confidentiality, dispute-forum, acceptance, and appendix details remain blank or undefined.
+- Appendices A-E are referenced as binding project controls but were not embedded in the reviewed agreement content.
+
+Need Decision:
+- Confirm the final project scope/SOW, 24-week calendar baseline, contract value, PPN and other tax treatment, payment milestones, and invoice due period.
+- Confirm warranty and maintenance duration, SLA boundaries, UAT/acceptance mechanism, change-request approval authority, and termination settlement.
+- Confirm ownership model for custom source code, pre-existing reusable code, libraries, open-source dependencies, credentials, repositories, domains, cloud accounts, and deployment artifacts.
+- Confirm personal-data roles, security obligations, breach notification, data return/deletion, governing law, and the specific District Court or arbitration forum.
+- Obtain legal review and final corporate identity/signatory verification before execution.
+
+Risk:
+- Signing the current draft may create disputes over scope completion, payment entitlement, delivery acceptance, source-code ownership, warranty validity, project delay responsibility, and support obligations.
+- Missing data-protection and security clauses may expose both parties when the system processes employee, customer, sales, financial, or operational data.
+- Referenced but unattached appendices may prevent objective measurement of milestones, acceptance, pricing, and SLA performance.
+
+Next Action:
+- Complete all placeholders and attach finalized Appendices A-E.
+- Revise the agreement language and add the missing acceptance, dependency, tax, termination, liability, security, data-protection, licensing, handover, and operational clauses.
+- Perform a clause-by-clause legal review, then circulate a clean execution version for both authorized signatories.
+
+ETA:
+2026-06-15
