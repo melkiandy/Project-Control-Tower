@@ -413,3 +413,51 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-15
+
+Current Task:
+Explain the operating and data-entry procedure for Timeline-Phase-1-Option-A-Daily.xlsx.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Verified the workbook contains Setup, Daily Timeline, Weekly Summary, and Holidays sheets.
+- Confirmed Daily Timeline contains 120 workday rows, 120 automatic calendar-date formulas, and a controlled status dropdown.
+- Defined which fields are configured once, updated daily, updated weekly, and maintained only when project conditions change.
+- Defined the reporting flow from kickoff-date setup through daily evidence updates and weekly client reporting.
+- Prepared practical guidance for Google Sheets upload and controlled client sharing.
+
+Issue / Blocker:
+- No blocker.
+- Calendar dates remain blank until the official kickoff date is entered in Setup!B2.
+
+Need Decision:
+- Confirm the official kickoff date, project holiday calendar, named delivery owners, client PICs, and weekly reporting day.
+
+Risk:
+- Manual changes to formula columns or baseline activity columns may break schedule consistency.
+- Progress may be misleading if status is updated without evidence, acceptance, or decision records.
+
+Next Action:
+- Enter the official kickoff date and holidays.
+- Assign named owners and client PICs.
+- Upload the XLSX to Google Sheets, protect baseline/formula columns, and update execution fields through the agreed daily and weekly cadence.
+
+ETA:
+2026-06-15
