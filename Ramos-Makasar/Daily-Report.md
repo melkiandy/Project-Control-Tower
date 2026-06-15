@@ -507,3 +507,52 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-15
+
+Current Task:
+Diagnose and fix Weekly Summary so weekly status and progress update automatically from Daily Timeline entries.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Identified the root cause: Weekly Summary contained static initial values and no formulas; only Daily Timeline calendar dates were automated.
+- Added 24 automatic weekly-progress formulas that average the five Daily Timeline progress values for each week.
+- Added 24 automatic weekly-status formulas using the priority order Blocked, On Hold, Testing, In Review, In Progress, Planning, Done, and Not Started.
+- Added an automatic overall Implementation Progress formula in Setup based on all 120 daily progress values.
+- Verified Week 1 references Daily Timeline rows 2-6 and Week 24 references rows 117-121.
+- Verified the workbook contains 48 Weekly Summary formulas, 120 date formulas, and remains free of commercial recommendation information.
+- Published the repaired workbook and verified the published-file hash.
+
+Issue / Blocker:
+- No blocker.
+
+Need Decision:
+- Confirm whether weekly progress should remain a simple average of five equal-weight daily activities or use weighted activities in a future version.
+
+Risk:
+- Entering 40 instead of 40% in the Daily Progress column will be interpreted as 4000% because the column uses percentage values.
+- Manual replacement of Weekly Summary formulas will stop automatic aggregation.
+
+Next Action:
+- Re-upload or refresh the repaired XLSX in Google Sheets.
+- Enter Daily Progress as percentage values such as 0%, 40%, or 100%.
+- Protect Weekly Summary formula columns and the Setup implementation-progress formula from manual editing.
+
+ETA:
+2026-06-15
