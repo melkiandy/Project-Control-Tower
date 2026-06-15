@@ -353,3 +353,63 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-15
+
+Current Task:
+Update the Phase 1 Option A timeline status and progress, then create a clear 120-workday daily timeline suitable for Google Sheets and client reporting to Pak Yusri.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Updated Timeline-Phase-1-Option-A.docx with the 2026-06-15 status baseline.
+- Set project status to Planning / Pre-Kickoff, document readiness to 90%, project-initiation preparation to 10%, and implementation progress to 0%.
+- Preserved the rule that implementation progress starts only after official kickoff and approved scope baseline.
+- Created Timeline-Phase-1-Option-A-Daily.docx with a 24-week summary and Day 1-Day 120 detailed plan.
+- Created Timeline-Phase-1-Option-A-Daily.xlsx for Google Sheets with Setup, Daily Timeline, Weekly Summary, and Holidays sheets.
+- Added 120 workday-date formulas driven by the official kickoff date, Monday-Friday workweek, and configurable holiday list.
+- Added daily fields for workstream, detailed activity, deliverable, owner, client input, dependency, client checkpoint, status, progress, evidence link, and notes.
+- Added status dropdown values and weekly client review/milestone checkpoints.
+- Created Timeline-Phase-1-Option-A-Daily.csv as a fallback Google Sheets import format.
+- Structurally validated all Office packages and confirmed 120 daily rows, 24 weeks, 120 date formulas, Day 1-Day 120 coverage, and matching published-file hashes.
+
+Issue / Blocker:
+- No publication blocker.
+- Official kickoff date is not yet confirmed, so calendar dates intentionally remain formula-driven instead of using assumed dates.
+- Word and Excel were actively used during generation and rejected Office COM automation; the files were generated safely through OpenXML without closing or changing the user's active applications.
+
+Need Decision:
+- Confirm the official kickoff date.
+- Confirm the Indonesian/project holiday calendar to enter in the Holidays sheet.
+- Confirm delivery-team names for each owner role and the client PIC/key users.
+- Confirm the weekly status-meeting day, milestone signatories, UAT schedule, and target go-live date.
+- Approve the final SOW, out-of-scope list, acceptance criteria, and change-request controls before the baseline is locked.
+
+Risk:
+- Calendar dates and target go-live cannot be treated as committed until kickoff and holidays are entered.
+- Daily activities are a delivery baseline and may require re-baselining if scope, client response time, data readiness, infrastructure, or approval complexity changes.
+- Sharing the sheet without maintaining evidence, status, and decision fields may create an inaccurate view of project progress.
+
+Next Action:
+- Enter the approved kickoff date in Setup!B2 and populate the Holidays sheet.
+- Replace role-based owners with named delivery and client PICs.
+- Review the 120-day baseline with Pak Yusri and key users, then lock the schedule after scope and acceptance approval.
+- Use the Weekly Summary for client reporting and update Daily Timeline evidence/status during execution.
+
+ETA:
+2026-06-15
