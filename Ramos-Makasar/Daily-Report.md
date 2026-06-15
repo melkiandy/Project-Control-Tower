@@ -301,3 +301,55 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project Makasar - Distribution & Sales Management
+
+Date:
+2026-06-15
+
+Current Task:
+Compare BAN Option A Phase 1 versions #1 and #2 and recommend the final commercial value within the Rp158,000,000-Rp162,000,000 range.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Compared BAN-Option-A-Phase-1 #1.docx and BAN-Option-A-Phase-1 #2.docx.
+- Confirmed version #2 removes the former deferred-scope, repository-mapping, and Phase 1 completion-criteria sections, while retaining assumptions/dependencies and mandatory confirmation points.
+- Reviewed the Commercial Proposal, Recommended Commercial Proposal Strategy, and Phase 1 SOW as the commercial and scope baseline.
+- Confirmed the six-month Option A baseline is Rp176,000,000 before PPN with a stated adjustment strategy of 8%-10%.
+- Calculated the effective discounts: Rp158,000,000 = 10.23%, Rp160,000,000 = 9.09%, and Rp162,000,000 = 7.95%.
+- Recommended a final Option A value of Rp160,000,000 before PPN, subject to fixed-scope protection and finalized contractual attachments.
+- Calculated the recommended 20%/30%/30%/20% payment structure as Rp32,000,000, Rp48,000,000, Rp48,000,000, and Rp32,000,000 before PPN.
+
+Issue / Blocker:
+- BAN version #2 was open in another application, but it remained readable through read-only file sharing and no document content was modified.
+- The removal of explicit deferred scope and completion criteria from the BAN increases interpretation risk if those controls are not retained in the final SOW and PKS appendices.
+
+Need Decision:
+- Approve Rp160,000,000 before PPN as the final Option A fixed price.
+- Confirm whether the payment term remains 20%/30%/30%/20%.
+- Confirm that detailed out-of-scope items, UAT acceptance criteria, milestone evidence, dependencies, and change-request controls will be binding in the SOW/PKS even though they were removed from the shortened BAN.
+
+Risk:
+- Rp158,000,000 exceeds the stated maximum 10% adjustment from the Rp176,000,000 baseline and leaves the least delivery contingency.
+- Rp162,000,000 is commercially safer but may weaken the partnership-discount positioning without adding scope or service value.
+- A fixed Rp160,000,000 price without binding scope exclusions and acceptance criteria could expose the project to uncontrolled requirement growth and margin erosion.
+
+Next Action:
+- Replace the BAN confirmation point with "Nominal final Option A: Rp160,000,000 sebelum PPN."
+- Finalize the payment milestones, invoice terms, SOW, acceptance criteria, out-of-scope list, onsite cost, warranty/SLA, and change-request mechanism in the PKS appendices.
+
+ETA:
+2026-06-15
