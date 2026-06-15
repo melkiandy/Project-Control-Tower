@@ -556,3 +556,112 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-15
+
+Current Task:
+Add icon selection to the Tenant Type view, create, and update flow using local wwwroot assets and Redis storage.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the .NET 8 solution structure, project references, Tenant Type CRUD flow, Redis service, and local icon assets before changing code.
+- Added the icon field to the Web Admin and Account API contracts with required format validation.
+- Built the icon catalog from the local Tabler Icons CSS under wwwroot.
+- Added icon selection, preview, edit-state loading, and safe icon rendering in the Tenant Type table.
+- Stored each Tenant Type icon in Redis using a stable tenant-type-specific key without expiry.
+- Loaded Redis icon values into Tenant Type list responses.
+- Converted the touched Tenant Type insert and update statements to parameterized queries.
+- Kept the implementation within existing Web Admin, service, model, and infrastructure boundaries without database migration or architecture changes.
+- Verified JavaScript syntax successfully.
+- Ran dotnet build Application.sln --no-restore with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- The solution has no entity named Process; the active view, create, and update workflow is implemented in Tenant Type.
+- Existing Tenant Type records do not have an icon in Redis until they are updated.
+- No build blocker remains.
+
+Need Decision:
+-
+
+Risk:
+- Redis availability is required to persist and load Tenant Type icon configuration.
+- If Redis data is cleared, existing Tenant Type records will remain valid but display no icon until updated.
+
+Next Action:
+- Perform an integrated UI test with the Account API, Web Admin, database, and Redis running.
+- Confirm the preferred default icon behavior for legacy Tenant Type records.
+
+ETA:
+2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-15
+
+Current Task:
+Standardize application dropdown lifecycle through the global App.Select2Manager and apply Select2 to the Tenant Type icon selector.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited all Razor select elements and all Select2 calls in Web Admin source files.
+- Confirmed App.Select2Manager is the shared global Select2 lifecycle function exposed through App.
+- Improved App.Select2Manager so init, destroy, and reinit consistently accept a selector, DOM element, or jQuery object.
+- Separated lifecycle semantics: init creates a missing instance, destroy removes an existing instance, and reinit performs both operations safely.
+- Added a common default Select2 width while preserving page-specific options.
+- Updated the Tenant Type icon selector to use App.Select2Manager instead of direct Select2 initialization.
+- Added modal dropdownParent configuration, icon result templates, selected-icon templates, and namespaced change events.
+- Prevented duplicate Select2 containers, options, and event handlers when the page is initialized again.
+- Confirmed all current Razor dropdowns are managed through App.Select2Manager and page scripts contain no direct .select2() calls.
+- Verified core.js, tenantType.js, and tenant.js syntax successfully.
+- Ran dotnet build Application.sln --no-restore with 0 warnings and 0 errors.
+- Corrected the Control Tower reporting target from Ramos VMS to Ramos Makasar and removed the mistakenly created Application docs directory as instructed.
+
+Issue / Blocker:
+- Root cause of the earlier reporting error: Ramos Control Tower was incorrectly interpreted as a request to create an SOP document inside the application repository instead of updating the external Project-Control-Tower daily report.
+- The incorrect local Ramos VMS report commit was never pushed and has been removed by restoring the Control Tower repository to origin/main.
+- No pull conflict occurred.
+
+Need Decision:
+-
+
+Risk:
+- Future dropdown implementations may bypass the shared lifecycle if page scripts call .select2() directly.
+- Select2 inside a modal requires the correct dropdownParent to avoid focus and layering issues.
+
+Next Action:
+- Use App.Select2Manager for every new interactive dropdown.
+- Update Ramos-Makasar/Daily-Report.md after each completed task, blocker, root cause, or issue resolution.
+- Keep reports append-only and never modify another agent or Executive directory.
+
+ETA:
+2026-06-15
