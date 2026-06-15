@@ -665,3 +665,58 @@ Next Action:
 
 ETA:
 2026-06-15
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-15
+
+Current Task:
+Complete the recursive Tenant view, controller, and service with root-only listing and modal header/detail maintenance.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the solution structure, Tenant schema, database abstraction, Web Admin flow, API boundaries, and existing Select2 conventions before changing code.
+- Added root-only Tenant paging so the main DataTable displays tenants whose parent_tenant_id is null.
+- Added recursive hierarchy loading for descendants using the existing hierarchy_path and level fields.
+- Added Tenant Type option loading as the source of each tenant's type.
+- Replaced the incomplete Tenant prototype with modal-based add and edit flows containing header and recursive detail sections.
+- Added child-tenant maintenance with Select2 Tenant Type and parent selectors through the global App.Select2Manager.
+- Completed Web Admin controller, service, API client, Account API controller, service contracts, and Tenant models.
+- Added server-side validation for active Tenant Type, unique code, sibling name, required parent rules, and recursive-cycle prevention.
+- Added server-side hierarchy path and level calculation, descendant path updates, and parent-flag refresh.
+- Preserved existing architecture and limited changes to the current Tenant vertical flow and shared API error propagation.
+- Verified tenant.js and core.js syntax successfully.
+- Ran dotnet build Application.sln --no-restore with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- Root cause: the existing Tenant page was an unfinished prototype, the Account API Tenant controller was empty, and the Web API client referenced an endpoint that did not exist.
+- No implementation or build blocker remains.
+- Integrated database and browser testing was not run because the dependent services were not started in this task.
+
+Need Decision:
+-
+
+Risk:
+- Recursive hierarchy operations depend on existing hierarchy_path data being valid for legacy Tenant records.
+- Runtime behavior still requires an integrated test with Web Admin, Account API, and the configured database.
+
+Next Action:
+- Run an integrated Tenant CRUD test covering root creation, child creation, edit, parent movement, cycle rejection, and DataTable refresh.
+- Validate legacy Tenant hierarchy_path and level values before production rollout.
+
+ETA:
+2026-06-15
