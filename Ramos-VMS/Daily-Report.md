@@ -134,3 +134,50 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-18
+
+Current Task:
+Audit management user dan memperbaiki error save edit serta delete/cancel.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Menghapus kewajiban password pada UserModel agar edit user tidak gagal validasi ketika password tidak diubah.
+- Menambahkan validasi password khusus create user di UserService.
+- Mengubah data table user agar tidak mengirim PasswordHash ke frontend.
+- Memperbaiki update user agar username, email, nama, dan optional password diproses melalui UserManager serta error Identity dikembalikan ke response.
+- Menambahkan fungsi soft-delete user dengan Active=false, Deleted_By, dan Deleted_Date.
+- Menyesuaikan UserController agar status D diproses sebagai delete/cancel tanpa terganjal validasi field create/edit.
+- Menambahkan tombol Delete pada form user edit dan mapping data edit di home.html.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Konfirmasi perilaku reset password saat edit: password kosong berarti tidak mengubah password, password terisi berarti reset password user tersebut.
+
+Risk:
+- Delete user bersifat soft-delete; data Identity user tetap ada untuk histori dan filter list/dropdown sudah disesuaikan ke Active dan belum deleted.
+
+Next Action:
+- Uji manual flow add, edit tanpa password, edit dengan password baru, dan delete/cancel user dari UI.
+
+ETA:
+2026-06-18
