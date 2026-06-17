@@ -774,3 +774,55 @@ Next Action:
 
 ETA:
 2026-06-16
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-17
+
+Current Task:
+Update Role service so roles can select and save child tenant data, then complete the MVC Roles page in Application.Web.Admin.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the solution structure, Account service/API boundaries, Web Admin patterns, Tenant option flow, ApplicationRole entity, and existing Role stubs before changing code.
+- Added tenant_id, tenant_name, and status fields to the shared RoleModel contract.
+- Updated RolesService to save ApplicationRole.tenant_id on create and update.
+- Added server-side validation so Role save/update only accepts an active child tenant with level greater than 0.
+- Added tenant-name hydration for role list and role detail responses without changing the existing role storage architecture.
+- Completed Web Admin Roles MVC flow with model, controller actions, service wrapper, API client methods, Razor view, and roles.js table/modal behavior.
+- Added child-tenant Select2 loading for the Roles modal using the existing TenantOptions endpoint and App.Select2Manager lifecycle.
+- Preserved the existing architecture and limited the implementation to the Role vertical slice plus necessary admin MVC files.
+- Ran dotnet build Application.sln with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Integrated browser/API/database testing was not run because dependent runtime services were not started in this task.
+
+Need Decision:
+-
+
+Risk:
+- Existing legacy roles without tenant_id will display with an empty tenant until they are edited and assigned to a child tenant.
+- Runtime behavior depends on the configured Identity table containing the tenant_id column mapped by ApplicationRole.
+- Role names remain subject to ASP.NET Identity role uniqueness behavior.
+
+Next Action:
+- Run an integrated Web Admin and Account API test for role list, create, edit, child-tenant validation, and root-tenant rejection.
+- Confirm whether legacy roles should be backfilled with tenant_id values.
+
+ETA:
+2026-06-17
