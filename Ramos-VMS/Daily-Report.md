@@ -40,3 +40,50 @@ Next Action:
 
 ETA:
 2026-06-11
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-18
+
+Current Task:
+Menghapus popup session timeout dan mengganti flow enroll ID visitor agar diambil dari endpoint device get_ladt_id lalu disimpan pada relasi VisitorDevice.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengganti session timeout popup menjadi redirect langsung ke /pages/accounts/login.html.
+- Mengubah DeviceRecognitionService.GetEnrollId menjadi request HTTP ke endpoint get_ladt_id dengan payload password dari device password dan cmd dari device username.
+- Menambahkan model response enroll ID device dan konfigurasi GetEnrollIdEndpointPath.
+- Menambahkan properti EnrollId nullable pada VisitorDevice dan mapping kolom EF.
+- Menyimpan enroll ID hasil response device ke VisitorDevice saat create/update visitor.
+- Menggunakan enroll ID tersimpan untuk request SaveVisitor dan DeleteVisitor ke device.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Build pertama di sandbox gagal karena akses NuGet/network dan file obj dibatasi; build ulang dengan izin yang sesuai berhasil.
+
+Need Decision:
+- Konfirmasi deploy DB existing untuk menambahkan kolom nullable EnrollId pada tabel crm.Visitor_Device karena repo belum memiliki folder migrations existing.
+
+Risk:
+- Data visitor lama yang belum memiliki EnrollId tersimpan tidak akan dikirim delete ke device sampai visitor tersebut tersinkron ulang/update.
+- Jika endpoint get_ladt_id pada device memakai path berbeda, nilai GetEnrollIdEndpointPath perlu disesuaikan di appsettings.
+
+Next Action:
+- Validasi integrasi dengan device fisik untuk memastikan endpoint get_ladt_id mengembalikan enrollid sesuai format response.
+
+ETA:
+2026-06-18
