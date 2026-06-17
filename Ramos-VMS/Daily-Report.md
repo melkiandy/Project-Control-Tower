@@ -87,3 +87,50 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-18
+
+Current Task:
+Menghapus kolom username pada Device dan menyesuaikan flow frontend sampai backend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Menghapus properti Username dari entity Device.
+- Menghapus field username dari DeviceModel dan payload login device.
+- Menyesuaikan DeviceService agar CRUD device tidak membaca/menyimpan username.
+- Menyesuaikan login/update sync device menjadi berbasis password karena username device sudah dihapus.
+- Menyesuaikan DeviceRecognitionService agar request get_ladt_id tidak lagi memakai device.Username dan mengirim cmd kosong.
+- Menghapus kolom/input username pada halaman device dan render table device di home.html.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Konfirmasi deploy DB existing untuk drop kolom Username pada tabel crm.Device karena repo belum memiliki folder migrations existing.
+
+Risk:
+- Integrasi device yang sebelumnya mengirim username pada LoginDevice perlu menyesuaikan payload menjadi password-only.
+- Jika endpoint get_ladt_id ternyata tetap memerlukan cmd berisi username, perlu ada keputusan pengganti karena username device sudah dihapus.
+
+Next Action:
+- Validasi flow manajemen device di UI dan integrasi device fisik setelah perubahan schema database.
+
+ETA:
+2026-06-18
