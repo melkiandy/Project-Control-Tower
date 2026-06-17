@@ -181,3 +181,49 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-18
+
+Current Task:
+Audit management Visitor, menambahkan timeout 2 detik request device, dan custom loading antrian proses device untuk Save/Update/Cancel visitor.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengubah timeout DeviceRecognition menjadi 2 detik melalui options default dan appsettings.
+- Menambahkan VisitorDeviceProcessModel untuk mengembalikan status sinkronisasi per device.
+- Menyesuaikan VisitorService agar Save/Update/Cancel visitor memproses semua device dan mencatat status Success/Error per device.
+- Menyimpan EnrollId hanya ketika sinkronisasi save/update ke device berhasil.
+- Menambahkan custom modal Device Sync Queue khusus halaman visitor dengan kolom device, IP address, dan status.
+- Menyesuaikan saveVisitor dan cancelVisitor agar menampilkan queue Pending selama request berjalan dan memperbarui status dari response backend.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Konfirmasi business rule: data visitor tetap tersimpan/terhapus walaupun sebagian device gagal sinkron; error device ditampilkan pada queue untuk follow-up operasional.
+
+Risk:
+- Jika device lambat atau offline, status device akan Error setelah timeout 2 detik, sementara proses visitor tetap lanjut ke device berikutnya.
+
+Next Action:
+- Uji manual Save, Update, dan Cancel visitor dengan kombinasi device online/offline untuk memastikan status queue sesuai kondisi device fisik.
+
+ETA:
+2026-06-18
