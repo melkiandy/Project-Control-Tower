@@ -826,3 +826,56 @@ Next Action:
 
 ETA:
 2026-06-17
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-17
+
+Current Task:
+Remove active LINQ usage from Application.Service.Account functions by replacing data-access LINQ with query-string DTO mapping and replacing lightweight LINQ calls with explicit loops.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the solution structure and focused the change on Application.Service.Account without changing the large architecture.
+- Audited active LINQ usage across AuthService, TenantService, and RolesService.
+- Replaced RolesService GetAll EF LINQ with provider-aware SQL query strings mapped to RoleModel DTOs through IDatabaseService.QueryListAsync.
+- Preserved RoleManager usage for create/update Identity behavior while removing LINQ from the service implementation.
+- Replaced tenant-name hydration LINQ with explicit de-duplication and matching loops.
+- Replaced IdentityResult error projection/deduplication LINQ with an explicit HashSet/list loop.
+- Replaced TenantService Any and FirstOrDefault usages with Count checks and explicit first-item loops.
+- Replaced AuthService principal.Claims.ToList with an explicit List<Claim> population loop.
+- Removed obsolete commented LINQ sample code from AuthService so source audit does not report LINQ patterns.
+- Verified rg scan returns no LINQ method patterns in Application.Service.Account.
+- Ran dotnet build Application.sln with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Runtime integration testing against the configured database was not run because the dependent services were not started in this task.
+
+Need Decision:
+-
+
+Risk:
+- Role list SQL now depends on the current Identity table naming convention: PostgreSQL idt."aspnetroles" with Identity columns such as "Id" and "Name", and SQL Server idt.aspnetroles with Id and Name.
+- Future service changes may reintroduce LINQ unless this convention is included in review checks.
+
+Next Action:
+- Run an authenticated Account API integration test for role list, detail, create, update, duplicate validation, and child-tenant validation.
+- Add a lightweight review checklist item to keep Application.Service.Account data access on DTO/query-string patterns.
+
+ETA:
+2026-06-17
