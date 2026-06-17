@@ -227,3 +227,49 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-18
+
+Current Task:
+Audit Project VMS dan memperbaiki timeout request endpoint device agar hanya berlaku untuk Save/Update/Cancel visitor ke device.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengembalikan DeviceRecognition TimeoutSeconds global ke 30 detik agar tidak menjadi timeout umum HttpClient.
+- Menambahkan VisitorDeviceRequestTimeoutSeconds dengan default 2 detik khusus request device dari DeviceRecognitionService.
+- Memasang CancellationTokenSource lokal pada request PostAsJsonAsync di DeviceRecognitionService.
+- Mengubah timeout request device menjadi TimeoutException yang ditangkap VisitorService sebagai status Error pada custom loading queue.
+- Memastikan timeout device tidak mengubah flow redirect login page.
+- Mempertahankan custom loading queue visitor yang menampilkan nama device, IP, dan status Success/Error untuk Save/Update/Cancel.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Device yang response lebih dari 2 detik akan ditandai Error pada queue walaupun aplikasi tetap melanjutkan proses ke device berikutnya.
+
+Next Action:
+- Uji ulang Save, Update, dan Cancel visitor dengan device lambat/offline untuk memastikan timeout muncul sebagai Error di custom loading, bukan redirect login.
+
+ETA:
+2026-06-18
