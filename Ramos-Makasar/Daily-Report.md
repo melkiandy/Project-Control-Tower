@@ -879,3 +879,54 @@ Next Action:
 
 ETA:
 2026-06-17
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-17
+
+Current Task:
+Add pagination to all select get-all functions in Application.Service.Account that use DTO or query-string data retrieval.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed Application.Service.Account get-all/select query functions and their Account API callers before changing code.
+- Confirmed GetRootTenants already had pagination and option endpoints are bounded lookups, not table get-all functions.
+- Added pagination to RolesService.GetAll with page/take defaults, defensive normalization, max take limit of 100, total count query, paged query, and response page/limit/count metadata.
+- Kept RolesService data retrieval on provider-aware query strings mapped to RoleModel DTOs through IDatabaseService.QueryListAsync.
+- Updated Account API RolesController GET endpoint to accept optional page and take query parameters while preserving default behavior for old callers.
+- Improved TenantService.GetAllTenantType pagination by adding total count, response page/limit/count metadata, provider-aware paging clauses, and parameterized Take/Offset values.
+- Preserved existing service architecture, dependency boundaries, and public behavior apart from paginated get-all responses.
+- Verified Application.Service.Account still has no active LINQ method patterns after the pagination changes.
+- Ran dotnet build Application.sln with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Runtime integration testing against Account API and database was not run because dependent services were not started in this task.
+
+Need Decision:
+-
+
+Risk:
+- Existing callers that assumed Roles GET returned every role in one response must request a larger approved page size or iterate pages.
+- Web Admin table total-count handling may need follow-up if the UI should display server-side total records from BaseResponse metadata.
+
+Next Action:
+- Run authenticated integration tests for paginated Roles and Tenant Type list endpoints across page 1, later pages, invalid page/take values, and take greater than 100.
+- Review Web Admin table adapters to consume API count/page/limit metadata consistently for all paginated tables.
+
+ETA:
+2026-06-17
