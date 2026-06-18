@@ -1194,3 +1194,61 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-18
+
+Current Task:
+Build Web Admin frontend for Management Menu with list, create, edit, delete confirmation, Select2 cascading tenant/role/parent menu, async validation, and virtual-directory-safe routes.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed existing Web Admin Roles/Tenant controller, service, API client, Razor view, JavaScript, Select2, DataTable, dependency injection, and layout script patterns before changing code.
+- Added Account API support endpoints for Management Menu list, detail, parent menu options, next sequence, duplicate menu name validation, and URL validation.
+- Added Account API role options by tenant so Role Select2 loads roles scoped to the selected root tenant.
+- Added Web Admin Menu model, API client, service wrapper, MVC controller, Razor view, and menu.js page script.
+- Implemented Management Menu list with edit and delete actions.
+- Implemented create/edit modal with Tenant Select2, Role Select2 multiple, Parent Menu Select2, MenuType, URL, icon, sequence, IsActive, and readonly IsDeleted false on create.
+- Implemented tenant-change behavior: reset Role, load Role by tenant, reset Parent Menu, and load Parent Menu by tenant.
+- Implemented parent-menu-change behavior to request and fill next sequence automatically.
+- Implemented MenuType behavior: Parent clears/disables ParentMenuId and makes URL optional; Menu makes URL required.
+- Implemented async duplicate menu name validation and URL format validation through backend validation endpoints while keeping backend validation as final authority.
+- Normalized Web Admin submit payload so empty parent_menu_id is sent as null to the Account API instead of an invalid empty Guid.
+- Used Url.Action-generated route values in the Razor dataset and consumed them from JavaScript, avoiding hardcoded base URLs for IIS virtual directory and NGINX path-base compatibility.
+- Added menu.js to the shared layout using Url.Content for application-relative script resolution.
+- Ran node --check for Application.Web.Admin/wwwroot/js/pages/menu.js successfully.
+- Ran dotnet test Application.Service.Account.Tests successfully: 18 passed, 0 failed.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation, syntax, test, or build blocker remains.
+- Integrated browser/API/database testing was not executed because runtime services and PostgreSQL were not started in this task.
+
+Need Decision:
+- Confirm whether the Management Menu entry should be added to the seed/sidebar menu so authorized users can navigate to the page from the sidebar immediately.
+
+Risk:
+- Runtime behavior depends on the previous Management Menu backend, migration, role-menu access, and PostgreSQL data being applied.
+- Selected role names in edit mode may initially display IDs until Select2 option lookup refreshes, because the current detail endpoint returns role IDs for submission.
+
+Next Action:
+- Run an integrated browser test for menu list, create Parent, create Menu, edit, delete confirmation, active-child delete rejection, duplicate-name validation, URL validation, cascading Select2, and virtual-directory path handling.
+- Add or verify sidebar/menu seed access for the Management Menu page after navigation policy is confirmed.
+
+ETA:
+2026-06-18
