@@ -1357,3 +1357,56 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit and professionalize Notification usage across Application.API.Notification, Application.Service.Notification, and Infrastructure.Data for future SignalR usage.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Notification implementation in Application.API.Notification and Infrastructure.Data.
+- Found root cause: Notification hub/service existed in two places, and Infrastructure.Data owned SignalR realtime code while Application.API.Account mapped that hub.
+- Found Application.Service.Notification was not present as an active project in the solution, so Notification service ownership was missing.
+- Created Application.Service.Notification as the service boundary for Notification contracts, DTOs, SignalR hub, user id provider, realtime notifier, and Notification service DI.
+- Moved API Notification controller usage to Application.Service.Notification contracts and async service methods.
+- Updated Application.API.Notification and Application.API.Account to reference Application.Service.Notification and register Notification DI.
+- Removed duplicate Notification hub, model, provider, and service files from Application.API.Notification.
+- Removed SignalR Notification hub/service/notifier from Infrastructure.Data so data infrastructure no longer owns realtime presentation code.
+- Removed generic AddSignalR registration from Infrastructure.Data AddInfrastructure and centralized SignalR registration in Notification service DI.
+- Updated API Dockerfiles to copy Application.Service.Notification and required class library project references before restore.
+- Added Application.Service.Notification to Application.sln.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+
+Need Decision:
+- Confirm whether the Notification hub should require JWT authorization immediately, or remain compatible with the existing query-string userId mapping until client integration is finalized.
+
+Risk:
+- Runtime SignalR authorization policy is still an integration decision because Application.API.Notification appsettings currently does not include full JWT/database configuration.
+- Legacy menu-based notification recipient lookup remains a future integration point because the old Infrastructure.Data implementation had the menu access query commented out and returned an empty menu list.
+
+Next Action:
+- Run SignalR runtime smoke tests for broadcast, user target, tenant group join/leave, and Account API hub endpoint after client configuration is available.
+- Wire menu/user access recipient lookup into Application.Service.Notification when the final menu access query contract is approved.
+
+ETA:
+2026-06-19
