@@ -1034,3 +1034,54 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-18
+
+Current Task:
+Implement backend Create and Update for Management Menu with tenant-root validation, parent-child hierarchy, multi-role assignment, PostgreSQL source of truth, Redis user-access invalidation, and safe migration support.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Added Management Menu DTO contracts for create/update requests, role access assignments, and result payloads.
+- Added Menu and RoleMenuAccess infrastructure models mapped to existing cms.menu and new cms.role_menu_access without duplicating the existing menu table concept.
+- Implemented Account API MenuController endpoints for POST create and PUT update.
+- Implemented MenuService create/update using query strings, DTO mapping, PostgreSQL validation, and a single database transaction for menu and role-menu writes.
+- Added validation for active root tenant, same-tenant roles, same-tenant parent menu, self-parent rejection, circular hierarchy prevention, duplicate menu name/code, required URL for Menu type, optional URL for Parent type, and sequence minimum/duplicate sibling sequence.
+- Added default behavior: IsActive true on create, IsDeleted false and not user-changeable, default sequence as last sibling sequence + 1, and optional sequence override.
+- Added role-menu assignment replacement on update and Redis user-access cache invalidation for all users affected by old/new role assignments.
+- Added a manual EF migration that safely extends cms.menu, creates cms.role_menu_access, adds tenant/parent/sequence/soft-delete indexes, and uses PostgreSQL partial unique indexes when existing data allows it.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No compile blocker remains.
+- Runtime migration and integrated API tests were not executed against a live PostgreSQL database in this task.
+
+Need Decision:
+- Confirm whether role assignment should grant only read access by default when only role_ids are submitted, or whether the UI must always submit detailed permission flags.
+
+Risk:
+- Existing duplicate menu names or duplicate sibling sequences can cause partial unique indexes to be skipped by the migration to avoid deleting/changing existing data.
+- Existing sidebar code still reads user-level menu access; full role-menu runtime enforcement needs the next integration step to merge role_menu_access into effective user access.
+
+Next Action:
+- Run migration against a PostgreSQL development database and test create/update menu endpoints with parent changes, sequence conflicts, duplicate names, circular parent rejection, and Redis cache invalidation.
+- Update effective user access query to include role_menu_access if role-based menu access should become the source of truth.
+
+ETA:
+2026-06-18
