@@ -1524,3 +1524,69 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit Account and Notification architecture flow, move Notification seeders out of Infrastructure.Data.Account, and enforce centralized authentication boundary.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited target architecture flow: Application.API.Account -> Application.Service.Account (Application.Model.Account) -> Infrastructure.Data.Account.
+- Audited target architecture flow: Application.API.Notification -> Application.Service.Notification (Application.Model.Notification) -> Infrastructure.Data.Notification.
+- Found root cause: Infrastructure.Data.Account still owned cms.notifications seeders and EF notification mapping, while Application.API.Account still referenced Application.Service.Notification and mapped NotificationHub.
+- Moved Notification master/tenant seeding responsibility from Infrastructure.Data.Account to Infrastructure.Data.Notification.
+- Added Infrastructure.Data.Notification database provider resolver, seeder contracts, schema seeder, NotificationsSeeder, and NotificationSeederEngine.
+- Added Notification schema bootstrap for cms schema, pgcrypto extension on PostgreSQL, cms.notifications table, tenant_id compatibility column, userid index, and unread notification composite index.
+- Removed NotificationsSeeder files from Infrastructure.Data.Account master and tenant seeder folders.
+- Removed Notification entity and DbSet mapping from Infrastructure.Data.Account AppDbContext/ApplicationUser entity file.
+- Removed Application.API.Account dependency on Application.Service.Notification and removed Notification DI/hub mapping from Account API startup.
+- Simplified Account API Dockerfile so it only copies Account service/model/data/cache/core dependencies.
+- Added Notification API JWT validation extension in Infrastructure.Data.Notification without UserManager, Identity, or Account database dependency.
+- Protected NotificationController and NotificationHub with NotificationAccess authorization policy.
+- Added SignalR access_token handling for /hubs/notification so browser/WebSocket clients can authenticate with Account-issued JWTs.
+- Registered Core.Common and Notification infrastructure services from Infrastructure.Data.Notification.
+- Updated Application.API.Notification startup to register token validation and run NotificationSeederEngine on startup.
+- Added Notification API local JWT configuration aligned with Account-issued token settings.
+- Updated docker-compose Notification API database/JWT environment variables and PostgreSQL/Redis dependency conditions.
+- Cleaned existing Account MenuSeeder switch warnings with explicit unsupported-provider handling.
+- Verified Account flow has no Notification project dependency by text audit.
+- Verified Notification flow has no Account/Identity/UserManager dependency by text audit.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+- Ran dotnet test Application.Service.Account.Tests --no-build successfully: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime database/API smoke testing was not executed in this task because services were not started against a live PostgreSQL/SignalR client session.
+
+Need Decision:
+- Confirm the production permission claim convention for API-to-API authorization: permission, scope, role, or a dedicated claim name.
+- Confirm the required Notification permission value to set in Authorization:NotificationPermission; it is currently empty, so NotificationAccess requires authenticated JWT only.
+
+Risk:
+- Notification API startup now requires Jwt:Key/Issuer/Audience and Notification database connection configuration; missing runtime configuration will fail fast by design.
+- If Account-issued JWTs do not include a future permission/scope claim, enabling a strict Notification permission value will deny requests until token claims are expanded.
+- Runtime behavior of Notification seeding should be smoke-tested against the shared PostgreSQL database before deployment.
+
+Next Action:
+- Run Notification API runtime smoke tests for startup seeding, authorized broadcast, user target, tenant group, menu group, and unauthorized request rejection.
+- Define final permission claim contract and set Authorization:NotificationPermission for production hardening.
+
+ETA:
+2026-06-19
