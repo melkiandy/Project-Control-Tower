@@ -930,3 +930,54 @@ Next Action:
 
 ETA:
 2026-06-17
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-18
+
+Current Task:
+Audit and update Roles frontend/backend flow so role save uses parent tenants, role name, and code, while role update keeps code readonly and validates duplicate usage.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed the .NET solution structure, Account API roles controller, Application.Service.Account RolesService, shared role model, ApplicationRole entity mapping, Web Admin roles MVC flow, Tenant option flow, and existing report process before changing code.
+- Updated Roles backend validation so create requires an active parent tenant, role name, and role code.
+- Added duplicate validation methods for role name and role code on create, and duplicate role-name validation on update while excluding the current role.
+- Changed update behavior so role code is not modified by the backend even if a client sends a code value.
+- Added ApplicationRole.code mapping, shared/API role model code support, Web Admin role model/table code support, and a small role schema seeder to add/backfill the code column safely.
+- Updated the Roles modal to select only parent tenants, input code on save, show code as readonly during update, and display validation errors per field.
+- Preserved the existing layered architecture and limited changes to the Roles vertical slice plus the minimal identity role schema support.
+- Ran dotnet build Application.sln successfully with 0 errors. Existing warnings remain in unrelated Infrastructure.Data files.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Integrated browser/API/database testing was not run because the dependent runtime services were not started in this task.
+
+Need Decision:
+-
+
+Risk:
+- Runtime requires the role schema seeder to run so idt.aspnetroles has the code column before role list/create/update queries use it.
+- Existing roles with empty code will be backfilled from their current Name value by the seeder, so any desired business-specific code naming should be reviewed afterward.
+- Role name uniqueness remains aligned with existing ASP.NET Identity role uniqueness behavior.
+
+Next Action:
+- Run integrated Web Admin and Account API tests for role list, create, duplicate role name, duplicate code, update name, readonly code behavior, parent-tenant acceptance, and child-tenant rejection.
+- Review whether legacy role codes should be manually adjusted after the automatic backfill.
+
+ETA:
+2026-06-18
