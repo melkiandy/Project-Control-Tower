@@ -1085,3 +1085,57 @@ Next Action:
 
 ETA:
 2026-06-18
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-18
+
+Current Task:
+Create Menu Ordering Service for Management Menu sibling sequence handling, insertion, movement, parent changes, and normalization.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed existing Management Menu backend flow, dependency injection, transaction boundaries, and available test project structure before changing code.
+- Added MenuOrderingService with GetNextSequenceAsync, InsertAtSequenceAsync, MoveSequenceAsync, and NormalizeSequenceAsync.
+- Scoped ordering operations by same tenant_id, same parent_menu_id, and is_deleted = false.
+- Implemented sibling row locking and transaction-based sequence updates for insert, same-parent move, parent-change move, and normalization.
+- Handled occupied insert sequence by shifting existing siblings down.
+- Handled move from larger to smaller sequence by shifting affected siblings down, and smaller to larger by shifting affected siblings up.
+- Handled parent changes by normalizing the old parent, inserting into the new parent, and normalizing both sibling groups.
+- Preserved PostgreSQL as source of truth and used parameterized query-string operations for non-Identity menu data.
+- Registered IMenuOrderingService in dependency injection and integrated it into MenuService create/update transaction flow.
+- Updated Management Menu validation so duplicate sibling sequence is no longer rejected; it is resolved by ordering logic inside the transaction.
+- Confirmed no test project matching *Test*.csproj or *Tests*.csproj is available in the solution.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Automated unit tests were not added because no test project is available in the current solution.
+- Runtime database integration testing was not executed against a live PostgreSQL database in this task.
+
+Need Decision:
+- Confirm whether a dedicated test project should be added for Management Menu ordering and service-level database behavior.
+
+Risk:
+- Ordering behavior relies on PostgreSQL transaction and row locking semantics; it should be integration-tested with the actual partial unique indexes enabled.
+- Existing legacy menu records with inconsistent sequence values will be normalized within the affected sibling group when create/update ordering is executed.
+
+Next Action:
+- Run PostgreSQL integration tests for insert-at-used-sequence, move up, move down, parent change, normalization, and Redis invalidation after menu updates.
+- Add a dedicated test project if the team wants automated coverage for ordering edge cases.
+
+ETA:
+2026-06-18
