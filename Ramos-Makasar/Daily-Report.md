@@ -981,3 +981,56 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-18
+
+Current Task:
+Analyze the active project before implementing Management Menu and Redis User Access, covering tenant hierarchy, users, roles, menu/access schema, auth claims, service/controller/frontend patterns, Select2, Redis, provider, and migration approach.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited the current solution without changing application code.
+- Reviewed Tenant DTO/schema and confirmed parent_tenant_id, hierarchy_path, level, parent, tenant_type_id, active, and code are available for hierarchy-aware access design.
+- Reviewed ApplicationUser, ApplicationRole, ApplicationUserRole, AppDbContext, Identity role/user storage, and cms.user_tenant_role relationship table.
+- Reviewed existing cms.menu and cms.menu_access schema seeders, including isread, iscreated, isupdated, isdeleted, and ismobile fields.
+- Reviewed active Menu module draft and confirmed MenuController, MenuModel, and MenuService are still skeleton/empty and not production-ready.
+- Reviewed authentication claims, CurrentUserService, Web Admin session claims, Redis refresh-token usage, Select2Manager, Web Admin controller/service/API-client patterns, and frontend menu loader contract.
+- Confirmed non-Identity tables should use DTO/query-string access through IDatabaseService with parameterized queries.
+- Prepared implementation recommendations and staged plan only; no application code was changed, built, committed, or pushed.
+
+Issue / Blocker:
+- Management Menu and Redis User Access are not implemented yet; current backend endpoint expected by core.js (/MenuAccess/GetMenuUserById) is not present in active Web.Admin/API code.
+- Current menu_access schema is user-based only; no role_menu or role-based menu access table is available yet.
+- Menu/MenuAccess are not EF entities in AppDbContext and are currently managed by schema seeders/query strings.
+
+Need Decision:
+- Decide whether to preserve user-level menu_access as the source of truth or introduce role_menu_access as the primary management model with optional user overrides.
+- Decide whether Redis cache invalidation should be triggered per user, per role, or both when access changes.
+
+Risk:
+- Directly changing menu access shape can break the existing sidebar contract used by core.js.
+- Seeder code contains older reflection/string-interpolation logic; new CRUD must use parameterized IDatabaseService queries to avoid injection and provider drift.
+- Cache per role alone can be wrong when user-specific tenant/access overrides exist.
+
+Next Action:
+- Review the audit recommendation with the team before starting implementation.
+- Implement the module in small stages: DTO/schema alignment, API service queries, Redis cache service methods, Web.Admin proxy/controller, Management Menu UI, then integration testing.
+
+ETA:
+2026-06-18
