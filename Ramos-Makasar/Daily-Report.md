@@ -1465,3 +1465,62 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Rename Infrastructure.Data to Infrastructure.Data.Account, isolate Notification infrastructure dependency, and professionalize Notification service structure.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Renamed the account data class library source from Infrastructure.Data to Infrastructure.Data.Account and updated namespaces to Infrastructure.Data.Account.*.
+- Updated Application.sln with Infrastructure.Data.Account and Infrastructure.Data.Notification project entries and build configurations.
+- Updated Application.Service.Account, Application.API.Account, and Account API Dockerfile references to the renamed Infrastructure.Data.Account project.
+- Removed unused Web Admin dependency on the old data project and cleaned unused Azure using directives exposed by the dependency cleanup.
+- Created Infrastructure.Data.Notification as a dedicated notification infrastructure class library.
+- Added Notification-specific IDatabaseService, DatabaseService, connection factory, query adapter, SQL Server/PostgreSQL dialect support, and dependency injection registration.
+- Moved Application.Service.Notification database contract usage to Infrastructure.Data.Notification.Database so Notification no longer depends on Account data infrastructure.
+- Updated Application.API.Notification startup to register Notification infrastructure and use Notification-owned rate limiting extension.
+- Professionalized Notification realtime routing by adding explicit tenant and menu SignalR group naming with normalized group keys.
+- Added JoinMenu and LeaveMenu hub methods and routed menu notifications through NotificationGroups.Menu.
+- Added guard/logging for notification payloads without menu/controller routing targets.
+- Updated Notification API and Account API Dockerfiles to copy the correct renamed/new project files before restore.
+- Verified no stale Infrastructure.Data project/path references remain in active cs/csproj/sln/Dockerfile files.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+- Ran dotnet test Application.Service.Account.Tests --no-build successfully: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Direct folder rename was blocked by local access denial on the old Infrastructure.Data directory, so source files were moved safely into Infrastructure.Data.Account while old bin/obj build output remains untracked and disposable.
+
+Need Decision:
+- Confirm whether Notification hub authorization should become JWT-only now, or keep compatibility with the current query-string userId fallback until client integration is finalized.
+- Confirm whether legacy NotificationPayload.Tittle should remain for compatibility or be migrated later to Title with a backward-compatible DTO plan.
+
+Risk:
+- Runtime SignalR behavior still needs live smoke testing with connected clients after frontend/client hub integration is available.
+- Notification database operations depend on correct DatabaseProvider and connection string configuration in the hosting API environment.
+- Git diff is large because the class library rename is represented as delete/add by Git and the worktree already contained several pre-existing uncommitted Notification/Account changes.
+
+Next Action:
+- Run runtime smoke tests for Notification API broadcast, user target, tenant group join/leave, menu group join/leave, and Account API hub endpoint.
+- Decide JWT authorization policy and DTO compatibility plan for Notification before production hardening.
+
+ETA:
+2026-06-19
