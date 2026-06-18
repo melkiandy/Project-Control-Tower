@@ -1139,3 +1139,58 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-18
+
+Current Task:
+Implement Management Menu soft delete and application-relative Menu URL validator with dangerous URL rejection and validator tests.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed existing MenuController, MenuService, DTO contracts, dependency injection, menu schema fields, and current test project availability before changing code.
+- Added IMenuUrlValidator and MenuUrlValidator with MenuUrlValidationResult returning IsValid, NormalizedUrl, and ErrorMessage.
+- Implemented URL rules: Parent may use empty URL; Menu requires URL; valid internal URL must start with '/'; full domain/server URL is rejected.
+- Rejected dangerous URL inputs including javascript:, data:, vbscript:, file:, protocol-relative //external-domain, backslash, newline/control characters, and HTML tag content.
+- Integrated URL validator into Management Menu create/update validation so persisted URLs are normalized application-relative values.
+- Added Account API DELETE /api/Menu/{id} endpoint for authenticated soft delete.
+- Implemented MenuService.DeleteAsync using parameterized query-string updates and database transaction.
+- Soft delete now sets is_deleted = true, is_active = false, active = false, deleted_date UTC, deleted_by authenticated user, and matching update audit fields.
+- Added active-child guard so menu delete is rejected when an active non-deleted child menu still exists.
+- Soft-deleted related role_menu_access rows, normalized the deleted menu sibling sequence, and invalidated Redis user-access cache for impacted users.
+- Added Application.Service.Account.Tests project and MenuUrlValidatorTests covering valid internal URLs, empty Parent URL, and dangerous URL rejection cases.
+- Ran dotnet test Application.Service.Account.Tests successfully: 18 passed, 0 failed.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation, test, or build blocker remains.
+- Runtime database/API integration testing was not executed against a live PostgreSQL database in this task.
+
+Need Decision:
+- Confirm whether soft delete should also be exposed through Web Admin UI in the next task or remain API-only for now.
+
+Risk:
+- Runtime behavior depends on cms.menu having the previously added is_deleted, is_active, deleted_date, deleted_by, updated_date, and updated_by columns applied in PostgreSQL.
+- Existing active children must be deleted or moved before a parent menu can be soft-deleted.
+
+Next Action:
+- Run authenticated API integration tests for delete with active child rejection, successful leaf menu soft delete, sibling sequence normalization, and Redis user-access invalidation.
+- Connect Web Admin delete action if menu management UI is in scope for the next iteration.
+
+ETA:
+2026-06-18
