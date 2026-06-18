@@ -1301,3 +1301,59 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit Redis usage and professionalize cache architecture by moving Redis management into Infrastructure.Cache.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Redis/cache usage across Application.API.Account, Application.Service.Account, Infrastructure.Data, docker-compose configuration, and Infrastructure.Cache.
+- Found root cause: Infrastructure.Cache existed as an empty class library, while Redis contract, implementation, package dependency, and connection registration were still located in Infrastructure.Data.
+- Moved cache contract and Redis implementation into Infrastructure.Cache.
+- Added ICacheService with GetAsync, SetAsync, RemoveAsync, and ExistsAsync methods including optional CancellationToken parameters.
+- Added RedisCacheService with key validation, JSON serializer options, key prefix support, optional default TTL support, explicit TTL/no-TTL handling, and deserialize error logging.
+- Added CacheOptions to centralize Redis configuration: Connection, KeyPrefix, DefaultTtlMinutes, ConnectTimeoutMilliseconds, SyncTimeoutMilliseconds, AbortOnConnectFail, AllowAdmin, and ClientName.
+- Added Infrastructure.Cache dependency injection extension to register Redis IConnectionMultiplexer and ICacheService professionally.
+- Removed Redis package dependency and old RedisCacheService from Infrastructure.Data.
+- Updated Infrastructure.Data AddInfrastructure to call ConfigureCacheDependencyInjection without owning Redis setup directly.
+- Updated Account API and Account service code to use Infrastructure.Cache namespace.
+- Added Infrastructure.Cache project to Application.sln so it is visible and built as an active project.
+- Added non-secret Redis configuration options to appsettings.Development.json while preserving existing Redis:Connection source and default no-expiry behavior.
+- Verified old Infrastructure.Data.Cache references are gone; StackExchange.Redis usage now exists only in Infrastructure.Cache.
+- Ran dotnet test Application.Service.Account.Tests successfully: 18 passed, 0 failed.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation, test, or build blocker remains.
+
+Need Decision:
+- Confirm whether Redis KeyPrefix should be set per environment, for example makasar:dev or makasar:prod, before shared Redis infrastructure is used.
+
+Risk:
+- Runtime still depends on Redis:Connection being configured correctly through appsettings or environment variables such as Redis__Connection.
+- Setting DefaultTtlMinutes above 0 will apply a default expiration to cache writes that do not explicitly provide a TTL, so it should be enabled deliberately.
+
+Next Action:
+- Run runtime smoke tests for login refresh token cache, tenant type icon cache, and user-access cache against a live Redis instance.
+- Decide environment-specific KeyPrefix naming before production deployment.
+
+ETA:
+2026-06-19
