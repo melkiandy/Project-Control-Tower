@@ -1252,3 +1252,52 @@ Next Action:
 
 ETA:
 2026-06-18
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit WebService.Account usage, compare it with Application.API.Account, and remove it if unused.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited solution membership, repository references, Docker configuration, project references, and source contents for WebService.Account.
+- Confirmed WebService.Account is not included in Application.sln.
+- Confirmed no active project, Dockerfile, docker-compose service, or source file references WebService.Account outside its own namespace.
+- Compared WebService.Account with Application.API.Account.
+- Confirmed Application.API.Account is the active ASP.NET Web API project with Program.cs, controllers, appsettings, Dockerfile, solution membership, and dependency on Application.Service.Account.
+- Confirmed WebService.Account was an obsolete class library containing only an old AuthService stub, AuthModel, and DI extension, with no executable host, controllers, appsettings, or runtime wiring.
+- Removed WebService.Account tracked source files and project file.
+- Verified no WebService.Account references remain after deletion.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors after deletion.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+
+Need Decision:
+-
+
+Risk:
+- Low. WebService.Account was outside the active solution and runtime path. Application.API.Account remains the active account API surface.
+
+Next Action:
+- Keep Account API work in Application.API.Account and Application.Service.Account.
+- Avoid reintroducing obsolete WebService.* projects unless a new architecture decision explicitly requires it.
+
+ETA:
+2026-06-19
