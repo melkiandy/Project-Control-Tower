@@ -2077,3 +2077,62 @@ Next Action:
 
 ETA:
 2026-06-20
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-20
+
+Current Task:
+Audit frontend/backend Roles, change Roles table to server-side DataTable like Tenant, and add optional multiple child tenant Select2 aligned with backend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Roles frontend and backend flow across Application.Web.Admin, Application.API.Account, Application.Service.Account, and Application.Model.Account.
+- Changed Roles frontend table from local/client-rendered data to server-side DataTable using POST /Roles/TableRoles with DataTables paging payload.
+- Kept Roles action column complete with add, edit, and delete buttons while using server-side paging.
+- Updated Web Admin RolesController and RolesService so TableRoles accepts DataTables request and returns recordsTotal from backend total_count.
+- Updated RoleApiClient to request /api/Roles?page={page}&take={length} and deserialize RolePagedModel.
+- Updated backend Roles GetAll response to return RolePagedModel items/total so server-side DataTable has a reliable total count.
+- Added optional Child Tenants multiple Select2 input to Roles modal, filtered by selected parent/root tenant and restricted to level > 0 tenant options.
+- Added child_tenant_ids and child_tenant_names to Web Admin and backend Role models.
+- Persisted optional child tenant scope using existing Identity role claims with claim type child_tenant_id, avoiding a new schema/table change.
+- Added backend validation to ensure selected child tenants are active descendants of the selected parent/root tenant.
+- Hydrated child_tenant_ids and child_tenant_names back into list/detail responses so edit flow can restore selected child tenants.
+- Preserved existing confirmation popup flow for Save, Update, and Delete Roles.
+- Verified dotnet build Application.Service.Account/Application.Service.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.Web.Admin/Application.Web.Admin.csproj with isolated output succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.API.Account/Application.API.Account.csproj with isolated output succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser smoke test against live Web Admin/API/database was not executed in this task.
+
+Need Decision:
+- Confirm whether child tenant role scope stored in Identity role claims is the desired long-term model, or whether a dedicated role_tenant_scope table should be introduced later for reporting and constraints.
+- Confirm whether server-side search/order should be pushed down to SQL for Roles in a follow-up; current implementation follows existing Tenant page/take pattern.
+
+Risk:
+- Role child tenant scope now persists in idt.aspnetroleclaims; any authorization logic that should enforce it must explicitly read/use this claim scope in a later task.
+- Running Web Admin and Account API processes must be restarted before the latest DLL/JS behavior is visible.
+
+Next Action:
+- Restart Web Admin and Account API, then smoke-test Roles list paging, create, update, delete, parent tenant selection, optional child tenant selection, and edit restore.
+- Decide whether child tenant role scope should affect menu/user access authorization or remain metadata/scope for management UI.
+
+ETA:
+2026-06-20
