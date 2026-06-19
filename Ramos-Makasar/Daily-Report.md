@@ -1590,3 +1590,66 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit and harden User Role Access for enterprise SaaS/on-premise tenant permission validation.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited current User Role Access flow for centralized authentication in Application.API.Account.
+- Found root cause: UserAccessService still used legacy per-user cms.menu_access as authorization source, while Management Menu now writes role-based cms.role_menu_access.
+- Changed UserAccessService authorization source of truth to cms.user_tenant_role + cms.role_menu_access.
+- Implemented role permission aggregation with BOOL_OR so users with multiple active roles receive the union of allowed read/create/update/delete/mobile permissions per menu.
+- Preserved tenant scoping by requiring user_tenant_role.tenant_id and role_menu_access.tenant_id to match the active tenant.
+- Included menu ancestor rows for navigation when a child menu is accessible through role permission.
+- Added GetPermissionClaimsAsync to emit stable permission claims in controller:action format, for example menu:read and tenant:update.
+- Updated Account token generation to resolve active tenant from ApplicationUser.tenant_id or the latest active cms.user_tenant_role assignment.
+- Added tenant_id and tenant claims to Account-issued JWTs.
+- Added permission claims to Account-issued JWTs so downstream APIs can validate JWT, tenant, and permission without depending on Account database lookup.
+- Regenerated tenant and permission claims during refresh token flow instead of copying stale claims from the old access token.
+- Added Permissions to LoginResponse and a HasPermission helper for client-side/session consumers.
+- Extended CurrentUserService with TenantId claim extraction.
+- Updated Notification API policy to require a valid non-empty tenant claim in addition to authenticated JWT, with optional configured permission enforcement.
+- Verified legacy cms.menu_access is no longer used by UserAccessService authorization query.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+- Ran dotnet test Application.Service.Account.Tests --no-build successfully: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime validation against a live PostgreSQL tenant/user/role/menu dataset was not executed in this task.
+
+Need Decision:
+- Confirm the final permission naming convention for downstream APIs. Current implementation emits controller:action using lowercase controller names and actions read/create/update/delete/mobile.
+- Confirm whether JWT should carry all permissions long-term, or whether high-permission tenants should move to short-lived permission snapshots/reference tokens to keep token size controlled.
+- Confirm how users with access to multiple tenants should choose active tenant during login; current implementation uses ApplicationUser.tenant_id first, then latest active user_tenant_role assignment.
+
+Risk:
+- Large enterprise tenants with many menus and permissions may produce large JWTs if all permission claims are embedded.
+- Users without ApplicationUser.tenant_id or an active cms.user_tenant_role assignment will receive Guid.Empty tenant claim and downstream tenant-aware APIs will reject access by design.
+- Permission claims are refreshed only on login/refresh; immediate permission revocation still requires cache invalidation plus token expiration/revocation strategy.
+
+Next Action:
+- Run runtime smoke tests with seeded tenant, user_tenant_role, role_menu_access, and menu data to verify token tenant/permission claims.
+- Define multi-tenant login tenant-selection UX/API contract.
+- Decide production permission claim strategy and token-size guardrail before broad ERP module rollout.
+
+ETA:
+2026-06-19
