@@ -1753,3 +1753,58 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit Application.API.Account Program.cs startup database migration lines 92-101 and fix Identity tables not being created during debug startup.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.API.Account Program.cs startup flow around database initialization, EF migration, SeederEngine, and IdentitySeeder.
+- Found root cause: Program.cs called DatabaseHelper.WaitForDatabase and context.Database.Migrate, but the Migrations folder was missing from Infrastructure.Data.Account, so Migrate had no compiled DDL to create Identity tables.
+- Found secondary root cause: DatabaseHelper.WaitForDatabase returned immediately when the database connection was available, so it never created or validated tables; its fallback EnsureCreated path was unsafe because it bypasses EF migration history.
+- Replaced Program.cs startup database block with AccountDatabaseInitializer.InitializeAsync before SeederEngine and IdentitySeeder run.
+- Centralized Program.cs configuration usage on builder.Configuration so infrastructure, rate limiting, seeders, and admin seeding use the same runtime configuration source.
+- Added AccountDatabaseInitializer with database connectivity retry, async EF migration execution, and post-migration verification for required Identity tables.
+- Added idempotent IdentitySchemaBaseline migration for PostgreSQL and SQL Server to create idt.aspnetroles, idt.aspnetusers, and the related Identity join/claim/login/token tables.
+- Removed EnsureCreated usage from DatabaseHelper.WaitForDatabase to prevent partial database creation outside migrations.
+- Verified dotnet build Application.API.Account/Application.API.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation blocker remains.
+- Runtime debug smoke test against the live PostgreSQL database was not executed in this task; verification completed through code audit, build, and test suite.
+
+Need Decision:
+- Confirm whether the deleted ManagementMenuModel migration should be restored, replaced by a new CMS migration, or intentionally kept out because CMS tables are currently managed by raw seeders.
+- Confirm whether database schema ownership should be fully migrated to EF migrations over time, replacing table-creating seeders for enterprise production readiness.
+
+Risk:
+- Databases previously created with EnsureCreated or manual SQL may still have incomplete schemas and should be reviewed before production use.
+- If an old database has inconsistent __EFMigrationsHistory entries, migration execution may need a one-time reconciliation plan.
+- Keeping CMS table creation in seeders while Identity uses EF migrations creates mixed schema ownership and should be standardized before broad rollout.
+
+Next Action:
+- Run Application.API.Account debug again so AccountDatabaseInitializer applies IdentitySchemaBaseline and verifies idt Identity tables before seeding.
+- Confirm the CMS migration strategy and decide whether to restore/recreate ManagementMenuModel.
+- Smoke-test admin login/token issuance after the migration applies successfully.
+
+ETA:
+2026-06-19
