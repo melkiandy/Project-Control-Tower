@@ -1808,3 +1808,59 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit Infrastructure.Data.Account and Infrastructure.Data.Notification, then ensure databases are automatically created when missing without changing the overall architecture.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Infrastructure.Data.Account structure: EF AppDbContext, AccountDatabaseInitializer, AccountDatabaseCreator, ServiceExtensions, raw SQL SeederEngine, and Identity migration/seeding flow.
+- Audited Infrastructure.Data.Notification structure: raw SQL database service, NotificationDatabaseInitializer, NotificationSeederEngine, seeders, and API startup flow.
+- Confirmed Account database auto-create path is handled before migration through AccountDatabaseCreator, then AccountDatabaseInitializer applies EF migrations and verifies required Identity tables.
+- Added retry handling to AccountDatabaseInitializer database creation step so startup can tolerate database server readiness delays before migration.
+- Connected Application.API.Notification startup to NotificationDatabaseInitializer before NotificationSeederEngine runs.
+- Hardened NotificationDatabaseInitializer with retry handling for PostgreSQL and SQL Server database creation/reachability.
+- Kept changes small and reviewable: no large architecture refactor, no schema ownership migration, and no changes to service/controller contracts.
+- Verified dotnet build Application.API.Account/Application.API.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.API.Notification/Application.API.Notification.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Runtime database creation smoke test was not executed against a live PostgreSQL/SQL Server instance in this task.
+
+Need Decision:
+- Confirm whether Account and Notification should continue using separate databases: application_account_development and application_notification_development.
+- Confirm the long-term schema ownership strategy: EF migrations for Account Identity and raw SQL seeders for CMS/Notification, or gradual consolidation into migrations.
+
+Risk:
+- Database users must have CREATE DATABASE privilege; otherwise startup will fail fast with a clear initialization error.
+- PostgreSQL creation uses maintenance database postgres and SQL Server uses master; restricted production environments may require pre-provisioned databases instead.
+- Existing partial databases may still need one-time reconciliation if they were previously created manually or through EnsureCreated.
+
+Next Action:
+- Run Account API and Notification API debug against a live PostgreSQL instance after dropping/renaming the target databases to verify auto-create behavior end to end.
+- Smoke-test Account admin seed/login and Notification seeder startup after database creation.
+- Decide schema ownership and production database privilege policy before deployment hardening.
+
+ETA:
+2026-06-19
