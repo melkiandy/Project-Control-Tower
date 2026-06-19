@@ -1705,3 +1705,51 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Fix Application.API.Account debug startup failure in IdentitySeeder caused by missing PostgreSQL Identity role table idt.aspnetroles.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Investigated CLR/Npgsql.PostgresException 42P01 at IdentitySeeder role existence check.
+- Found root cause: Account migrations only contained the ManagementMenuModel migration for cms.menu and cms.role_menu_access; no migration created the Identity schema/tables used by RoleManager and UserManager.
+- Added IdentitySchemaBaseline migration to create idt.aspnetroles, idt.aspnetusers, aspnet role/user claim/login/role/token tables, required indexes, and the skipped cms.role_menu_access -> idt.aspnetroles foreign key when available.
+- Kept migration idempotent for PostgreSQL and SQL Server so existing partial databases can recover safely during startup migration.
+- Hardened IdentitySeeder admin seeding with required configuration validation, explicit role/user Guid generation, invariant normalization, active flag, created_date, and audit fields.
+- Verified Application.API.Account builds successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation blocker remains.
+- Runtime database smoke test was not executed in this task; validation performed by build and code/migration audit.
+
+Need Decision:
+- Confirm whether SeedAdmin should restore the previous default roles Administrator, Staff, and Tenant, or keep only the configured SeedAdmin role as currently implemented.
+
+Risk:
+- Existing databases that already have incomplete manually-created Identity tables may still require column-level reconciliation beyond the baseline migration.
+- Existing EF migration history must allow the new migration to run; if a database was previously created with EnsureCreated outside migrations, it should be reviewed before production use.
+
+Next Action:
+- Run Application.API.Account debug again so context.Database.Migrate applies IdentitySchemaBaseline, then verify IdentitySeeder creates the configured admin role/user.
+- Smoke-test login and token issuance after migration applies successfully.
+
+ETA:
+2026-06-19
