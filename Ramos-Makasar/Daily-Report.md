@@ -1968,3 +1968,59 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit frontend Roles in Application.Web.Admin, add confirmation popup for save/update/delete, align required inputs with backend, and keep CRUD behavior enterprise-ready with small reviewable changes.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Web.Admin Roles view, roles.js, RolesController, RolesService, RoleApiClient, and RoleModel.
+- Audited Application.API.Account RolesController and Application.Service.Account RolesService backend contract.
+- Found root cause: frontend Roles submit saved/updated immediately without App.Confirm popup, and Roles table had no delete flow while backend API also had no delete endpoint.
+- Confirmed backend create validation requires tenant_id, name, and code; update requires tenant_id and name, while UI already marks code as required and sends it as read-only during edit.
+- Updated Roles frontend to render a local DataTable with edit and delete actions without changing core.js global table behavior.
+- Added App.Confirm.show confirmation for Save, Update, and Delete Role actions.
+- Added client-side validation for Parent Tenant, Role Name, and Role Code with max-length checks aligned to backend model limits.
+- Added Web Admin RoleDeleteRequest, RolesController Delete endpoint, RolesService delete flow, and RoleApiClient DELETE call.
+- Added Account API DELETE /api/Roles/{id} endpoint and backend RolesService soft delete using deleted_date/deleted_by audit fields.
+- Added guard to prevent deleting roles that are still assigned in idt.aspnetuserroles.
+- Verified dotnet build Application.Web.Admin/Application.Web.Admin.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.Service.Account/Application.Service.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.API.Account/Application.API.Account.csproj with isolated verification output succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Runtime browser/API smoke test against a live database was not executed in this task.
+
+Need Decision:
+- Confirm whether role delete should also be blocked when the role is referenced by cms.role_menu_access or cms.user_tenant_role, not only idt.aspnetuserroles.
+- Confirm whether Role Code should remain immutable after create, as the current frontend keeps it read-only during edit and backend update ignores code changes.
+
+Risk:
+- Existing role-menu access rows may still reference a soft-deleted role unless a future cleanup/guard is added for cms.role_menu_access.
+- If a running Web Admin or Account API process is not restarted, it may continue serving old JS/DLL assets until refresh/restart.
+
+Next Action:
+- Restart Web Admin and Account API, then smoke-test Roles list, create, update, validation errors, delete unassigned role, and delete blocked assigned role from the frontend.
+- Decide whether to add additional delete guards for role_menu_access and user_tenant_role references.
+
+ETA:
+2026-06-19
