@@ -2024,3 +2024,56 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-20
+
+Current Task:
+Fix Roles CRUD frontend/backend payload mismatch causing JSON conversion error: The JSON value could not be converted to System.String. Path: $.status.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Re-audited Application.Web.Admin Roles flow, including roles.js, RolesController, RolesService, RoleApiClient, Web Admin RoleModel, and backend Application.Model.Account RoleModel.
+- Found root cause: create role payload forwarded id as an empty string from Web Admin to Account API, while backend API RoleModel.id is a Guid.
+- Confirmed the API can respond with ASP.NET problem details containing numeric status when request model binding fails; BaseApiClient then attempted to deserialize numeric status into BaseResponse.status string, producing the visible $.status conversion error.
+- Updated Application.Web.Admin/Services/ApiClients/RoleApiClient.cs to project a clean API payload instead of forwarding the Web Admin view model directly.
+- Removed empty id from create requests so POST /api/Roles can bind Guid id safely with its default value.
+- Kept id only for valid update requests and added a guard so invalid update id returns a controlled AppResponse validation error instead of falling back to create.
+- Normalized tenant_id, name, code, and status before forwarding to Account API; code is uppercased consistently with backend normalization.
+- Verified dotnet build Application.Web.Admin/Application.Web.Admin.csproj with isolated output succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.API.Account/Application.API.Account.csproj with isolated output succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- Default Web Admin build output was locked by running Visual Studio Debug Adapter for .NET and .NET Host processes, so validation used isolated build output bin/codex-check.
+- No compile blocker remains.
+
+Need Decision:
+- Confirm whether BaseApiClient should also be hardened globally to parse ASP.NET ProblemDetails responses without throwing when status is numeric.
+- Confirm whether role update should continue keeping Role Code immutable; frontend still sends code for consistency, but backend update currently ignores code changes.
+
+Risk:
+- The currently running Web Admin process must be restarted or refreshed with updated assets/DLLs before the fix is visible in browser runtime.
+- If other API clients forward Web Admin view models with empty Guid strings, the same model-binding/problem-details pattern can recur in other modules.
+
+Next Action:
+- Restart Web Admin, clear browser cache if needed, then smoke-test Roles create/update/delete from the frontend.
+- Validate that create role no longer sends id as an empty string to Account API.
+- Consider a follow-up BaseApiClient ProblemDetails parser to improve diagnostics across all Web Admin API calls.
+
+ETA:
+2026-06-20
