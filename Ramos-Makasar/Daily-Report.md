@@ -1913,3 +1913,58 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit MenuService.cs and align Infrastructure.Data.Account menu database bootstrap so frontend menu can show and Management Menu CRUD can work.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Service.Account/Services/MenuService.cs, MenuOrderingService.cs, MenuController.cs, Application.Model.Account/Menu/MenuModel.cs, Infrastructure.Data.Account/Entities/Menu.cs, and Infrastructure.Data.Account MenuSeeder.
+- Found root cause: MenuService CRUD expects new cms.menu columns tenant_id, code, menu_type, parent_menu_id, sequence, is_active, is_deleted and cms.role_menu_access, but MenuSeeder still created mostly legacy cms.menu columns and cms.menu_access only.
+- Updated Infrastructure.Data.Account/Database/Seeders/Master/cms/MenuSeeder.cs as the compatibility bootstrap for both legacy frontend menu tree columns and new Management Menu CRUD columns.
+- Added idempotent cms.menu schema repair for SQL Server and PostgreSQL, including new columns, legacy columns, data backfill, menu type/sequence normalization, indexes, and PostgreSQL constraints.
+- Added idempotent cms.role_menu_access creation with indexes and PostgreSQL FK guards so role-based menu permission CRUD has its required table.
+- Kept legacy cms.menu_access creation so older frontend/user-menu paths remain compatible while role_menu_access becomes the Management Menu source.
+- Made PostgreSQL role_menu_access unique index creation defensive so old duplicate active rows do not break startup bootstrap.
+- Verified dotnet build Infrastructure.Data.Account/Infrastructure.Data.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.Service.Account/Application.Service.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.API.Account/Application.API.Account.csproj with isolated verification output succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Runtime database smoke test was not executed against a live PostgreSQL menu dataset in this task.
+
+Need Decision:
+- Confirm whether legacy cms.menu_access should remain supported long term or be formally deprecated after frontend menu retrieval fully uses role_menu_access.
+- Confirm whether the deleted ManagementMenuModel EF migration should stay deleted now that MenuSeeder performs schema compatibility bootstrap, or be restored as a formal migration source of truth.
+
+Risk:
+- Existing duplicate active cms.role_menu_access rows will skip the unique active-role-menu index until data is cleaned.
+- Existing invalid parent/tenant/role references are tolerated through NOT VALID PostgreSQL constraints and should be cleaned before production validation.
+- If Account API is already running, it must be restarted before the updated seeder/bootstrap behavior is used.
+
+Next Action:
+- Restart Application.API.Account, let SeederEngine run MenuSeeder, then smoke-test Menu GET list/detail/options, create, update, delete, and role menu access assignment from the frontend.
+- Clean any duplicate active role_menu_access rows before validating production constraints.
+
+ETA:
+2026-06-19
