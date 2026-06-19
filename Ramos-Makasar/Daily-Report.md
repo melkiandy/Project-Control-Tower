@@ -1864,3 +1864,52 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit AuthService.cs line 504 and fix error around UserManager.UpdateAsync during refresh token flow.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Service.Account/Services/AuthService.cs around line 504 in RefreshAsync.
+- Found root cause: RefreshAsync generated newAccessToken but did not persist user.token = newAccessToken before UserManager.UpdateAsync.
+- Confirmed Account JWT validation compares the incoming Bearer token against ApplicationUser.token, so refreshed access tokens could be rejected as Token revoked after refresh.
+- Found secondary issue: UserManager.UpdateAsync returned IdentityResult but the result was ignored, hiding validation/concurrency/database update failures.
+- Updated AuthService token persistence so login, logout, and refresh UserManager.UpdateAsync calls validate IdentityResult and expose Identity errors clearly.
+- Updated refresh token flow to persist user.token = newAccessToken and updated_date before saving the user.
+- Verified dotnet build Application.Service.Account/Application.Service.Account.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Application.API.Account build could not be completed because a running .NET Host process is locking API output DLLs in bin/Debug/net8.0.
+- No compile issue was found in Application.Service.Account; the API build blocker is an active debug/runtime process lock, not code failure.
+
+Need Decision:
+- Confirm whether logout should store token fields as NULL instead of empty string for consistency with nullable columns and token revocation checks.
+
+Risk:
+- If the running API process is not restarted, it will continue using the old AuthService DLL and the refresh fix will not take effect.
+- Runtime refresh/login smoke testing is still required after restarting Application.API.Account.
+
+Next Action:
+- Stop/restart the running Application.API.Account debug process, rebuild API, then smoke-test login, refresh token, and authenticated API access using the refreshed access token.
+
+ETA:
+2026-06-19
