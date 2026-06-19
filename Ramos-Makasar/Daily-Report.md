@@ -1653,3 +1653,55 @@ Next Action:
 
 ETA:
 2026-06-19
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-19
+
+Current Task:
+Audit debug database routing for Application.API.Account startup database build/migration pointing to application_development instead of application_account_development.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.API.Account startup configuration flow without changing application code.
+- Verified Application.API.Account appsettings.Development.json contains the expected PostgreSQL database application_account_development.
+- Found root cause for VS Code debug profile: .vscode/launch.json profile Development: Account API overrides ConnectionStrings__PostgreSQL to Database=application_development.
+- Found docker-compose Account service is already configured to application_account_development, while Notification service still points to application_development by design/current config.
+- Found secondary startup risk: Program.cs registers infrastructure with ServiceExtensions.GetConfiguration(), but passes builder.Configuration into SeederEngine and IdentitySeeder, creating mixed configuration sources during startup.
+- Found secondary Docker profile issue in Application.API.Account launchSettings.json: ASPNETCORE_ENVIRONTMENT is misspelled, so Dockerfile debug may not set ASPNETCORE_ENVIRONMENT=Development.
+- Confirmed no application code changes were made per request.
+
+Issue / Blocker:
+- No blocker during audit.
+- Sandbox blocked one non-essential git status check in the application repo; audit evidence was collected through read-only configuration inspection.
+
+Need Decision:
+- Decide whether VS Code debug profile should use localhost:5432 or localhost:5433 for PostgreSQL, then align its database name to application_account_development.
+- Decide whether Program.cs should use one consistent IConfiguration instance for infrastructure, migration, and seeders.
+
+Risk:
+- Running Account API from VS Code debug currently targets application_development because environment variables override JSON configuration.
+- Mixed configuration sources in Program.cs can cause migration/seeding behavior to diverge when runtime/debug environment variables differ from appsettings.
+- Dockerfile debug profile may skip Development-specific configuration because ASPNETCORE_ENVIRONMENT is misspelled.
+
+Next Action:
+- Fix .vscode/launch.json Account API ConnectionStrings__PostgreSQL database name to application_account_development after approval for code/config changes.
+- Standardize Application.API.Account startup configuration source for migration and seeders after approval.
+- Correct ASPNETCORE_ENVIRONMENT typo in Docker launch profile after approval.
+
+ETA:
+2026-06-19
