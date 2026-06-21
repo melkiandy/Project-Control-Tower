@@ -2347,3 +2347,53 @@ Next Action:
 
 ETA:
 2026-06-21
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-21
+
+Current Task:
+Audit Tenant Type Active/Not Active radio UI and backend validation when used tenant type is set to not active.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Tenant Type form, submit JS, Web Admin service, and Account backend TenantService update flow.
+- Found root cause: Tenant Type active state was stored as a hidden checkbox and not presented as a clear Active/Not Active choice in add/edit mode.
+- Found frontend issue: edit flow only checked active when rowData.active was true and did not explicitly reset to not active when rowData.active was false.
+- Added Active/Not Active radio buttons to Tenant Type add/edit form while keeping a hidden active field for the existing payload shape.
+- Updated tenantType.js to sync radio selection into a boolean active payload, restore active state correctly on edit, and remove UI-only active_state from submit payload.
+- Updated TenantTypeService.Submit to forward backend validation errors to the frontend so MappingErrorInput can display active validation messages.
+- Updated backend Tenant Type create to persist the requested active value instead of always inserting active=true.
+- Updated backend Tenant Type edit validation to block changing active to false when the tenant type is already used by one or more tenants.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+
+Need Decision:
+- Confirm whether new Tenant Type records may be created as Not Active, or whether add mode should force Active and only allow status changes in edit mode.
+
+Risk:
+- Existing running Web Admin and Account API processes must be restarted before updated JS/DLL behavior is visible.
+- The not-active guard currently checks usage in cms.tenant through tenant_type_id; future modules with direct tenant type references should extend the guard.
+
+Next Action:
+- Restart Web Admin and Account API, then smoke-test Tenant Type add Active, add Not Active, edit Active to Not Active for unused data, and edit Active to Not Active for used data.
+
+ETA:
+2026-06-21
