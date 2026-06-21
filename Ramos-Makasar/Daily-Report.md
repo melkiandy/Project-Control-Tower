@@ -2188,3 +2188,52 @@ Next Action:
 
 ETA:
 2026-06-21
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-21
+
+Current Task:
+Audit frontend Roles delete button alignment and backend Roles delete validation for roles already in use.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Roles datatable action rendering in Application.Web.Admin/wwwroot/js/pages/roles.js and shared action button styling in Application.Web.Admin/Views/Shared/_Layout.cshtml.
+- Found root cause: delete action used btn-action-delete without a matching shared style and also carried Bootstrap text-danger, so it did not align visually with add/edit action buttons.
+- Added shared .btn-action-delete and hover styling with the same size, radius, display, transition, and shadow pattern as add/edit buttons.
+- Removed extra text-danger class from Roles datatable delete button so the shared action style controls the final display consistently.
+- Audited backend Roles delete validation in Application.Service.Account/Services/RolesService.cs.
+- Expanded delete guard from only idt.aspnetuserroles to explicit role usage checks across idt.aspnetuserroles, cms.user_tenant_role, and active cms.role_menu_access.
+- Updated delete validation response to return clear user-facing reasons when the role is already assigned to users, assigned in tenant user roles, or configured in menu access.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+
+Need Decision:
+- Confirm whether role delete should also be blocked by other future role-reference tables if new modules add role ownership beyond user assignments and menu access.
+
+Risk:
+- Running Web Admin and Account API processes must be restarted before the updated CSS/JS/DLL behavior is visible.
+- Existing databases must have cms.user_tenant_role and cms.role_menu_access seeders applied; otherwise runtime validation depends on the current database bootstrap being complete.
+
+Next Action:
+- Restart Web Admin and Account API, then smoke-test Roles datatable action buttons and delete validation for roles used by users, tenant user roles, and menu access.
+
+ETA:
+2026-06-21
