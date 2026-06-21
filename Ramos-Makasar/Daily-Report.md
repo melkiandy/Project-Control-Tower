@@ -2289,3 +2289,61 @@ Next Action:
 
 ETA:
 2026-06-21
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-21
+
+Current Task:
+Audit Tenant frontend delete/reset behavior, Tenant backend delete validation, and Roles server-side datatable/reset behavior.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Tenant frontend root datatable, detail datatable, header form, and detail form in Application.Web.Admin/wwwroot/js/pages/tenant.js and Application.Web.Admin/Views/Tenant/Index.cshtml.
+- Found root cause: Tenant datatable action rendering still relied on the shared MappingOnTable edit-only action, so delete was not available in row actions; reset buttons were always visible in both add and edit mode.
+- Added root Tenant and detail Tenant row delete actions using the existing edit/delete action button style pattern, with confirmation, antiforgery-aware POST, toast handling, and table/hierarchy refresh.
+- Updated Tenant header and detail form modes so Reset is visible only during add and hidden during edit.
+- Added Web Admin Tenant delete request/response model, controller endpoint, service method, and Tenant API client delete call.
+- Added Account API DELETE /api/Tenant/{id} endpoint and TenantService.DeleteTenant.
+- Added backend Tenant delete validation for child tenants, identity users, identity roles, user tenant roles, menus, role menu access, and role child tenant scopes before allowing hard delete.
+- Audited Roles frontend and backend datatable flow.
+- Found root cause: Roles frontend had moved to DataTables server-side mode, but Account API/Service still only accepted page/take and did not honor DataTables search/order parameters.
+- Extended Roles Account API and service to accept parameterized search and whitelist-based ordering for tenant name, role name, code, and normalized name.
+- Updated Web Admin RoleApiClient to forward DataTables global search and ordering to the Account API.
+- Updated Roles form mode so Reset is visible only during add and hidden during edit.
+- Fixed a compile blocker caused by a local variable shadowing response inside TenantService.DeleteTenant validation handling.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors after the fix.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Temporary compile blocker found: CS0136 local variable response shadowed another response variable in TenantService.DeleteTenant.
+- Blocker resolved by renaming the validation response variable.
+- Runtime browser/API/database smoke test was not executed in this task.
+
+Need Decision:
+- Confirm whether Tenant delete should remain hard delete for unused tenants, or whether a future soft-delete column/migration should be introduced for tenant records.
+- Confirm whether Tenant delete validation should include additional future business tables when new modules introduce tenant references.
+
+Risk:
+- Tenant delete currently blocks known references but still relies on current schema knowledge; new tenant FK tables must extend the guard.
+- Tenant row actions are post-processed after the existing MappingOnTable helper to avoid a broad helper/architecture change.
+- Running Web Admin and Account API processes must be restarted before updated JS/DLL behavior is visible.
+
+Next Action:
+- Restart Web Admin and Account API, then smoke-test Tenant root delete, Tenant detail delete, used-tenant delete validation, add/edit reset visibility, and Roles datatable search/order/paging against a live database.
+
+ETA:
+2026-06-21
