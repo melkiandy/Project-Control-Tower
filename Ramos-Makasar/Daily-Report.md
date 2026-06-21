@@ -2237,3 +2237,55 @@ Next Action:
 
 ETA:
 2026-06-21
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-21
+
+Current Task:
+Audit Roles child tenant datatable display, Tenant Type frontend delete placement, and Tenant Type backend delete usage validation.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Roles datatable child tenant rendering in Application.Web.Admin/wwwroot/js/pages/roles.js and Application.Web.Admin/Views/Roles/Index.cshtml.
+- Found root cause: child tenant names were rendered as a raw long value, so rows with many child tenants widened the datatable column and reduced readability.
+- Added compact child tenant badge rendering with a maximum visible set, +N overflow indicator, escaped HTML output, and full native tooltip text for the complete child tenant list.
+- Audited Tenant Type frontend flow in Application.Web.Admin/Views/TenantType/Index.cshtml and Application.Web.Admin/wwwroot/js/pages/tenantType.js.
+- Found root cause: the modal Cancel button used status c but there was no real backend delete path; deletion also was not positioned consistently in row actions like Roles.
+- Removed the modal Cancel action and added per-row edit/delete actions in Tenant Type datatable using the existing shared action button styles.
+- Added Tenant Type delete confirmation, antiforgery-aware POST from Web Admin, success/error toast handling, and table refresh after delete.
+- Added Web Admin delete request model, controller endpoint, service method, and Tenant API client delete call.
+- Added Account API DELETE /api/TenantType/{id} endpoint and TenantService.DeleteTenantType with not-found handling, tenant usage validation against cms.tenant.tenant_type_id, guarded delete, cache cleanup, and clear validation error messages.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+
+Need Decision:
+- Confirm whether Tenant Type delete should remain a hard delete for unused rows, or whether a soft delete column should be introduced later through a separate database migration task.
+
+Risk:
+- Existing running Web Admin and Account API processes must be restarted before updated JS/DLL behavior is visible.
+- Tenant Type delete relies on cms.tenant.tenant_type_id as the authoritative usage guard; future modules with new tenant type references should extend the guard.
+- Tenant Type row actions are post-processed after the existing shared MappingOnTable helper to avoid broad architecture changes.
+
+Next Action:
+- Restart Web Admin and Account API, then smoke-test Roles child tenant column with many children and Tenant Type delete for both unused and used tenant types against a live database.
+
+ETA:
+2026-06-21
