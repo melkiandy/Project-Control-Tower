@@ -2136,3 +2136,55 @@ Next Action:
 
 ETA:
 2026-06-20
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-21
+
+Current Task:
+Audit Roles multiple child tenant storage and datatable display, then implement an enterprise-ready small fix without changing the major architecture.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Roles flow across Application.Model.Account, Application.Service.Account, Application.API.Account, Application.Web.Admin, Infrastructure.Data.Account entities, DbContext, and database seeders.
+- Found root cause: previous Roles child tenant implementation used request/model fields and Identity role claims conceptually, but there was no dedicated table for role child tenant scope and create/update did not persist a durable enterprise relation table.
+- Added dedicated cms.role_child_tenant bootstrap seeder for SQL Server and PostgreSQL with role, parent tenant, child tenant, audit fields, foreign keys, indexes, and unique role-child scope.
+- Added RoleChildTenant entity and AppDbContext mapping while preserving the existing Identity role parent tenant architecture.
+- Updated RolesService to validate selected child tenants as active descendants of the selected root tenant, persist selected scopes to cms.role_child_tenant on create/update, clear scopes on role delete, and hydrate child tenant data for list/detail responses.
+- Added child_tenants id/text payload alongside child_tenant_ids and child_tenant_names so the datatable/edit modal can restore selected child tenants with readable names.
+- Updated Roles frontend edit flow to use child_tenants display text with fallback to IDs.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+
+Need Decision:
+- Confirm whether role child tenant scope should be enforced in authorization/access checks in a follow-up, or remain management metadata for now.
+- Confirm whether existing child tenant role claims from older test data need a one-time migration into cms.role_child_tenant.
+
+Risk:
+- Existing environments must run Account API startup/SeederEngine so cms.role_child_tenant is created before Roles create/update uses it.
+- If old role child tenant claims exist, they will no longer be read by the new list/detail hydration unless migrated.
+- Running Account API/Web Admin processes must be restarted before the updated DLL/JS behavior is visible.
+
+Next Action:
+- Restart Account API and Web Admin, let seeders run, then smoke-test Roles list, create, update, delete, parent tenant selection, child tenant selection, and edit restore against a live database.
+- Decide whether to add authorization enforcement and/or old-claim migration for role child tenant scope.
+
+ETA:
+2026-06-21
