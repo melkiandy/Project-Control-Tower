@@ -458,3 +458,54 @@ Next Action:
 
 ETA:
 2026-06-22
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-22
+
+Current Task:
+Audit Hangfire frontend/backend untuk dropdown Time Zone dan Queue, job Logger All Device, auto Job Id, dan penyimpanan logger device ke log.visitor_device_logger.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengubah input Time Zone dan Queue di popup Hangfire Scheduler menjadi dropdown dengan value yang sesuai kebutuhan Hangfire.
+- Mengubah Job Id menjadi auto-generated dari Job Key dan textbox disabled agar user tidak mengisi manual.
+- Menghapus Scheduler Heartbeat dari available scheduler registry dan mengekspos job baru Logger All Device.
+- Menambahkan entity VisitorDeviceLogger dan mapping table log.visitor_device_logger dengan unique index anti-duplikasi log device.
+- Menambahkan contract request/response device getlog dengan body password, cmd, index, from, dan to.
+- Menambahkan DeviceRecognitionService.GetLogs untuk request logger device dengan paging index dan parsing record log.
+- Menambahkan LoggerAllDeviceJob untuk mengambil log dari semua device aktif, mencocokkan EnrollId ke VisitorDevice, dan menyimpan record baru ke log.visitor_device_logger.
+- Menambahkan konfigurasi GetLogCommand=getlog di appsettings.
+- Audit Transaction_Logger seeder: tidak ada seeder khusus Transaction_Logger di source, sehingga tidak ada seeder yang dihapus; service TransactionLog tetap dipertahankan karena dipakai GlobalExceptionMiddleware.
+- Verifikasi compile dengan dotnet build Application_VMS_HM.sln -p:OutDir=.build-check sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- dotnet build normal ke output default gagal karena App.VMS/bin sedang dikunci proses .NET Host dan Visual Studio Debug Adapter, bukan karena error compile.
+
+Need Decision:
+- Konfirmasi strategi range tanggal job Logger All Device: implementasi saat ini mengambil log dari H-1 sampai hari ini pada setiap eksekusi.
+- Konfirmasi deploy database untuk table baru log.visitor_device_logger karena repo tidak memiliki migration existing.
+
+Risk:
+- Jika device mengembalikan format waktu di luar yyyy-MM-dd HH:mm:ss, parser fallback DateTime.Parse akan bergantung pada format yang masih bisa dikenali .NET.
+- Jika table log.visitor_device_logger belum tersedia di database target, job akan gagal saat menyimpan data.
+
+Next Action:
+- Uji manual schedule Logger All Device dari popup Hangfire dan validasi data masuk ke log.visitor_device_logger menggunakan device fisik.
+
+ETA:
+2026-06-22
