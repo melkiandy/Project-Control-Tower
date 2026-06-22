@@ -318,3 +318,52 @@ Next Action:
 
 ETA:
 2026-06-18
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-22
+
+Current Task:
+Membuat konfigurasi scheduler Hangfire dan backend API untuk manage scheduler dengan perubahan kecil yang aman direview.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Menambahkan konfigurasi Hangfire berbasis PostgreSQL storage, dashboard path, worker count, queue, schema, dan default timezone melalui appsettings.
+- Menambahkan DI extension AddRamosHangfire agar setup Hangfire terisolasi dan tidak mengubah arsitektur besar.
+- Menambahkan authorization filter dashboard Hangfire: local request diizinkan, remote request harus authenticated role Admin.
+- Menambahkan backend SchedulerController dengan endpoint GetAvailableJobs, GetRecurringJobs, Save, Trigger, dan Delete.
+- Menambahkan SchedulerService, SchedulerJobRunner, registry job aman, dan SchedulerHeartbeatJob sebagai job default terdaftar.
+- Menambahkan model request/response scheduler dengan validation attribute.
+- Menyambungkan service scheduler ke dependency injection existing.
+- Menghapus dependency Hangfire.SqlServer yang tidak dipakai dan menggantinya dengan Hangfire.AspNetCore + Hangfire.PostgreSql agar selaras dengan PostgreSQL aplikasi.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Tentukan job bisnis VMS yang akan didaftarkan berikutnya ke registry scheduler, misalnya auto-sync visitor/device atau housekeeping log.
+
+Risk:
+- Hangfire PostgreSQL akan membuat schema/table scheduler di database aplikasi; user database perlu permission create schema/table pada environment target.
+- Queue custom yang dikirim dari API harus sesuai konfigurasi worker agar job dieksekusi.
+
+Next Action:
+- Uji endpoint scheduler dengan token admin dan validasi dashboard /hangfire pada environment development.
+- Daftarkan job bisnis pertama setelah business rule dan jadwal disepakati.
+
+ETA:
+2026-06-22
