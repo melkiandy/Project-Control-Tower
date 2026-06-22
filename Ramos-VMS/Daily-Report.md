@@ -413,3 +413,48 @@ Next Action:
 
 ETA:
 2026-06-22
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-22
+
+Current Task:
+Audit Hangfire frontend dan mengubah input Cron Expression menjadi dropdown preset schedule yang luas.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengubah input Cron Expression pada popup Hangfire Scheduler dari text input menjadi dropdown select.
+- Menambahkan preset cron standar untuk high frequency, hourly, daily, business hours, weekly, monthly, quarterly, dan yearly schedule.
+- Menyesuaikan default reset form ke Daily at 08:00 agar pengguna mendapat pilihan awal yang jelas.
+- Menambahkan guard agar recurring job existing dengan cron di luar preset tetap tampil sebagai Existing schedule saat diedit.
+- Mempertahankan payload backend tetap sama pada field cron sehingga tidak mengubah SchedulerController, SchedulerService, atau arsitektur Hangfire.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Dropdown membatasi input baru ke preset yang tersedia; cron custom lama tetap bisa diedit karena ditambahkan otomatis sebagai Existing schedule.
+
+Next Action:
+- Uji manual popup Hangfire Scheduler untuk memastikan pilihan schedule tersimpan dan recurring job existing tetap terbaca benar.
+
+ETA:
+2026-06-22
