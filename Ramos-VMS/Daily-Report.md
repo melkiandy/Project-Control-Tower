@@ -509,3 +509,48 @@ Next Action:
 
 ETA:
 2026-06-22
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-23
+
+Current Task:
+Audit Scheduler Job source code yang tidak terpakai.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur scheduler: SchedulerController, SchedulerService, SchedulerJobRunner, registry IISchedulerJob, dan popup scheduler di home.html.
+- Mengidentifikasi SchedulerHeartbeatJob sebagai source scheduler job tidak terpakai karena sudah tidak diregister di DI dan job aktif hanya LoggerAllDeviceJob.
+- Menghapus class SchedulerHeartbeatJob dari SchedulerJobs.cs.
+- Menghapus filter frontend excludedSchedulerJobKeys untuk scheduler.heartbeat karena job tersebut sudah tidak dikirim backend.
+- Memastikan registry scheduler tetap menggunakan LoggerAllDeviceJob dan flow SchedulerService tidak berubah.
+- Verifikasi compile dengan dotnet build Application_VMS_HM.sln -p:OutDir=.build-check sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- dotnet build normal ke output default gagal karena App.VMS/bin sedang dikunci proses .NET Host dan Visual Studio Debug Adapter, bukan karena error compile.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Jika masih ada recurring job lama dengan jobkey scheduler.heartbeat di storage Hangfire, job tersebut akan tampil sebagai unregistered dan perlu dihapus dari popup scheduler atau dashboard Hangfire.
+
+Next Action:
+- Bersihkan recurring job scheduler.heartbeat lama dari Hangfire dashboard/storage bila masih tersisa di environment development atau production.
+
+ETA:
+2026-06-23
