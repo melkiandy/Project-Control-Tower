@@ -554,3 +554,49 @@ Next Action:
 
 ETA:
 2026-06-23
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-23
+
+Current Task:
+Audit frontend SignalR offline asset dan dashboard device status.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengganti referensi SignalR CDN di home.html menjadi asset lokal /libs/microsoft-signalr/9.0.6/signalr.min.js.
+- Menambahkan vendor asset @microsoft/signalr 9.0.6 ke wwwroot termasuk source map.
+- Menambahkan card Device Status di dashboard.html untuk menampilkan nama device dan status Connected/Disconnected.
+- Menambahkan initDashboardDeviceStatus di home.html untuk mengambil data dari /api/Device/GetAllDevice menggunakan JWT existing.
+- Menambahkan fallback status: gunakan status dari API jika ada, fallback last_sync ada berarti Connected, kosong berarti Disconnected.
+- Verifikasi tidak ada lagi request CDN untuk SignalR.
+- Verifikasi compile dengan dotnet build Application_VMS_HM.sln -p:OutDir=.build-check sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- dotnet build normal ke output default gagal karena App.VMS/bin sedang dikunci proses .NET Host dan Visual Studio Debug Adapter, bukan karena error compile.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- home.html masih memiliki CDN lain untuk DataTables export/jszip/pdfmake; SignalR sudah offline-ready, tetapi full offline mode perlu audit asset CDN lain.
+- Status Connected/Disconnected saat ini mengikuti data GetAllDevice; jika status kosong, last_sync dipakai sebagai fallback.
+
+Next Action:
+- Audit dan lokalkan CDN DataTables export/jszip/pdfmake bila VMS harus benar-benar offline penuh.
+- Uji dashboard dengan data device aktif dan device tanpa last_sync.
+
+ETA:
+2026-06-23
