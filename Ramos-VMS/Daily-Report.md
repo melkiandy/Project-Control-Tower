@@ -367,3 +367,49 @@ Next Action:
 
 ETA:
 2026-06-22
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-22
+
+Current Task:
+Audit Hangfire frontend di home.html, merapikan settings dropdown, dan membuat popup konfigurasi recurring scheduler Hangfire.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Merapikan HTML settings dropdown pada class setting nav-item nav-icon-hover-bg rounded-circle dropdown menjadi action Hangfire Scheduler yang lebih jelas.
+- Menambahkan modal Hangfire Scheduler di home.html dengan input sesuai model backend scheduler: jobid, jobkey, cron, timezoneid, queue, dan enabled.
+- Menambahkan flow frontend untuk load available jobs, load recurring jobs, save/update schedule, trigger job, delete job, reset form, dan refresh list.
+- Menggunakan endpoint scheduler yang sudah tersedia tanpa menambah controller/backend baru dan tanpa perubahan arsitektur besar.
+- Menambahkan handling authorization timeout, toast feedback, konfirmasi delete, escaping HTML pada render table, dan busy state pada tombol save/refresh.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker pada implementasi.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Flow UI bergantung pada endpoint Scheduler yang sudah tersedia dan token user yang valid.
+- Queue custom yang dipilih user tetap harus sesuai konfigurasi worker Hangfire agar job dieksekusi.
+
+Next Action:
+- Uji manual popup Hangfire Scheduler dari settings icon: load job, save schedule, trigger, delete, dan validasi dashboard /hangfire.
+
+ETA:
+2026-06-22
