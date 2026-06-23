@@ -752,3 +752,54 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit frontend dan backend visitor untuk menambahkan kolom status sinkronisasi device pada datatable visitor, ikon 3 warna, dan popup detail status per device.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur visitor: VisitorController, VisitorService, VisitorModel, visitor.html, dan renderer visitor di home.html.
+- Menambahkan field summary sinkronisasi pada VisitorModel: device_sync_status, device_sync_label, success count, total count, dan detail visitor_devices.
+- Menyesuaikan VisitorService.GetAllVisitor dan GetById agar mengirim summary dan detail status device visitor dari relasi VisitorDevice.
+- Menyesuaikan backend agar VisitorDevice.Active mencerminkan hasil sync device: Success jika response device berhasil, Error jika response gagal/exception.
+- Mengubah GetAllVisitor agar visitor inactive karena semua device gagal tetap tampil di datatable sehingga status merah dapat terlihat.
+- Menambahkan kolom Device Status pada datatable visitor.
+- Menambahkan ikon status 3 warna pada frontend: hijau untuk semua device sukses, kuning untuk sebagian device gagal, merah untuk semua device gagal/tidak ada sync sukses.
+- Menambahkan klik ikon status untuk membuka popup Device Sync Status memakai modal existing dan menampilkan list device beserta status/message visitor pada tiap device.
+- Menjaga arsitektur tetap kecil: tidak menambah controller baru, tidak membuat page baru, dan memakai modal/status renderer existing.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibatasi pada VisitorModel, VisitorService, visitor.html, dan renderer visitor di home.html tanpa merevert perubahan lain.
+
+Need Decision:
+- Konfirmasi apakah visitor inactive karena semua device gagal boleh tetap memiliki tombol Edit/Cancel di datatable, atau perlu pembatasan action khusus.
+
+Risk:
+- Status historis hanya dapat dihitung dari relasi VisitorDevice.Active dan EnrollId; data lama yang belum punya relasi/enroll lengkap dapat tampil merah sampai visitor disinkron ulang.
+- Popup status menampilkan message persisted generik untuk data list; message response device tetap tampil detail pada queue proses save/update saat request berlangsung.
+
+Next Action:
+- Uji manual datatable visitor dengan 3 skenario: semua device sukses, sebagian device gagal, dan semua device gagal, lalu klik ikon status untuk validasi popup detail.
+
+ETA:
+2026-06-24
