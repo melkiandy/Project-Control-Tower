@@ -7,6 +7,53 @@ Project:
 KCI Web App
 
 Date:
+2026-06-23
+
+Current Task:
+Audit and refine GenerateQR print label layout so Machine Number appears to the right of HU Number without broad architecture changes.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed solution structure, GenerateQR Razor partial, inline print-template CSS, existing local git state, and relevant label markup before editing.
+- Updated only `web_app/Views/GenerateQR/_IndexPartial.cshtml` CSS for `.label-body-pallete` and `.label-body-machine`.
+- Kept existing HTML structure intact during this update and used a small CSS-only layout adjustment.
+- Made HU Number and Machine Number render side-by-side using inline-flex panels, proportional widths, consistent border/padding, aligned titles, and stable print-friendly height.
+- Cleaned the affected selector block so label text styling is scoped correctly and easier to review.
+- Verified `dotnet build web_app_solution.sln`: Build succeeded with 0 errors.
+
+Issue / Blocker:
+- No active blocker.
+- Build still reports 109 existing warnings, mainly nullability/reference warnings in infrastructure services and models.
+- Working tree also contained pre-existing local changes in `web_app.Infrastructure/Services/ProductionConfirmation/ProductionConfirmationService.cs`; this task did not modify that file.
+
+Need Decision:
+- None.
+
+Risk:
+- Low. Change is limited to print-template CSS in one Razor partial and does not affect controllers, services, database, routing, or business logic.
+
+Next Action:
+- Validate print preview output with real GenerateQR data to confirm the HU Number and Machine Number panels are visually balanced on A4 print.
+
+ETA:
+2026-06-23
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos KCI
+
+Project:
+KCI Web App
+
+Date:
 2026-06-12
 
 Current Task:
