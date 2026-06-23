@@ -650,3 +650,54 @@ Next Action:
 
 ETA:
 2026-06-23
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-23
+
+Current Task:
+Implementasi backend Device id_autoincrement sebagai sumber EnrollId VisitorDevice saat add visitor dan update counter device dalam transaksi add visitor.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami struktur solution sebelum implementasi: App.Domain menyimpan entity, App.Infrastructure menyimpan AppDbContext/service/model, dan App.VMS sebagai host/controller.
+- Menambahkan property Device.IdAutoincrement dengan default 1 dan mapping EF ke kolom crm.Device.id_autoincrement.
+- Menetapkan nilai awal IdAutoincrement=1 saat create device agar device baru siap menjadi sumber counter enroll visitor.
+- Mengubah DeviceRecognitionService.SaveVisitor agar menerima enrollId dari service caller, bukan mengambil enroll id dari endpoint device.
+- Mengubah VisitorService.Create agar saat add visitor mengambil value id_autoincrement dari Device sebagai VisitorDevice.EnrollId, lalu menaikkan id_autoincrement device pada transaksi yang sama.
+- Menambahkan row lock PostgreSQL FOR UPDATE saat alokasi counter device untuk mengurangi risiko duplicate EnrollId pada add visitor paralel.
+- Menyesuaikan VisitorService.Update agar visitor-device lama tetap memakai EnrollId existing, dan hanya mengalokasikan counter baru jika relasi aktif belum memiliki EnrollId.
+- Menjaga arsitektur tetap sama: tidak menambah layer baru, tidak mengubah controller/frontend, dan perubahan dibatasi pada entity, mapping, device service, visitor service, dan device recognition service.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibuat terbatas dan tidak merevert perubahan tersebut.
+
+Need Decision:
+- Konfirmasi deploy schema database untuk menambahkan kolom integer crm.Device.id_autoincrement dengan default awal 1 pada database existing.
+- Konfirmasi strategi backfill device existing jika data Visitor_Device.EnrollId lama harus menjadi dasar nilai counter berikutnya, misalnya MAX(EnrollId)+1 per device.
+
+Risk:
+- Jika kolom crm.Device.id_autoincrement belum tersedia di database target, operasi device/visitor yang membaca entity Device akan gagal saat runtime.
+- Counter device diupdate saat enroll id dialokasikan pada add visitor; jika sinkronisasi fisik device gagal, EnrollId lokal tetap sudah dialokasikan agar tidak dipakai ulang.
+
+Next Action:
+- Deploy perubahan schema database, lalu uji manual add visitor pada device online/offline untuk memastikan VisitorDevice.EnrollId terisi dari Device.id_autoincrement dan counter device naik.
+
+ETA:
+2026-06-23
