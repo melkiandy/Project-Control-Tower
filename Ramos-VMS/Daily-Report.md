@@ -900,3 +900,52 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit frontend/backend visitor untuk menambahkan tombol Sync pada popup Device Status agar visitor existing dapat dikirim ulang ke semua device.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow popup Device Status visitor di visitor.html dan home.html serta flow backend VisitorController/VisitorService.
+- Menambahkan tombol Sync di modal Device Sync Queue, ditempatkan sebelum tombol Close dan hanya ditampilkan saat popup dibuka dari ikon Device Status.
+- Menambahkan endpoint POST /api/Visitor/Sync pada VisitorController untuk sinkronisasi visitor existing.
+- Endpoint Sync mengambil data visitor existing, membaca face image existing dari webroot, lalu memanggil service sync backend.
+- Menambahkan method IIVisitorService.Sync/VisitorService.Sync untuk add/update data visitor ke semua device aktif tanpa mengubah data master visitor.
+- Flow Sync memakai proses device existing: membuat/melengkapi relasi VisitorDevice, mengalokasikan EnrollId jika belum ada, memanggil DeviceRecognitionService.SaveVisitor, dan mengembalikan status per device.
+- Frontend tombol Sync memanggil endpoint Sync, menampilkan status Pending saat proses berjalan, mengupdate status per device dari response, menampilkan toast, dan refresh datatable visitor.
+- Menjaga arsitektur tetap kecil: tidak membuat modal baru, tidak membuat controller baru, dan memakai queue/status renderer existing.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibatasi pada VisitorController, VisitorService, visitor.html, dan home.html tanpa merevert perubahan lain.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Sync visitor existing bergantung pada file face yang tersimpan di path Visitor.Face; jika file face hilang, status device akan Error dengan message face image kosong/gagal diproses.
+
+Next Action:
+- Uji manual klik ikon Device Status, tekan Sync, dan validasi semua device aktif menerima data visitor serta popup memperbarui status per device.
+
+ETA:
+2026-06-24
