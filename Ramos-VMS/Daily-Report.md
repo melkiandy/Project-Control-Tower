@@ -803,3 +803,52 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit frontend visitor dan memperbaiki popup kolom Device Status agar semua device aktif terlihat untuk setiap visitor.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow Device Status visitor: datatable visitor di home.html memakai data visitor_devices dari backend VisitorService.GetAllVisitor/GetById.
+- Mengidentifikasi penyebab popup belum menampilkan semua device: backend hanya membangun detail dari relasi VisitorDevice yang sudah ada pada visitor.
+- Menambahkan baseline daftar device aktif pada VisitorService.GetAllVisitor dan GetById.
+- Mengubah MapVisitorModel dan BuildVisitorDeviceProcesses agar popup selalu memuat semua device aktif.
+- Memberi status Error dan message Visitor has not been synced to this device untuk device aktif yang belum memiliki relasi VisitorDevice pada visitor tersebut.
+- Menjaga frontend tetap kecil karena renderer popup existing sudah dapat menampilkan list device dari visitor_devices.
+- Menjalankan dotnet build normal; compile lolos tetapi copy output gagal karena DLL App.Infrastructure di App.VMS/bin sedang dikunci Visual Studio Debug Adapter/.NET Host.
+- Verifikasi compile menggunakan dotnet build -p:OutDir=.build-check dengan hasil sukses, 0 warning, 0 error, lalu membersihkan folder .build-check.
+
+Issue / Blocker:
+- dotnet build normal ke output default gagal karena file App.VMS/bin/Debug/net9.0/App.Infrastructure.dll sedang dikunci proses Visual Studio Debug Adapter for .NET dan .NET Host, bukan karena error compile.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibatasi pada VisitorService tanpa merevert perubahan lain.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Device inactive/deleted tidak ditampilkan pada popup karena baseline sengaja memakai device aktif sesuai kebutuhan operasional saat ini.
+- Visitor lama yang belum pernah disinkron ke device aktif baru akan menampilkan device tersebut sebagai Error sampai visitor disinkron ulang.
+
+Next Action:
+- Uji manual klik ikon Device Status pada visitor lama dan visitor baru untuk memastikan semua device aktif muncul di popup dengan status yang sesuai.
+
+ETA:
+2026-06-24
