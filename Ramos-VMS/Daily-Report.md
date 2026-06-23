@@ -852,3 +852,51 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit dan perbaikan backend scheduler Logger All Device untuk error DateTime Kind=Unspecified saat write/query PostgreSQL timestamp with time zone.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow scheduler Logger All Device: SchedulerJobs.LoggerAllDeviceJob mengambil log dari DeviceRecognitionService.GetLogs lalu menyimpan ke log.visitor_device_logger.
+- Mengidentifikasi root cause: ParseDeviceLogTime menghasilkan DateTime non-UTC dari response device dan range query fromDate/toDate dari DateOnly.ToDateTime juga Kind=Unspecified.
+- Menyesuaikan DeviceRecognitionService.ParseDeviceLogTime agar semua waktu log device diparse sebagai local time dan dikonversi ke UTC sebelum masuk model DeviceLogItemModel.
+- Menambahkan helper EnsureUtc sebagai guard agar DateTime Local/Unspecified selalu dinormalisasi ke UTC.
+- Menyesuaikan SchedulerJobs.SyncDeviceLogs agar parameter range query LogTime memakai UTC melalui helper ToUtcDateTime.
+- Mempertahankan arsitektur existing: tidak mengubah entity, controller, table, scheduler registry, atau flow job besar.
+- Menjalankan dotnet build normal; compile lolos tetapi copy output gagal karena DLL App.Infrastructure di App.VMS/bin sedang dikunci Visual Studio Debug Adapter/.NET Host.
+- Verifikasi compile menggunakan dotnet build -p:OutDir=.build-check dengan hasil sukses, 0 warning, 0 error, lalu membersihkan folder .build-check.
+
+Issue / Blocker:
+- dotnet build normal ke output default gagal karena file App.VMS/bin/Debug/net9.0/App.Infrastructure.dll sedang dikunci proses Visual Studio Debug Adapter for .NET dan .NET Host, bukan karena error compile.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibatasi pada DeviceRecognitionService dan SchedulerJobs tanpa merevert perubahan lain.
+
+Need Decision:
+- Konfirmasi asumsi timezone device log: implementasi menganggap timestamp device tanpa offset sebagai waktu lokal server aplikasi, lalu dikonversi ke UTC untuk PostgreSQL timestamptz.
+
+Risk:
+- Jika timezone device fisik berbeda dari timezone server aplikasi, waktu log tersimpan dapat bergeser sesuai perbedaan timezone tersebut.
+
+Next Action:
+- Jalankan ulang job Logger All Device dan validasi data baru masuk ke log.visitor_device_logger tanpa error DateTime Kind=Unspecified.
+
+ETA:
+2026-06-24
