@@ -701,3 +701,54 @@ Next Action:
 
 ETA:
 2026-06-23
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit dan implementasi backend visitor agar add visitor membaca response pendaftaran dari setiap device, menampilkan status berdasarkan response, dan menyimpan visitor dengan status false bila semua device gagal.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur solution: entity di App.Domain, DbContext/service/model di App.Infrastructure, dan frontend queue existing di App.VMS/home.html.
+- Memastikan frontend Device Sync Queue sudah memakai data backend VisitorDeviceProcessModel status dan message, sehingga perubahan cukup di backend tanpa menambah arsitektur atau UI baru.
+- Menambahkan DeviceCommandResponse untuk membaca response JSON umum dari device saat command setuserinfo.
+- Mengubah DeviceRecognitionService.SaveVisitor agar mengembalikan response device, bukan hanya validasi HTTP status code.
+- Mengubah VisitorService.Create agar status per device ditentukan dari response.Result dan message response device.
+- Menjaga flow partial success: jika minimal satu device berhasil, visitor tetap tersimpan aktif dan queue menampilkan Success/Error per device.
+- Menambahkan flow all failed: jika tidak ada device yang berhasil, visitor tetap tersimpan ke database tetapi Visitor.Active=false dan relasi VisitorDevice.Active=false.
+- Menyesuaikan VisitorService.Update agar queue update visitor juga memakai response device untuk status dan message.
+- Menjalankan dotnet build normal; compile berhasil sampai tahap copy output, tetapi gagal karena DLL App.Infrastructure di App.VMS/bin sedang dikunci Visual Studio Debug Adapter/.NET Host.
+- Verifikasi compile menggunakan dotnet build -p:OutDir=.build-check dengan hasil sukses, 0 warning, 0 error, lalu membersihkan folder .build-check.
+
+Issue / Blocker:
+- dotnet build normal ke output default gagal karena file App.VMS/bin/Debug/net9.0/App.Infrastructure.dll sedang dikunci proses Visual Studio Debug Adapter for .NET dan .NET Host, bukan karena error compile.
+- Repo aplikasi sudah memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibatasi pada backend visitor/device response dan tidak merevert perubahan tersebut.
+
+Need Decision:
+- Konfirmasi apakah visitor dengan Active=false karena semua device gagal tetap perlu ditampilkan di list UI atau cukup tersimpan untuk audit/database.
+
+Risk:
+- Jika device mengembalikan response setuserinfo tanpa field result boolean, backend akan membaca Result=false dan menampilkan status Error berdasarkan fallback/message response.
+- Jika semua device gagal, visitor tersimpan inactive sehingga tidak tampil pada query list existing yang memfilter Active=true.
+
+Next Action:
+- Uji manual add visitor dengan dua device: satu sukses satu gagal, lalu semua gagal, untuk memastikan status queue dan nilai Active di database sesuai business rule.
+
+ETA:
+2026-06-24
