@@ -949,3 +949,54 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit frontend/backend visitor untuk menambahkan upload foto JPEG maksimal 150 KB pada proses add dan update visitor.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow foto visitor dari form visitor.html, pengolahan data di home.html, endpoint VisitorController.Save, penyimpanan file webroot, dan pengiriman Base64 ke device melalui VisitorService.
+- Menambahkan tombol Upload JPEG tepat di bawah frame preview foto pada form add/update visitor tanpa mengubah flow kamera existing.
+- Membatasi file picker frontend pada ekstensi .jpg/.jpeg dan MIME image/jpeg.
+- Menambahkan validasi ukuran frontend maksimal 150 KB serta pesan error dan toast yang jelas saat file tidak sesuai.
+- Menampilkan preview foto upload dan menggunakan hidden face_image existing sehingga kontrak request dan arsitektur service tidak berubah.
+- Menyesuaikan capture kamera agar menghasilkan JPEG, membatasi dimensi, dan mengompresi hasil hingga maksimal 150 KB supaya konsisten dengan kontrak backend baru.
+- Menambahkan validasi backend pada VisitorController untuk memastikan data URL bertipe image/jpeg, Base64 valid, ukuran hasil decode maksimal 150 KB, dan signature file JPEG valid sebelum file ditulis.
+- Mengembalikan HTTP 400 dengan pesan validasi yang jelas untuk foto invalid, bukan membiarkannya menjadi error server.
+- Mempertahankan kompatibilitas update visitor tanpa foto baru: file face existing tetap digunakan seperti flow sebelumnya.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task ini dibatasi pada visitor.html, home.html, dan VisitorController tanpa merevert perubahan lain.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Validasi ukuran 150 KB berlaku untuk setiap foto baru dari upload maupun kamera; foto existing tidak diubah selama user tidak memilih atau mengambil foto baru.
+- Validasi signature memeriksa struktur awal/akhir JPEG untuk menolak file non-JPEG yang hanya mengganti ekstensi atau MIME.
+
+Next Action:
+- Uji manual add dan update visitor dengan JPEG di bawah 150 KB, file di atas 150 KB, file non-JPEG, serta update tanpa mengganti foto.
+
+ETA:
+2026-06-24
