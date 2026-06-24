@@ -1054,3 +1054,54 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit backend Device Recognition agar payload save visitor ke device mengirim starttime dan endtime mengikuti schedule frontend visitor.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow save visitor: frontend visitor membentuk schedule, VisitorService menyimpan Start_Date/End_Date, lalu DeviceRecognitionService membentuk DeviceVisitorRequest untuk command setuserinfo.
+- Mengidentifikasi bahwa DeviceVisitorRequest sudah memiliki properti StartTime dan EndTime dengan JSON field starttime/endtime, tetapi keduanya belum dipopulasi pada SaveVisitor.
+- Menambahkan mapping Visitor.Start_Date ke DeviceVisitorRequest.StartTime dan Visitor.End_Date ke DeviceVisitorRequest.EndTime.
+- Menambahkan formatter terpusat dengan format device yyyy-MM-dd HH:mm:ss dan CultureInfo.InvariantCulture.
+- Menormalisasi waktu UTC dari database ke local time server/device sebelum dikirim agar selaras dengan waktu yang dipilih dan ditampilkan frontend.
+- Mempertahankan flow Permanent: schedule nullable dikirim sebagai string kosong pada starttime/endtime.
+- Memastikan create visitor, update visitor, dan manual sync otomatis memakai mapping yang sama melalui method DeviceRecognitionService.SaveVisitor existing.
+- Menjaga arsitektur tetap kecil: tidak mengubah interface service, controller, VisitorService, frontend, atau model request yang sudah menyediakan field.
+- Build normal berhasil compile tetapi gagal pada copy output karena App.VMS/bin App.Infrastructure.dll dikunci Visual Studio Debug Adapter dan .NET Host.
+- Verifikasi compile menggunakan output terpisah berhasil dengan 0 warning dan 0 error, lalu folder build sementara dibersihkan.
+
+Issue / Blocker:
+- Output build normal sedang dikunci proses debug aktif; tidak ada error compile pada perubahan kode.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibatasi pada DeviceRecognitionService tanpa merevert pekerjaan tersebut.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Konversi UTC ke local time mengikuti timezone server aplikasi; environment target perlu memakai timezone yang sama dengan device agar jam akses tepat.
+- Device Permanent tetap menerima starttime/endtime kosong sesuai schedule optional.
+
+Next Action:
+- Uji add/update/sync visitor Temporary pada device fisik dan validasi payload starttime/endtime serta pembatasan akses sesuai durasi.
+
+ETA:
+2026-06-24
