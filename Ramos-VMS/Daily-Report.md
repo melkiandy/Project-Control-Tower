@@ -1000,3 +1000,57 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-24
+
+Current Task:
+Audit frontend/backend visitor untuk menambahkan pilihan Temporary/Permanent, durasi 1-8 jam, serta start date dan end date otomatis.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur Visitor: entity dan DbContext di App.Domain/App.Infrastructure, model dan service di App.Infrastructure, serta form/controller JavaScript di App.VMS.
+- Menambahkan dropdown Visit Type dengan pilihan Permanent dan Temporary pada form add/update visitor.
+- Menambahkan dropdown durasi 1 sampai 8 jam yang hanya aktif dan wajib saat Visit Type Temporary dipilih.
+- Menambahkan input Start Date dan End Date bertipe datetime-local yang readonly dan optional untuk Permanent.
+- Menambahkan flow frontend agar pemilihan durasi Temporary mengisi Start Date dari current datetime dan End Date dari Start Date ditambah durasi.
+- Menambahkan validasi frontend agar Temporary tidak dapat disimpan tanpa durasi dan schedule yang lengkap.
+- Menambahkan field visit_type, duration_hours, start_date, dan end_date pada VisitorModel serta mapping data edit/list.
+- Menambahkan field persistence Visit_Type, Duration_Hours, Start_Date, dan End_Date pada entity Visitor dan konfigurasi EF Core.
+- Menambahkan validasi backend untuk tipe visitor dan durasi 1-8 jam; backend menetapkan waktu UTC sebagai sumber kebenaran dan mempertahankan schedule existing jika tipe/durasi tidak berubah saat update.
+- Menambahkan migration PostgreSQL idempotent 202606240001_AddVisitorVisitSchedule agar kolom schedule dapat ditambahkan aman pada database existing maupun schema yang sudah memiliki kolom.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+- Memeriksa inline JavaScript home.html dengan Node.js dan memastikan tidak ada syntax error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Perintah dotnet ef migrations list tidak dapat menulis file EntityFrameworkCore.targets karena ACL folder obj, tetapi migration berhasil terkompilasi dan migration ID terverifikasi berada di assembly.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibuat terbatas tanpa merevert pekerjaan tersebut.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Deployment membutuhkan permission ALTER TABLE pada schema crm saat Database.Migrate menjalankan migration baru.
+- Start Date dan End Date Temporary disimpan dalam UTC oleh backend; frontend menampilkan kembali dalam local time browser.
+
+Next Action:
+- Uji manual add/update Permanent dan Temporary untuk durasi 1 serta 8 jam, lalu validasi nilai Visit_Type, Duration_Hours, Start_Date, dan End_Date pada database.
+
+ETA:
+2026-06-24
