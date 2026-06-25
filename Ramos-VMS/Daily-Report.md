@@ -1105,3 +1105,58 @@ Next Action:
 
 ETA:
 2026-06-24
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-25
+
+Current Task:
+Audit backend scheduler Logger All Device untuk membaca photourl dari endpoint getlog, mengambil foto melalui IP device, mengompresi foto maksimal 150 KB, dan menyimpannya ke log.visitor_device_logger.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow Logger All Device dari Hangfire job, DeviceRecognitionService.GetLogs, model response getlog, entity VisitorDeviceLogger, dan mapping AppDbContext.
+- Menambahkan mapping JSON photourl pada record response getlog dan meneruskannya ke DeviceLogItemModel.
+- Menambahkan HTTP GET pada CommonHttpClient untuk mengambil file foto secara streaming dengan timeout request device existing.
+- Membangun URL foto dari scheme dan IP/port device serta path photourl; host absolut dari response tidak dipercaya agar request tetap menuju device yang sedang diproses.
+- Menambahkan batas download source 10 MB untuk mencegah payload foto berlebihan masuk ke memory.
+- Menormalisasi semua foto logger menjadi JPEG, membuang metadata, membatasi dimensi awal maksimal 1280 px, dan melakukan penurunan quality serta dimensi bertahap sampai ukuran maksimal 150 KB.
+- Menambahkan kolom Photo bertipe byte[] pada entity VisitorDeviceLogger yang dipetakan PostgreSQL sebagai bytea.
+- Menambahkan migration idempotent 202606250001_AddVisitorDeviceLoggerPhoto untuk kolom nullable Photo pada log.visitor_device_logger.
+- Menyesuaikan LoggerAllDeviceJob agar hanya mengunduh foto untuk log baru dengan PhotoUrl tidak kosong dan menyimpan byte foto terkompresi bersama record logger.
+- Menjaga ketahanan job: kegagalan download/proses satu foto dicatat sebagai warning dan record logger tetap tersimpan tanpa menggagalkan device atau record lainnya.
+- Menambahkan dependency SixLabors.ImageSharp 3.1.11 untuk image processing managed dan lintas platform.
+- Menjalankan dotnet build Application_VMS_HM.sln dua kali dengan hasil sukses, 0 warning, dan 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki file foto visitor untracked sebelum task dimulai; file tersebut tidak diubah atau dihapus.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Foto yang gagal diunduh, invalid, atau tidak dapat dikompresi ke bawah 150 KB akan menghasilkan record logger dengan Photo null dan warning pada application log.
+- Deployment membutuhkan permission ALTER TABLE pada schema log saat Database.Migrate menjalankan migration baru.
+- Timeout foto mengikuti VisitorDeviceRequestTimeoutSeconds existing; device yang lambat dapat menghasilkan Photo null walaupun record log tetap tersimpan.
+
+Next Action:
+- Jalankan job Logger All Device terhadap device fisik yang mengembalikan photourl dan validasi kolom Photo berisi JPEG bytea dengan ukuran maksimal 153600 byte.
+- Pantau warning download foto untuk memastikan path dan response file pada seluruh tipe device konsisten.
+
+ETA:
+2026-06-25
