@@ -7,6 +7,77 @@ Project:
 KCI Web App
 
 Date:
+2026-06-25
+
+Current Task:
+Audit frontend and backend GenerateQR for bulk opening-balance upload from legacy production orders, and define a proposed Excel/CSV template without adding application code.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Pulled the latest `main` branch of Project-Control-Tower before preparing this report.
+- Reviewed the KCI solution structure and traced GenerateQR across Razor view, page JavaScript, controller, service/model layer, SAP Service Layer clients, database seeders, document/batch/HU sequences, handling-unit history, and recent runtime logs.
+- Confirmed the current frontend flow: select Document Type `2` (Production Order), search a released SAP production order, derive machine/item/description and HU count, preview batch/HU numbers, submit header plus one detail row per HU, then print QR labels.
+- Confirmed the current backend flow: validate header/detail count, generate document number, generate/reuse batch for the current day, allocate HU numbers, insert `trx.generateqr` and `trx.generateqr_handlingunitorder`, reload saved data, and create `trx.handlingunithistory` receipt records.
+- Confirmed legacy/opening-balance production orders cannot reliably use the current search flow because it only lists SAP orders with `ProductionOrderStatus = boposReleased`, order type `ZP03`, and open production UDF status.
+- Confirmed direct lookup by production-order document number does not apply the released-status filter, so a dedicated import-validation path can still validate old/closed SAP production orders without changing their SAP status.
+- Identified that GenerateHandlingUnit limits quantity against SAP planned quantity minus quantities already stored in active GenerateQR records. This is suitable for normal operation but can reject opening-balance stock that represents historical production already completed in SAP.
+- Identified that the UI HU grid is read-only. Quantity distribution is calculated from SAP planned quantity and item BPP, so the existing frontend cannot represent arbitrary legacy per-pallet quantities without an import-specific staging/preview step.
+- Identified that preview values are not authoritative: Save regenerates document, batch, and HU numbers. Import must therefore reserve sequences only during final commit, not during file preview.
+- Identified a historical runtime failure caused by raw SQL string construction when a production description contained an apostrophe. Bulk import must use parameterized/bulk database operations and must not reuse interpolated SQL construction.
+- Identified scalability and integrity risks for large opening balances: one HU sequence update per row, a large `UNION ALL` insert statement, no uniqueness constraint on HU number, no explicit duplicate-file/idempotency key, and HU history being written after the GenerateQR transaction in separate calls.
+- Defined the recommended import flow: upload -> parse -> normalize -> validate every row -> group by `ImportGroupKey` -> preview errors and calculated totals -> explicit commit -> reserve document/batch/HU sequences -> atomic header/detail/history write -> return generated numbers -> reuse existing GenerateQR label preview/print rendering.
+- Defined the recommended flat Excel/CSV format as one row per HU. Rows sharing the same `ImportGroupKey` become one GenerateQR header.
+- Proposed required columns: `ImportGroupKey`, `ProductionOrderNumber`, `ProductionDate`, `ShiftCode`, `GroupCode`, `MachineNumber`, `ProductionItemNumber`, `ProductionDescription`, `WarehouseCode`, `BinCode`, `Quantity`.
+- Proposed optional audit columns: `LegacyReference`, `LegacyBatchNumber`, and `Notes`. `LegacyBatchNumber` must remain informational until the batch-number policy is decided.
+- Proposed CSV example:
+
+```csv
+ImportGroupKey,ProductionOrderNumber,ProductionDate,ShiftCode,GroupCode,MachineNumber,ProductionItemNumber,ProductionDescription,WarehouseCode,BinCode,Quantity,LegacyReference,LegacyBatchNumber,Notes
+OB-26000004-01,26000004,2025-12-31,1,4,11,12033151,30ML EAGLIN PHARM FLAT DF4B 00 LA00,3000,,12800,COUNT-2025-001,LEGACY-BATCH-001,Full pallet
+OB-26000004-01,26000004,2025-12-31,1,4,11,12033151,30ML EAGLIN PHARM FLAT DF4B 00 LA00,3000,,12800,COUNT-2025-002,LEGACY-BATCH-001,Full pallet
+OB-26000004-01,26000004,2025-12-31,1,4,11,12033151,30ML EAGLIN PHARM FLAT DF4B 00 LA00,3000,,6400,COUNT-2025-003,LEGACY-BATCH-001,Partial pallet
+```
+
+- Defined core validations: required values, date and numeric formats, allowed shift/group, positive quantity, consistent header fields inside one group, SAP PO existence, PO item/machine/warehouse reconciliation, item-master existence, duplicate rows, duplicate import group, duplicate legacy reference, optional quantity reconciliation, and generated HU uniqueness.
+- Kept the KCI application working tree unchanged; no frontend, backend, database, or configuration code was added or modified.
+
+Issue / Blocker:
+- No technical blocker for the audit.
+- Implementation should not begin until the business rules below are decided because they change data identity and stock-history behavior.
+
+Need Decision:
+- Batch policy: generate a new current-date batch exactly like GenerateQR today, derive a batch from the historical production date, or preserve `LegacyBatchNumber`.
+- HU policy: always generate new HU numbers, or preserve existing legacy HU numbers when labels already exist.
+- Quantity policy: validate total import quantity against SAP planned/completed quantity, allow an authorized opening-balance override, or use a separate approved stock-count reference as the source of truth.
+- Location policy: derive warehouse from the SAP production order with blank bin like the current flow, or require actual opening-balance warehouse/bin per HU.
+- Posting scope: import only creates local GenerateQR/HU/history records, or it must also trigger/represent an SAP inventory transaction.
+
+Risk:
+- High if import directly reuses the current Save method: historical orders may be rejected, generated batch dates may not represent legacy stock, large files may be slow, apostrophes can break interpolated SQL, and partial processing can leave sequence gaps or GenerateQR records without complete HU history.
+- Medium after introducing staged validation, idempotency, parameterized bulk writes, sequence reservation, and one atomic commit.
+
+Next Action:
+- Confirm the five business decisions, then prepare a technical implementation plan for an upload button and validation preview in GenerateQR, an import endpoint/service, staged row results, atomic bulk persistence, downloadable error file, and regression tests. No implementation has been made in this audit.
+
+ETA:
+2026-06-25
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos KCI
+
+Project:
+KCI Web App
+
+Date:
 2026-06-23
 
 Current Task:
