@@ -2455,3 +2455,59 @@ Next Action:
 
 ETA:
 2026-06-25
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-25
+
+Current Task:
+Audit Tenant Type and Roles server-side DataTables, hide non-searchable columns, and repair backend column search behavior.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Tenant Type and Roles DataTables from frontend column/footer configuration through Web Admin controllers/services/API clients to Account API SQL queries.
+- Found Tenant Type root causes: Icon still received a footer textbox because the shared table mapper did not honor search metadata, column filters were not forwarded to Account API, and recordsTotal used the current page count instead of the filtered backend total.
+- Removed footer search controls from non-searchable Tenant Type columns, including Icon, using the existing TableVisible search metadata after table initialization.
+- Added Tenant Type per-column server-side filtering for Name and Description.
+- Added TenantTypePagedModel contracts so Tenant Type server-side DataTable receives filtered items and the correct total count.
+- Updated Tenant Type Web Admin controller/service/API client and Account API/service query flow to forward and apply parameterized Name and Description filters for SQL Server and PostgreSQL.
+- Confirmed Roles already used server-side DataTables and completed the implementation with explicit footer search inputs only for Tenant, Role Name, and Code.
+- Hid Roles Normalized column and marked it non-searchable/non-orderable in frontend configuration and table metadata.
+- Removed NormalizedName from Roles backend global search and order whitelist.
+- Added parameterized Roles per-column filters for Tenant, Role Name, and Code across Web Admin API forwarding and Account API SQL count/list queries.
+- Kept Roles child tenant display non-searchable to match the requested searchable-column scope.
+- Verified JavaScript syntax for tenantType.js and roles.js.
+- Verified dotnet build Application.sln --no-restore succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+- The Application worktree contains earlier uncommitted Tenant, Tenant Type, Roles, menu, authentication, and seeder work; those changes were preserved.
+
+Need Decision:
+- Confirm whether Tenant Type Code should remain hidden in the datatable or be exposed as a searchable visible column in a future UI change.
+
+Risk:
+- Running Account API and Web Admin processes must be restarted before the updated JavaScript and backend assemblies are visible.
+- Search behavior was verified through static request/query audit, compilation, and tests, but live database collation and browser rendering should still be smoke-tested.
+
+Next Action:
+- Restart Account API and Web Admin, then smoke-test Tenant Type Name/Description filters, absence of the Icon search textbox, Roles Tenant/Role Name/Code filters, hidden Normalized column, paging, and ordering against a live database.
+
+ETA:
+2026-06-25
