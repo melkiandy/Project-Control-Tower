@@ -2397,3 +2397,61 @@ Next Action:
 
 ETA:
 2026-06-21
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-25
+
+Current Task:
+Audit Tenant frontend/backend and implement tenant group management with create/delete group and insert/remove top-level tenant membership.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited the existing Tenant hierarchy flow across Application.Web.Admin, Application.API.Account, Application.Service.Account, Application.Model.Account, and Infrastructure.Data.Account.
+- Preserved the existing tenant parent-child architecture by modeling tenant groups as a separate aggregate instead of changing parent_tenant_id or hierarchy_path.
+- Added a Tenant page Group button and responsive Tenant Groups popup.
+- Added group creation with required/max-length validation, duplicate-name validation, empty-state handling, and delete confirmation.
+- Added per-group Insert Tenant flow using Select2, restricted to tenants with no parent/top-level tenants, and excluded tenants already present in the selected group.
+- Added per-member Remove Tenant action with confirmation and group list refresh.
+- Added Account API and Web Admin contracts for listing groups, listing available top-level tenants, creating/deleting groups, and adding/removing memberships.
+- Added backend validation so child tenants cannot be inserted into a tenant group and duplicate membership is rejected.
+- Extended Tenant hard-delete validation so a tenant cannot be deleted while it belongs to a tenant group.
+- Added idempotent SQL Server/PostgreSQL TenantGroupSeeder for cms.tenant_group and cms.tenant_group_member with audit fields, foreign keys, indexes, unique group membership, and cascading membership cleanup when a group is deleted.
+- Verified JavaScript syntax using node --check Application.Web.Admin/wwwroot/js/pages/tenant.js.
+- Verified dotnet build Application.sln --no-restore succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+- The Application worktree already contained uncommitted Tenant, Tenant Type, Roles, menu, authentication, and seeder changes; those changes were preserved and not reverted.
+
+Need Decision:
+- Confirm whether a top-level tenant may intentionally belong to multiple tenant groups; the current many-to-many model allows membership in more than one group while preventing duplicates inside the same group.
+- Confirm whether tenant group names and labels should remain English or be localized to Indonesian.
+
+Risk:
+- Existing environments must run Account API startup/SeederEngine so cms.tenant_group and cms.tenant_group_member are created before the new endpoints are used.
+- Running Account API and Web Admin processes must be restarted before the new DLL/JavaScript behavior is visible.
+- Future tenant-reference tables must be included in the hard-delete usage guard when introduced.
+
+Next Action:
+- Restart Account API and Web Admin, allow seeders to run, then smoke-test create/delete group, insert/remove root tenant, duplicate membership validation, child-tenant rejection, and used-tenant delete protection against a live database.
+- Confirm the intended cross-group membership rule and localization preference.
+
+ETA:
+2026-06-25
