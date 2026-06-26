@@ -4,6 +4,59 @@ Agent:
 Ramos Makasar
 
 Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-26
+
+Current Task:
+Audit Menu tenant input/search alignment and audit solution structure for planned Master Permission feature without changing application code before design approval.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Menu frontend form, datatable footer search, Web Admin API client/service, Account API controller, Account service, shared models, entity mapping, and existing seeders.
+- Confirmed current Menu create/update flow is tenant-scoped through tenant_id, RoleOptions, ParentOptions, NextSequence, duplicate validation, cms.menu, and cms.role_menu_access.
+- Identified that tenant input can be removed from the UI only after backend derives tenant context from authenticated/session/default tenant rules; tenant_id should remain a persisted scope field.
+- Identified Menu datatable Icon and Status footer search controls as frontend-only UX items that should be hidden and made non-searchable to match requested behavior.
+- Audited existing master-data pattern using Tenant Type, Tenant, Roles, Menu, AppDbContext, SeederEngine, SchemaSeeder, and cms seeders.
+- Confirmed current Account pattern uses controller + service + IDatabaseService SQL rather than a separate repository layer for master data.
+- Prepared Master Permission design covering cms.master_permission table, CRUD behavior, seed list, affected files, integration risks, and phased rollout recommendation.
+- No application source code was changed because the current task explicitly requested audit and design only before approval.
+
+Issue / Blocker:
+- Removing Menu tenant input is blocked by a required product/technical decision on the authoritative tenant context source for create/update/options/sequence/name-validation.
+- Current permission enforcement only supports read/create/update/delete/mobile in role_menu_access and UserAccessService; enterprise permissions require a planned extension before they can become authorization claims.
+
+Need Decision:
+- Approve whether Menu tenant should be resolved from logged-in user tenant, selected session tenant, configured default root tenant, or another tenant-context provider.
+- Approve Master Permission phase 1 as standalone master CRUD and seed table, with dynamic role-permission integration handled in a later controlled phase.
+- Approve table naming and codes for cms.master_permission and the enterprise permission seed list.
+
+Risk:
+- Removing tenant input without backend tenant resolution can break Menu create/update, parent menu lookup, sequence calculation, duplicate validation, and role menu access seeding.
+- Replacing existing role_menu_access booleans directly would be high risk; a backward-compatible junction table and claim migration plan is safer.
+- Live database and browser smoke tests are still required after any future implementation.
+
+Next Action:
+- Present the audit/design for approval before coding.
+- After approval, implement small reviewed changes: Menu tenant-context alignment, Icon/Status footer search hiding, and Master Permission standalone CRUD/seed foundation.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
 Project Makasar - Distribution & Sales Management
 
 Date:
