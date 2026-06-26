@@ -10,6 +10,61 @@ Date:
 2026-06-26
 
 Current Task:
+Implement Menu tenant-input removal alignment, hide Icon/Status datatable footer search, and keep backend tenant scope resolved from authenticated context.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Removed manual Tenant input from the Web Admin Menu form while keeping tenant_id as backend persistence scope.
+- Updated Menu frontend payload so create/update no longer sends tenant_id from user input.
+- Updated Menu role options, parent menu options, next sequence, and name validation calls to omit tenantId and rely on backend tenant context.
+- Updated Account API Menu endpoints to resolve tenant context from ICurrentUserService.TenantId, with fallback only for backward-compatible query payloads.
+- Updated Account API Roles options endpoint to resolve tenant context from ICurrentUserService.TenantId so Menu form role selection still works without tenant input.
+- Hid datatable footer search textboxes for Icon and Status and marked those columns non-searchable/non-orderable in frontend configuration.
+- Stopped forwarding Icon and Status column filters from Web Admin API client to Account API.
+- Removed Icon and Status from Menu server-side table global/column filtering and order whitelist.
+- Verified JavaScript syntax with node --check Application.Web.Admin/wwwroot/js/pages/menu.js.
+- Verified dotnet build Application.sln --no-restore succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime browser/API/database smoke test was not executed.
+- The Application worktree already contained many uncommitted changes from prior Ramos Makasar work; unrelated changes were preserved and not reverted.
+
+Need Decision:
+- Confirm whether users whose tenant claim points to a child tenant should be allowed to manage Menu, because current Menu validation requires an active root tenant.
+
+Risk:
+- Existing running Account API and Web Admin processes must be restarted before updated JavaScript and backend behavior are visible.
+- If login/session tenant_id is missing or points to a non-root tenant, Menu create/update/options can fail tenant validation.
+- Live database smoke testing is still needed to validate tenant-context resolution with real user claims.
+
+Next Action:
+- Restart Account API and Web Admin, then smoke-test Menu list, add, edit, delete, role options, parent options, next sequence, duplicate-name validation, and absence of Icon/Status footer search against a live database.
+- Confirm tenant-claim rule for Menu management before continuing to Master Permission.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-26
+
+Current Task:
 Audit Menu tenant input/search alignment and audit solution structure for planned Master Permission feature without changing application code before design approval.
 
 Status:
