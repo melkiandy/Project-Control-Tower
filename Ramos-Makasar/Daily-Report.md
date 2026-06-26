@@ -10,6 +10,65 @@ Date:
 2026-06-27
 
 Current Task:
+Audit and solving validation for Master Menu CRUD flow: build, page access, table load, create, update, delete, parent-child, and API response.
+
+Status:
+Done with environment blocker noted
+
+Progress:
+85%
+
+Completed:
+- Verified application worktree on feature/core-system was clean before and after audit; no application code was changed.
+- Ran dotnet build Application.sln --no-restore successfully with 0 errors and 4 existing Core.Common nullable warnings.
+- Started API Account on http://localhost:9010; database initialization and seeders completed.
+- Verified direct API login works with seed username administrator and Password#01; email-style login administrator@kcm.com returned 401 because AuthService uses UserName lookup.
+- Identified admin seed has no tenant_id and no active cms.user_tenant_role row; API token tenant claim is 00000000-0000-0000-0000-000000000000.
+- Tested Menu API CRUD using explicit tenant fallback d4301aa4-86eb-42cb-a459-8ab2c7248a6a and temporary prefix RMS_MENU_AUDIT_20260627011945.
+- API list passed: GET /api/Menu returned code 200 with paged data shape { items, total }.
+- API parent-child create passed: created Parent menu and Child menu with valid parent_menu_id and sequence.
+- API detail/update passed: child detail returned correctly; update changed url and icon successfully.
+- API parent options exclude passed: excludeMenuId did not return the excluded child.
+- API parent-child guards passed: circular hierarchy update returned 400 with parent_menu_id error; deleting parent with active child returned 400 with child-menu guard.
+- API cleanup passed: child and parent test menus were deleted successfully; admin API logout returned Sign Out Success.
+- Confirmed no temporary test menu was intentionally left active.
+
+Issue / Blocker:
+- Web Admin UI smoke test could not complete because local runtime throws DataProtection/EventLog permission errors under C:\Users\LENOVO\AppData\Local\ASP.NET\DataProtection-Keys and Windows EventLog source .NET Runtime.
+- Web Admin POST /Auth/Login connection closed unexpectedly under this environment before Menu page/table Web bridge could be validated.
+- Web Admin startup retry also hit transient port 9080 bind conflict while the prior failing runtime was still releasing the socket.
+- Admin seed lacks authoritative tenant context, so Web Admin Menu create/update cannot safely rely on backend tenant context until admin tenant assignment is seeded or configured.
+
+Need Decision:
+- Decide whether to fix tenant context at seed/auth level by assigning the seed administrator to the root/default tenant through cms.user_tenant_role or user tenant_id.
+- Decide whether local development should configure app-specific DataProtection key storage to avoid Windows user-profile/EventLog permission failures.
+
+Risk:
+- API Menu CRUD is healthy when tenant_id is supplied, but Web Admin Menu CRUD remains at risk for users whose token tenant claim is empty.
+- If tenant context is not seeded, removing tenant input from the UI leaves create/update dependent on a missing backend context.
+- Local Web Admin smoke tests remain unreliable until DataProtection/EventLog environment is fixed.
+
+Next Action:
+- Implement a small, controlled tenant-context fix for seed administrator before retesting Web Admin Menu create/update.
+- Add or document a development-safe DataProtection key location if local Windows permissions keep blocking Web Admin session/cookie tests.
+- After those environment/context fixes, rerun Web Admin Menu page, table load, create, update, delete, and parent-child smoke tests.
+
+ETA:
+2026-06-27
+
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-27
+
+Current Task:
 Record read-only Menu audit result and standard CRUD module flow baseline from the final audit plan.
 
 Status:
