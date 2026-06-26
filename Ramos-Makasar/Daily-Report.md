@@ -27,6 +27,7 @@ Completed:
 - Confirmed current Account pattern uses controller + service + IDatabaseService SQL rather than a separate repository layer for master data.
 - Prepared Master Permission design covering cms.master_permission table, CRUD behavior, seed list, affected files, integration risks, and phased rollout recommendation.
 - No application source code was changed because the current task explicitly requested audit and design only before approval.
+- Verified dotnet build Application.sln --no-restore succeeded with 0 warnings and 0 errors after audit-only verification.
 
 Issue / Blocker:
 - Removing Menu tenant input is blocked by a required product/technical decision on the authoritative tenant context source for create/update/options/sequence/name-validation.
