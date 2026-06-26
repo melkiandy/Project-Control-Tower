@@ -7,6 +7,55 @@ Project:
 KCI Web App
 
 Date:
+2026-06-26
+
+Current Task:
+Step 2.2 - Tambahkan batching/chunking untuk batch, production order, sales order, dan HU pada proses SAP Service Layer.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed struktur solution dan file SAP Service Layer terkait sebelum editing.
+- Menambahkan chunking filter SAP untuk batch di `BatchMasterDataService` pada lookup by item code, batch number, dan HU warehouse-out, termasuk normalisasi nilai, escape OData value, dan follow `ODataNextLink`.
+- Menambahkan chunking production order di `ProductionOrderService` untuk lookup by document number dan item number, dengan order type tetap dipertahankan sebagai filter tambahan.
+- Menambahkan chunking sales order di `SalesOrderService` untuk lookup by DocEntry tanpa mengubah `$select` existing.
+- Menambahkan bulk HU lookup di `SQLQueriesService` melalui `GetHUStockLocationsAsync` dengan chunk 20 dan concurrency maksimal 5 karena endpoint SAP SQLQueries `GetHUStockLocation` masih single-HU.
+- Mengganti caller HU massal di DeliveryOrder, WarehouseOut, WarehouseIn, RepackOrder, dan ScanBinToBin agar memakai bulk HU lookup terkontrol, bukan `Task.WhenAll` langsung tanpa batas.
+- Verified `dotnet build`: build succeeded dengan 0 error dan 112 warning existing/nullability.
+
+Issue / Blocker:
+- No active blocker.
+- Build masih memiliki 112 warning existing/nullability di beberapa service/model yang tidak menjadi scope Step 2.2.
+- HU endpoint SAP saat ini tetap single-HU, sehingga batching dilakukan client-side dengan concurrency limit, bukan satu request SAP berisi banyak HU.
+
+Need Decision:
+- Tentukan apakah chunk size 20 dan HU max concurrency 5 akan dijadikan konfigurasi appsettings pada improvement berikutnya atau tetap konstanta internal service.
+
+Risk:
+- Low to Medium. Perubahan kecil dan build berhasil, tetapi tetap perlu validasi runtime dengan data SAP besar untuk memastikan response paging/nextlink SAP sesuai ekspektasi di environment KCI.
+
+Next Action:
+- Lakukan smoke test UI untuk flow production confirmation/positive release/generate QR, warehouse out/in, delivery order, repack, dan scan bin-to-bin dengan data HU/item/order yang besar.
+- Setelah validasi, lanjutkan Step berikutnya untuk `$select`, timeout/retry, atau pembatasan paralel request SAP lain yang masih di luar scope HU.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos KCI
+
+Project:
+KCI Web App
+
+Date:
 2026-06-25
 
 Current Task:
@@ -206,3 +255,4 @@ Next Action:
 
 ETA:
 2026-06-11
+
