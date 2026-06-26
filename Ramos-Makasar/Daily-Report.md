@@ -10,6 +10,66 @@ Date:
 2026-06-26
 
 Current Task:
+Implement phased Master Menu catalog cleanup after audit by removing Master Role coupling from Master Menu create/update while preserving existing runtime menu access tables.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Removed Master Role input from the Web Admin Master Menu modal and removed the Role Options endpoint usage from the Menu page flow.
+- Removed role_ids from Web Admin Menu payload and API client body for create/update.
+- Removed role_ids and role_accesses from the Account Menu API model so Master Menu contract is catalog-focused.
+- Updated MenuService create/update so Master Menu no longer requires, validates, inserts, soft-deletes, or rewrites cms.role_menu_access.
+- Preserved delete cleanup for existing cms.role_menu_access records when a menu is deleted, preventing active access rows for deleted menus.
+- Preserved tenant_id persistence and parent-child menu handling; tenant scope remains resolved from authenticated backend context.
+- Added backend validation for required name, required sequence, duplicate code/name, parent validation, and code without whitespace; code is normalized uppercase server-side.
+- Added Web Admin validation for required sequence and code without spaces, and normalized code input to uppercase in the browser.
+- Confirmed no is_system_menu pattern/field exists in the current Master Menu model/entity, so no migration was added.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/menu.js succeeded.
+- Verified dotnet build Application.sln --no-restore succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+- Performed Web Admin startup smoke test: application started and listened on http://127.0.0.1:5099.
+
+Issue / Blocker:
+- Login page HTTP smoke request could not complete because the local runtime environment cannot write to Windows EventLog and DataProtection/EventLog logging throws Access denied; this appears environment/config related, not caused by Master Menu changes.
+- End-to-end list/create/edit/login with live database credentials was not completed in this session.
+- The Application worktree already contained many uncommitted changes from earlier Ramos Makasar work; unrelated changes were preserved and not reverted.
+
+Need Decision:
+- Confirm the future screen/module that will own Role-to-Menu access assignment, because Master Menu no longer manages role assignment.
+- Confirm whether newly created catalog menus should remain hidden until assigned through a future Role Menu Access flow.
+
+Risk:
+- Existing menus keep their current role access rows on edit; this is intentional for phased separation, but operators must use a future access-management flow to change visibility.
+- New menus created from Master Menu will not automatically appear in role-based sidebar until access is assigned elsewhere.
+- Existing Web Admin runtime logging/DataProtection configuration can block local HTTP smoke tests under restricted Windows permissions.
+- Running Account API and Web Admin processes must be restarted before updated DLL/JavaScript behavior is visible.
+
+Next Action:
+- Restart Account API and Web Admin, then smoke-test Menu list/create/edit/delete against a live database and authenticated tenant context.
+- Plan the next approved phase for Role Menu Access or Menu Permission ownership without implementing Master Permission yet.
+- Resolve or bypass local Windows EventLog/DataProtection permission issue for reliable login-page smoke testing.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-26
+
+Current Task:
 Implement Menu tenant-input removal alignment, hide Icon/Status datatable footer search, and keep backend tenant scope resolved from authenticated context.
 
 Status:
