@@ -10,6 +10,58 @@ Date:
 2026-06-26
 
 Current Task:
+Step 4 - Perbaiki HttpClient/session management SAP Service Layer dengan IHttpClientFactory, session cache, relogin lock, dan timeout.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed struktur solution, Program registration, common DI, SAP Service Layer client, option model, dan konfigurasi SapServiceLayer sebelum editing.
+- Mengganti pembuatan `HttpClient` manual di SAP common client menjadi named `HttpClient` melalui `IHttpClientFactory`.
+- Menambahkan timeout request SAP dari `SapServiceLayerOptions.RequestTimeoutSeconds` dengan default 180 detik agar environment existing tetap kompatibel tanpa wajib edit appsettings.
+- Mengubah session SAP menjadi cache eksplisit di client umum: `B1SESSION`, `ROUTEID`, dan expiry session disimpan di memory service, lalu dikirim lewat header `Cookie`.
+- Menonaktifkan automatic cookie handler pada named HttpClient agar session SAP tidak tersembunyi di pooled handler dan dapat dikontrol oleh session cache aplikasi.
+- Menambahkan relogin lock menggunakan `SemaphoreSlim` agar request paralel tidak melakukan login ulang bersamaan saat session belum ada/expired/401.
+- Mengubah flow relogin: request memakai session cache, hanya relogin ketika cache expired atau SAP mengembalikan 401, lalu retry sekali dengan session baru.
+- Mempertahankan logging durasi request SAP dari Step 1 pada semua request SAP common client.
+- Verified `dotnet build`: build succeeded dengan 0 error dan 112 warning existing/nullability.
+
+Issue / Blocker:
+- No active blocker.
+- Build masih memiliki 112 warning existing/nullability di area existing yang tidak menjadi scope Step 4.
+- Validasi runtime ke SAP belum dilakukan dari environment ini karena tidak ada smoke test koneksi SAP/UI dalam task ini.
+
+Need Decision:
+- Tentukan apakah `RequestTimeoutSeconds` dan `SessionTimeoutMinutes` perlu dioverride per environment di appsettings Development/Staging/Production atau cukup memakai default code-level saat ini.
+
+Risk:
+- Medium sampai dilakukan smoke test runtime. Perubahan menyentuh client umum SAP sehingga semua request SAP akan melewati session cache dan relogin flow baru.
+- Risiko teknis utama yang dikurangi: socket exhaustion karena manual HttpClient, login ulang berlebihan, relogin paralel, dan timeout request SAP yang tidak eksplisit.
+
+Next Action:
+- Lakukan smoke test login SAP dan flow GET/POST/PATCH utama: Production Confirmation, Positive Release, Generate QR, Warehouse Out/In, Delivery Order, Repack, dan Scan Bin-to-Bin.
+- Monitor log durasi SAP setelah deploy untuk memastikan jumlah login turun dan request besar tidak menggantung tanpa timeout.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos KCI
+
+Project:
+KCI Web App
+
+Date:
+2026-06-26
+
+Current Task:
 Step 2.2 - Tambahkan batching/chunking untuk batch, production order, sales order, dan HU pada proses SAP Service Layer.
 
 Status:
@@ -255,4 +307,5 @@ Next Action:
 
 ETA:
 2026-06-11
+
 
