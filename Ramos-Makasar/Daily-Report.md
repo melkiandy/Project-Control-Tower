@@ -10,6 +10,60 @@ Date:
 2026-06-26
 
 Current Task:
+Audit and update Frontend Menu form so Icon input uses the same local Tabler icon dropdown pattern as Tenant Type.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Tenant Type icon dropdown pattern in Application.Web.Admin/Views/TenantType/Index.cshtml and Application.Web.Admin/wwwroot/js/pages/tenantType.js.
+- Replaced Menu form Icon textbox with a Select2 dropdown backed by the local Tabler Icons CSS catalog.
+- Added Menu icon preview using the same input-group and preview icon behavior used by Tenant Type.
+- Added Menu JavaScript to load local Tabler icon names, render icon options with icon + label, update preview on change, reset icon selection in add mode, and restore saved icon in edit mode.
+- Preserved the existing Menu icon payload shape as a string class value such as `ti ti-home`, so backend/database contracts were not changed.
+- Verified JavaScript syntax using node --check Application.Web.Admin/wwwroot/js/pages/menu.js.
+- Attempted dotnet build Application.sln --no-restore; compilation reached Web Admin copy step but failed because Application.Web.Admin.dll was locked by active Visual Studio Debug Adapter/.NET Host processes.
+- Verified Web Admin compile by building Application.Web.Admin/Application.Web.Admin.csproj to a separate OutDir with 0 warnings and 0 errors.
+- Removed temporary .artifacts build output folders created for verification.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Normal solution build output was blocked by active local debug processes locking Application.Web.Admin/bin/Debug/net8.0/Application.Web.Admin.dll.
+- No implementation or syntax blocker remains.
+- Runtime browser smoke test was not executed in this task.
+- The Application worktree already contained many uncommitted changes from earlier Ramos Makasar work; unrelated changes were preserved and not reverted.
+
+Need Decision:
+- No product decision required for this UI alignment.
+
+Risk:
+- Running Web Admin process must be restarted before updated JavaScript/Razor behavior is visible.
+- If the local Tabler Icons CSS path changes, both Tenant Type and Menu icon dropdown catalogs will need the same adjustment.
+
+Next Action:
+- Restart Web Admin, then smoke-test Menu add/edit modal icon dropdown, icon preview, saved icon restoration, and payload value against live UI.
+- Stop active debug processes before the next normal dotnet build Application.sln verification.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-26
+
+Current Task:
 Implement phased Master Menu catalog cleanup after audit by removing Master Role coupling from Master Menu create/update while preserving existing runtime menu access tables.
 
 Status:
