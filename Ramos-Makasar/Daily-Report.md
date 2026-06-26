@@ -2467,6 +2467,59 @@ Project:
 Project SaaS Application - Makasar
 
 Date:
+2026-06-26
+
+Current Task:
+Audit Frontend and Backend Menu datatable, remove Tenant column, enable server-side processing, and repair search behavior.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Menu flow across Application.Web.Admin, Application.API.Account, Application.Service.Account, Application.Model.Account, and Infrastructure.Data.Account.
+- Found root cause: Menu datatable loaded a fixed client-side list from /Menu/Menus, so search/paging worked only on the fetched browser dataset instead of the backend dataset.
+- Removed Tenant column from the Menu datatable while preserving tenant_id and tenant_name in row/detail data for edit form compatibility.
+- Converted Menu datatable to DataTables server-side mode using /Menu/TableMenus with global search, per-column footer search, paging, and ordering.
+- Added parameterized Account API query inputs for Menu search, per-column filters, paging, and whitelist-based ordering.
+- Added ManagementMenuPagedModel and MenuPagedModel contracts to return filtered items and accurate total count.
+- Updated Web Admin Menu API client/service to translate DataTables requests into Account API query parameters.
+- Updated backend MenuService count/list queries to apply parameterized PostgreSQL ILIKE filters for Name, Code, Type, Parent, Sequence, URL, Icon, and Status.
+- Restored Menu.TenantId entity property required by the existing AppDbContext tenant_id mapping after build exposed the missing property.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task.
+- The Application worktree already contained many uncommitted Tenant, Tenant Type, Roles, authentication, seeder, and Menu-related changes; unrelated changes were preserved.
+
+Need Decision:
+- Confirm whether Status footer search should remain a textbox or become a controlled Active/Not Active dropdown in a future UX refinement.
+
+Risk:
+- Running Web Admin and Account API processes must be restarted before the updated JavaScript and backend assemblies are visible.
+- Menu table filtering is PostgreSQL-specific, matching the current MenuService source-of-truth guard.
+- Live database/browser smoke testing is still needed to validate DataTables request binding, actual menu counts, and UI rendering with production-sized data.
+
+Next Action:
+- Restart Account API and Web Admin, then smoke-test Menu datatable paging, global search, column searches, ordering, hidden Tenant column, add/edit/delete flow, and edit tenant select population against a live database.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
 2026-06-25
 
 Current Task:
@@ -2508,6 +2561,67 @@ Risk:
 
 Next Action:
 - Restart Account API and Web Admin, then smoke-test Tenant Type Name/Description filters, absence of the Icon search textbox, Roles Tenant/Role Name/Code filters, hidden Normalized column, paging, and ordering against a live database.
+
+ETA:
+2026-06-25
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-25
+
+Current Task:
+Audit Tenant Level datatable/search behavior and strengthen Tenant Group deletion, membership uniqueness, and usage validation.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited the requested Level field and confirmed it belongs to the Tenant datatable; Tenant Type has no Level property in its model or table contract.
+- Hid the Tenant Level column and removed its server-side search/order capability through existing TableVisible metadata.
+- Audited Tenant server-side DataTable and found Tenant Type/Name footer searches were not forwarded to Account API.
+- Added parameterized Tenant root filtering for Tenant Type and Name across Web Admin API client, Account API controller, and TenantService count/list queries.
+- Preserved correct filtered paging totals using the existing TenantPagedModel response.
+- Audited Tenant Group frontend, Account API, service layer, and database seeder.
+- Added frontend and backend validation preventing deletion of a tenant group while it still contains tenants.
+- Added global one-group-per-tenant validation in selection options, backend insert validation, and a unique database index on cms.tenant_group_member.tenant_id.
+- Added explicit startup validation that reports duplicate historical memberships before creating the unique index.
+- Added `is_used` group state and frontend In Use badge/disabled controls.
+- Added backend usage detection based on actual SQL Server/PostgreSQL foreign-key metadata, excluding the tenant_group_member ownership relation.
+- Blocked tenant removal when either the group or the specific membership row is referenced by another business table.
+- Kept backend validation authoritative even when frontend buttons are disabled.
+- Verified JavaScript syntax for tenant.js and tenantType.js.
+- Verified dotnet build Application.sln --no-restore succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation, build, or test blocker remains.
+- Runtime database/browser smoke testing was not executed.
+- The Application worktree contains earlier uncommitted Tenant, Tenant Type, Roles, menu, authentication, and seeder changes; those changes were preserved.
+
+Need Decision:
+- No immediate implementation decision is required.
+- If existing database data contains one tenant in multiple groups, the duplicate memberships must be resolved before the new unique index can be created.
+
+Risk:
+- Existing environments must run Account API startup/SeederEngine for the unique membership index to be applied.
+- Usage detection depends on formal foreign keys to cms.tenant_group or cms.tenant_group_member; business tables storing group IDs without a foreign key cannot be detected reliably.
+- Running Account API and Web Admin processes must be restarted before the latest behavior is visible.
+
+Next Action:
+- Restart Account API and Web Admin, allow seeders to run, then smoke-test hidden Level column, Tenant Type/Name filters, delete-group-with-members rejection, cross-group duplicate rejection, and remove-member usage validation against a live database.
+- Audit existing tenant_group_member data for duplicate tenant_id values before deployment.
 
 ETA:
 2026-06-25
