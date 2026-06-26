@@ -10,6 +10,51 @@ Date:
 2026-06-26
 
 Current Task:
+Fix build error in SAP Service Layer client after Step 4 HttpClient/session management changes.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed build error attachment and confirmed all 25 compiler errors came from `SapServiceLayerClientService.cs` around the end of the class.
+- Identified root cause: obsolete leftover code from the old manual HttpClient pattern remained after the new session-cache implementation, including an unnamed block with `await`, old `_http/_handler` references, `ClearCookies()`, and an extra `#endregion`.
+- Removed only the obsolete trailing block and extra preprocessor directive from `SapServiceLayerClientService.cs`.
+- Preserved the new Step 4 implementation: IHttpClientFactory, session cache, relogin lock, timeout, and duration logging.
+- Verified `dotnet build`: build succeeded with 0 error and 112 existing warnings.
+
+Issue / Blocker:
+- No active blocker for the application build.
+- Existing warnings are still mostly nullability/reference warnings outside this fix scope.
+
+Need Decision:
+- None.
+
+Risk:
+- Low. Change only removes unreachable/invalid leftover code that referenced removed fields and duplicated logout/dispose behavior.
+
+Next Action:
+- Continue smoke test for SAP GET/POST/PATCH flows after the Step 1/2/4 changes.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos KCI
+
+Project:
+KCI Web App
+
+Date:
+2026-06-26
+
+Current Task:
 Audit kesiapan operasional aplikasi KCI untuk berjalan 24 jam dalam 3 shift setelah Step 1, Step 2, dan Step 4.
 
 Status:
@@ -358,6 +403,7 @@ Next Action:
 
 ETA:
 2026-06-11
+
 
 
 
