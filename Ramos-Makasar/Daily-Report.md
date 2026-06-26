@@ -10,6 +10,56 @@ Date:
 2026-06-27
 
 Current Task:
+Audit backend Menu and update CRUD flow so tenant_id is no longer accepted as manual input.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Updated backend Menu API so list, options, next-sequence, validate-name, create, update, detail, and delete no longer accept tenant_id from query string or request body as manual input.
+- Added ManagementMenuRequestModel as the external create/update request contract without tenant_id, while keeping ManagementMenuModel tenant_id for internal persistence and service/database operations.
+- Aligned Menu CRUD service methods to use authoritative tenant context from current user/JWT and to scope detail, update, delete, table query, duplicate validation, parent options, and delete guard by tenant.
+- Preserved cms.menu tenant_id persistence, parent-child menu behavior, code/name validation flow, sequence handling, circular hierarchy guard, and child delete guard.
+- Updated IdentitySeeder to assign seed administrator and administrator role to the default active root tenant and ensure cms.user_tenant_role exists, so backend has an authoritative tenant context without UI input.
+- Ran dotnet build Application.sln --no-restore successfully with 0 warnings and 0 errors.
+- No additional login test was continued after instruction that Ramos Makasar login testing is not required for this task.
+
+Issue / Blocker:
+- No build blocker found.
+- Local runtime previously showed environment-level DataProtection/EventLog noise, but this task was completed as backend code alignment and build validation.
+
+Need Decision:
+- None for this backend Menu tenant-input removal.
+
+Risk:
+- Existing clients that still send tenant_id to Menu API will have the value ignored; they must rely on authenticated tenant context.
+- Users without tenant context in token/current user will receive validation error Tenant context is required.
+- Multi-tenant behavior now depends on seed/auth tenant assignment being consistently available for all operational users, not only administrator.
+
+Next Action:
+- Align Web Admin Menu payload/form to stop sending tenant_id if any legacy field remains.
+- Retest Menu create/update from Web Admin after UI payload is confirmed tenant-free.
+- Continue planned separation of Menu catalog from role/permission concerns in a later dedicated task.
+
+ETA:
+2026-06-27
+
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-27
+
+Current Task:
 Audit and solving validation for Master Menu CRUD flow: build, page access, table load, create, update, delete, parent-child, and API response.
 
 Status:
