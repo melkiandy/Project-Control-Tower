@@ -10,6 +10,57 @@ Date:
 2026-06-26
 
 Current Task:
+Audit kesiapan operasional aplikasi KCI untuk berjalan 24 jam dalam 3 shift setelah Step 1, Step 2, dan Step 4.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Reviewed current working tree, Program startup pipeline, SAP Service Layer client, common dependency injection, database service, background email worker, rate limiter, appsettings, and logging configuration.
+- Confirmed Step 1/2/4 improvements are present in code: SAP duration logging, batching/chunking for large SAP lookups, IHttpClientFactory registration, SAP session cache, relogin lock, and request timeout default.
+- Assessed that the application is technically more ready for 24-hour operation after Step 1/2/4, especially for reducing repeated SAP login, oversized SAP request filters, and request hanging risk.
+- Identified remaining operational dependencies: IIS app pool configuration, server resource monitoring, PostgreSQL connection/pool health, SAP availability, and production smoke test evidence.
+- Identified startup risk: application runs DB migration/seeding and SAP SQLQueries sync during startup, so restart/recycle depends on DB and SAP availability.
+- Identified logging risk: Serilog rolls daily but no retention/file-size limit is configured in appsettings, so 24/7 operation needs log retention policy outside code or config adjustment later.
+- Identified database risk: custom database service opens/disposes connections per operation, which is acceptable with provider pooling, but command timeout/pool sizing is not explicitly configured in connection strings.
+- No application code was changed during this audit.
+
+Issue / Blocker:
+- No audit blocker.
+- Runtime capability still needs confirmation through 24-hour or multi-shift smoke/soak testing on the target IIS/SAP/DB environment.
+
+Need Decision:
+- Decide whether IIS app pool idle timeout/recycle schedule, log retention, DB pool/command timeout, and SAP health monitoring should be formalized before go-live 24/7.
+
+Risk:
+- Medium if deployed 24/7 without IIS always-on/no-idle configuration, log retention, DB timeout/pool settings, SAP health monitoring, and smoke test evidence.
+- Low to Medium after those operational controls are confirmed because Step 1/2/4 already reduced major SAP request/session bottlenecks.
+
+Next Action:
+- Run smoke test for one full shift, then soak test across shift handover, covering Generate QR, Production Confirmation, Positive Release, Warehouse In/Out, Delivery Order, Repack, Scan Bin-to-Bin, and Document Print.
+- Verify IIS app pool settings: AlwaysRunning/start mode, idle timeout disabled, planned recycle window outside production peak, and rapid-fail protection policy.
+- Verify log retention and disk monitoring for daily SAP duration logs.
+
+ETA:
+2026-06-26
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos KCI
+
+Project:
+KCI Web App
+
+Date:
+2026-06-26
+
+Current Task:
 Step 4 - Perbaiki HttpClient/session management SAP Service Layer dengan IHttpClientFactory, session cache, relogin lock, dan timeout.
 
 Status:
@@ -307,5 +358,6 @@ Next Action:
 
 ETA:
 2026-06-11
+
 
 
