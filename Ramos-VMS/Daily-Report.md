@@ -1225,6 +1225,61 @@ Date:
 2026-06-27
 
 Current Task:
+Audit Manajemen Visitor untuk memperbarui label dropdown device, menambahkan kamera foto ID visitor, merapikan form input, dan menyelaraskan backend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur visitor management: entity Visitor, VisitorModel, AppDbContext, VisitorService, VisitorController, visitor.html, dan renderer visitor di home.html.
+- Mengubah label dropdown device Select2 agar menampilkan nama device dan status recognition In/Out, tanpa memakai IP address sebagai label.
+- Mempertahankan IP address sebagai metadata internal untuk queue sync device, bukan untuk label pilihan dropdown.
+- Menambahkan field Id_Photo pada entity Visitor dan mapping EF Core.
+- Menambahkan field id_photo dan id_photo_image pada VisitorModel untuk kontrak frontend/backend.
+- Menambahkan migration idempotent 202606270002_AddVisitorIdPhoto untuk kolom crm.Visitor.Id_Photo.
+- Menambahkan panel ID Photo pada form input visitor dengan upload JPEG dan kamera.
+- Membuat modal kamera visitor reusable untuk target Face dan ID Photo.
+- Merapikan form input visitor menjadi layout modal-xl dengan area data visitor/schedule/device dan area foto Face/ID Photo yang lebih rapi.
+- Menambahkan kolom ID Photo pada datatable visitor.
+- Menyesuaikan VisitorController agar Face dan ID Photo memakai validasi JPEG yang sama: data URL valid, ukuran maksimal 150 KB, dan signature JPEG valid.
+- Menyesuaikan VisitorService agar create, update, dan get visitor membaca/menyimpan Id_Photo.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibatasi pada area Visitor dan tidak merevert perubahan tersebut.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- ID Photo dibuat optional agar data visitor existing tetap kompatibel; jika diperlukan mandatory pada create, perlu keputusan rule tambahan.
+- Deployment membutuhkan permission ALTER TABLE pada schema crm saat Database.Migrate menjalankan migration baru.
+
+Next Action:
+- Uji manual add/update visitor: pilih device, capture Face, capture ID Photo, upload JPEG ID Photo, save, edit ulang, dan pastikan preview serta datatable tampil benar.
+- Validasi database kolom Id_Photo dan file JPEG tersimpan pada folder files/visitors.
+
+ETA:
+2026-06-27
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-27
+
+Current Task:
 Audit frontend Manajemen Visitor untuk menambahkan pilihan device Select2 multiple dan menyelaraskan proses create, update, delete pada backend.
 
 Status:
