@@ -1160,3 +1160,53 @@ Next Action:
 
 ETA:
 2026-06-25
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-27
+
+Current Task:
+Audit Manajemen Device untuk menambahkan pilihan arah device recognition In/Out pada frontend dan backend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur device management: entity Device, DeviceModel, AppDbContext, DeviceService, DeviceController, fragment device.html, dan renderer device di home.html.
+- Menambahkan field Recognition_Direction pada entity Device dengan default In.
+- Menambahkan field recognition_direction pada DeviceModel dengan validasi hanya In atau Out.
+- Menyesuaikan DeviceService agar create, update, GetAllDevice, TableDevice, dan GetById membaca/menyimpan arah recognition device.
+- Menambahkan migration idempotent 202606270001_AddDeviceRecognitionDirection untuk kolom crm.Device.Recognition_Direction.
+- Menambahkan dropdown Recognition pada form input device dengan pilihan In dan Out.
+- Menambahkan kolom Recognition pada tabel Manajemen Device dan mapping data edit/reset di home.html.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibatasi pada area Device tanpa merevert perubahan lain.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Deployment membutuhkan permission ALTER TABLE pada schema crm saat Database.Migrate menjalankan migration baru.
+- Data device existing akan mendapat default Recognition_Direction = In sampai user mengubahnya menjadi Out bila diperlukan.
+
+Next Action:
+- Uji manual Add/Edit Device dari UI untuk memastikan pilihan In/Out tersimpan dan tampil kembali pada datatable.
+- Validasi business rule lanjutan bila arah In/Out perlu dipakai sebagai filter pada job logger atau laporan attendance berikutnya.
+
+ETA:
+2026-06-27
