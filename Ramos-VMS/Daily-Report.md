@@ -1,4 +1,56 @@
-﻿# CONTROL TOWER REPORT
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-27
+
+Current Task:
+Audit manajemen user, visitor, dan authentication: tambah Add/Delete User, selaraskan backend user dengan frontend, pastikan visitor tetap tersimpan saat sync device gagal, dan batasi login satu session aktif per user.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami struktur solution VMS dan area terkait: UserController/UserService/UserModel, home.html/index.html/user.html, VisitorController/VisitorService, AccountController/AccountService, dan konfigurasi JWT.
+- Memperbaiki flow Add User di frontend dengan normalisasi data-value user|add agar tombol Add pada DataTable membuka form user dan submit tetap memakai modul user.
+- Menambahkan tombol Delete langsung pada row tabel Manajemen User dan menghubungkannya ke endpoint /api/User/Save dengan status D.
+- Menjaga tombol Delete form edit user tetap berjalan dan tetap mengikuti permission ManajementUserAccess melalui prefix button-delete-id.
+- Menyelaraskan backend login agar user inactive/soft-deleted tidak dapat login dan response login gagal dikembalikan sebagai BadRequest.
+- Menambahkan konstanta token authentication agar provider token login/logout konsisten pada Internal/Token serta membersihkan legacy provider lama.
+- Menambahkan validasi single active session: login baru ditolak jika user masih memiliki token aktif yang belum expired.
+- Menambahkan validasi token pada JwtBearer OnTokenValidated sehingga token lama/tidak sesuai token aktif tidak dapat mengakses endpoint authorize.
+- Audit VisitorService.Create: kegagalan sync di setiap device sudah ditangkap per-device, visitor dan relasi tetap disimpan, lalu visitor ditandai inactive jika seluruh device gagal.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Repo aplikasi VMS sudah memiliki banyak perubahan lokal sebelum task dimulai; perubahan task ini dibuat terbatas tanpa merevert perubahan existing.
+- git diff pada repo VMS terkena safe.directory/dubious ownership untuk sebagian command, tetapi git status dan build tetap dapat diverifikasi.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Single-session authentication bergantung pada penyimpanan Identity token di tabel AspNetUserTokens; jika token aktif tersisa dari session lama dan belum expired, user perlu logout atau menunggu expiry sebelum login di browser lain.
+- Visitor yang seluruh device sync-nya gagal tetap tersimpan sebagai inactive sehingga operator perlu follow-up sync saat device kembali online.
+
+Next Action:
+- Uji manual Add User, Delete User dari row tabel, Delete User dari form edit, dan login user inactive.
+- Uji login user yang sama dari dua browser: browser kedua harus ditolak selama token pertama masih aktif, lalu dapat login setelah logout/expiry.
+- Uji add visitor dengan seluruh device offline untuk memastikan data visitor tetap muncul di database/UI dengan status sync gagal.
+
+ETA:
+2026-06-27
+
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos VMS
@@ -318,6 +370,60 @@ Next Action:
 
 ETA:
 2026-06-18
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-27
+
+Current Task:
+Audit Manajemen Visitor dan Reports untuk shortcut Enter capture kamera serta report awal Visitor Logger grouping collaps dengan server-side paging.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang area kamera visitor, report_monitoring.html, ReportsController, VisitorDeviceLogger, dan flow menu manajement-report.
+- Menambahkan keydown Enter pada modal kamera visitor agar Capture berjalan untuk target Face maupun ID Photo.
+- Mengaktifkan ReportsController yang sebelumnya dikecualikan dari compile project.
+- Menambahkan model report Visitor Logger untuk request, response grouping, dan detail log.
+- Menambahkan ReportService dengan server-side paging group visitor berdasarkan log.visitor_device_logger.
+- Menambahkan endpoint GET /api/Reports/GetReportMonitoring dengan filter tanggal, search, page, dan limit.
+- Membuat halaman report awal sebagai report selector yang siap menampung report tambahan.
+- Menampilkan report Visitor Logger dengan grouping nama visitor dan collapsible detail berisi device + recognition status, log time dd MMM yyyy HH:mm:ss, Photo ID, dan Photo Face.
+- Menambahkan filter date/search/rows, summary count, empty state, dan tombol Previous/Next untuk server-side paging.
+- Menjalankan dotnet build normal; compile lolos tetapi copy output gagal karena App.VMS/bin App.Infrastructure.dll dikunci proses .NET Host.
+- Verifikasi compile menggunakan dotnet build Application_VMS_HM.sln -p:OutDir=.build-report-check dengan hasil sukses, 0 warning, 0 error, lalu membersihkan folder build sementara.
+
+Issue / Blocker:
+- dotnet build normal gagal pada tahap copy output karena App.VMS/bin/Debug/net9.0/App.Infrastructure.dll dikunci proses .NET Host (PID 19132), bukan karena error compile.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibatasi pada area Visitor camera dan Reports tanpa merevert perubahan tersebut.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Query report memfilter tanggal sebagai UTC date boundary; validasi timezone operasional tetap perlu dilakukan terhadap data device fisik.
+- Detail log per visitor pada page aktif ditampilkan seluruhnya untuk visitor tersebut dalam filter tanggal/search; jika volume log sangat besar per visitor, bisa perlu limit detail lanjutan.
+
+Next Action:
+- Uji manual popup camera Face dan ID Photo dengan tombol Enter.
+- Uji halaman Manajemen Report: filter tanggal/search, collapse detail visitor, Photo ID/Face, dan paging Previous/Next.
+- Validasi data log visitor dari job Logger All Device terhadap device fisik.
+
+ETA:
+2026-06-27
+
 ---
 
 # CONTROL TOWER REPORT
