@@ -1210,3 +1210,56 @@ Next Action:
 
 ETA:
 2026-06-27
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-27
+
+Current Task:
+Audit frontend Manajemen Visitor untuk menambahkan pilihan device Select2 multiple dan menyelaraskan proses create, update, delete pada backend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur visitor management: VisitorModel, VisitorService, VisitorController, visitor.html, dan renderer visitor di home.html.
+- Menambahkan field device_ids pada VisitorModel sebagai kontrak daftar device terpilih.
+- Menambahkan validasi backend agar create/update visitor wajib memilih minimal satu device.
+- Menambahkan Select2 multiple Device pada form Manajemen Visitor.
+- Menambahkan load opsi device dari endpoint GetAllDevice, validasi frontend minimal satu device, mapping edit/reset, dan pengiriman payload device_ids sebagai array.
+- Menyesuaikan queue proses visitor agar Save/Update menampilkan device yang dipilih dan Cancel menampilkan device yang terhubung ke visitor.
+- Menyesuaikan VisitorService.Create agar hanya membuat relasi dan sync ke device yang dipilih.
+- Menyesuaikan VisitorService.Update agar device terpilih disync, device yang dilepas dikirim delete ke device, dan relasi VisitorDevice diselaraskan.
+- Menyesuaikan VisitorService.Sync dan Delete agar memakai relasi device visitor yang terpilih/tersimpan, bukan semua device aktif.
+- Mengubah summary Device Status visitor agar dihitung dari device yang dipilih untuk visitor tersebut.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker implementasi.
+- Repo aplikasi memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibatasi pada area Visitor dan tidak merevert perubahan tersebut.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Visitor existing mengikuti relasi VisitorDevice yang sudah tersimpan; jika relasi lama berisi semua device, form edit akan menampilkan semua device tersebut sampai user menyesuaikan pilihan.
+- Device yang dilepas saat update akan dikirim delete berdasarkan EnrollId tersimpan; jika EnrollId tidak ada, queue akan menampilkan error untuk device tersebut.
+
+Next Action:
+- Uji manual create visitor dengan sebagian device, update tambah/lepas device, cancel visitor, dan klik popup Device Status untuk memastikan status sesuai pilihan.
+- Validasi integrasi ke device fisik agar device yang tidak dipilih tidak menerima create/update/delete visitor baru.
+
+ETA:
+2026-06-27
