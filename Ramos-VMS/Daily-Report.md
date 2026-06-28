@@ -10,6 +10,54 @@ Date:
 2026-06-28
 
 Current Task:
+Audit dan implementasi tombol All Device dan Clear Device pada dropdown multiple device di form input Visitor.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audit form Visitor pada visitors/visitor.html dan logic dropdown device pada home.html.
+- Menambahkan tombol All Device dan Clear Device di samping label dropdown multiple Device pada form input Visitor.
+- Menambahkan event binding pada initVisitorPage agar tombol tidak duplicate listener ketika page di-load ulang.
+- Menambahkan helper selectAllVisitorDevices, clearVisitorDevices, dan setVisitorDeviceSelection.
+- Flow All Device memilih seluruh option device yang sedang tersedia di dropdown dan trigger Select2 change agar UI dan payload device_ids ikut sinkron.
+- Flow Clear Device mengosongkan semua pilihan device dan trigger Select2 change agar dropdown multiple kosong.
+- Validasi helper juga membersihkan state invalid/help text ketika user memilih semua atau clear ulang device.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker build.
+- Repo aplikasi VMS masih memiliki perubahan lokal dan file foto visitor untracked yang sudah ada sebelum task ini; tidak diubah atau direvert.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Tombol All Device hanya memilih option yang sudah termuat dari API Device/GetAllDevice. Jika API device gagal atau kosong, tidak ada device yang bisa dipilih.
+
+Next Action:
+- Uji manual Add Visitor: klik All Device, pastikan semua device muncul di dropdown multiple dan payload save berisi semua device_ids.
+- Uji manual Clear Device, pastikan dropdown kosong dan validasi tetap muncul ketika save tanpa device.
+
+ETA:
+2026-06-28
+
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit scheduler dan hapus scheduler Delete Expired Temporary Visitors dari source registry aplikasi VMS.
 
 Status:
@@ -1920,6 +1968,7 @@ Next Action:
 
 ETA:
 2026-06-27
+
 
 
 
