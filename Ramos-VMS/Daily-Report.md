@@ -1,4 +1,54 @@
-﻿# CONTROL TOWER REPORT
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
+Build websocket SignalR common agar dapat menampung banyak tugas realtime.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audit implementasi SignalR existing pada SocketHub, Program.cs, dan client home.html.
+- Menambahkan kontrak payload umum RealtimeMessage untuk task, event, status, message, correlationId, data, dan sentAt.
+- Menambahkan helper RealtimeGroups agar setiap tugas realtime bisa memakai group SignalR terstandar.
+- Menambahkan IIRealtimeNotificationService/RealtimeNotificationService untuk publish realtime dari backend ke semua client, group task tertentu, atau user tertentu.
+- Mengembangkan SocketHub agar tetap kompatibel dengan event Monitoring lama, sekaligus menyediakan event umum RealtimeMessage, JoinTask, LeaveTask, dan Publish.
+- Mendaftarkan service realtime common pada dependency injection infrastructure.
+- Mengubah client SignalR di home.html menjadi window.realtimeSocket dengan handler on/off, subscribe/unsubscribe task, send payload, automatic reconnect, dan resubscribe setelah reconnect.
+- Menjaga endpoint /sockethub dan konstanta connection lama agar script yang sudah ada tetap kompatibel.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker build.
+- Git status/diff pada repo aplikasi VMS masih terganggu dubious ownership/safe.directory untuk user Windows saat ini; verifikasi dilakukan melalui inspeksi file, rg, dan dotnet build.
+- Repo aplikasi VMS masih memiliki perubahan lokal dan file foto visitor untracked dari task sebelumnya; tidak diubah atau direvert.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Realtime common sudah tersedia, tetapi setiap modul baru tetap perlu menentukan nama task/event yang konsisten agar handler frontend tidak saling bertabrakan.
+
+Next Action:
+- Gunakan IIRealtimeNotificationService.SendToTaskAsync atau BroadcastAsync pada proses backend realtime berikutnya.
+- Pada frontend, gunakan window.realtimeSocket.subscribe(task) dan window.realtimeSocket.on(task, eventName, handler) untuk modul realtime baru.
+
+ETA:
+2026-06-28
+
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos VMS
@@ -1968,6 +2018,7 @@ Next Action:
 
 ETA:
 2026-06-27
+
 
 
 
