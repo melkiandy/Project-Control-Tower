@@ -10,6 +10,52 @@ Date:
 2026-06-28
 
 Current Task:
+Audit scheduler dan hapus scheduler Delete Expired Temporary Visitors dari source registry aplikasi VMS.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audit referensi scheduler Delete Expired Temporary Visitors pada App.Infrastructure dan App.VMS.
+- Menemukan referensi hanya pada class DeleteExpiredTemporaryVisitorJob di SchedulerJobs.cs dan registration DI scheduler job.
+- Menghapus class DeleteExpiredTemporaryVisitorJob dari SchedulerJobs.cs sehingga source hanya menyisakan scheduler Logger All Device.
+- Menghapus registration AddScoped<IISchedulerJob, DeleteExpiredTemporaryVisitorJob>() dari dependency injection sehingga job tidak muncul lagi di available scheduler jobs dan tidak bisa dijadwalkan ulang dari UI.
+- Scan ulang keyword Delete Expired Temporary, delete-expired, ExpiredTemporary, DeleteExpiredTemporary, visitor.delete-expired, Temporary Visitors, dan TemporaryVisitor dengan hasil tidak ada referensi tersisa di source.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker build.
+- Repo aplikasi VMS masih memiliki perubahan lokal dan file foto visitor untracked yang sudah ada sebelum task ini; tidak diubah atau direvert.
+
+Need Decision:
+- Jika recurring job lama sudah pernah tersimpan di Hangfire database, operator perlu hapus record lama melalui UI Scheduler atau endpoint Delete dengan jobid visitor.delete-expired-temporary agar storage runtime juga bersih.
+
+Risk:
+- Source sudah bersih, tetapi record Hangfire lama yang tersimpan di database deployment tidak otomatis terhapus oleh perubahan kode lokal ini.
+
+Next Action:
+- Buka UI Scheduler setelah deploy dan pastikan Delete Expired Temporary Visitors tidak muncul di Available Jobs.
+- Jika masih terlihat di Recurring Jobs sebagai Unregistered, hapus job tersebut dari UI Scheduler.
+
+ETA:
+2026-06-28
+
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit dan fix error delete visitor Top Security saat validasi getuserinfo gagal deserialize field reason.
 
 Status:
@@ -1874,5 +1920,6 @@ Next Action:
 
 ETA:
 2026-06-27
+
 
 
