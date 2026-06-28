@@ -10,6 +10,59 @@ Date:
 2026-06-28
 
 Current Task:
+Audit export Visitor Logger karena image Photo ID dan Photo Face belum muncul di Excel, serta memastikan download Excel/PDF mengambil seluruh data dari backend dan tidak bentrok dengan paging frontend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Mengidentifikasi root cause image Excel tidak muncul: export sebelumnya memakai HTML .xls dengan data URL image dari frontend, yang tidak konsisten dirender oleh Microsoft Excel.
+- Menambahkan endpoint backend GET /api/Reports/DownloadVisitorLoggerExcel untuk menghasilkan file .xlsx langsung dari server.
+- Menggunakan query backend export_all=true agar Excel mengambil seluruh data sesuai filter tanggal/search, bukan data hasil paging frontend.
+- Menggunakan ClosedXML untuk membuat workbook Visitor Logger dan menyisipkan Photo ID serta Photo Face sebagai image embedded di cell Excel.
+- Menambahkan helper backend untuk resolve path foto dari wwwroot secara aman sebelum file dibaca dan dimasukkan ke workbook.
+- Mengubah tombol download Excel di frontend agar langsung memanggil endpoint backend dan mendownload blob .xlsx.
+- Menghapus jalur Excel HTML lama dari flow download agar tidak lagi bergantung pada render frontend.
+- Mempertahankan flow PDF mengambil data lengkap dari backend melalui export_all=true sebelum dirender sebagai PDF A4.
+- Menjalankan dotnet build normal; compile berhasil tetapi copy output gagal karena App.VMS.dll sedang dikunci Visual Studio Debug Adapter dan .NET Host.
+- Verifikasi compile dilakukan dengan dotnet build Application_VMS_HM.sln -p:OutDir=.build-report-download-check dengan hasil sukses, 0 warning, 0 error; folder output sementara sudah dibersihkan.
+- Menjalankan pemeriksaan syntax JavaScript pada inline script home.html dengan hasil JS syntax OK.
+
+Issue / Blocker:
+- Build normal gagal pada tahap copy output karena file App.VMS/bin/Debug/net9.0/App.VMS.dll dikunci proses debug aktif, bukan karena error compile.
+- Repo aplikasi VMS masih memiliki file visitor untracked sebelum task dimulai; file tersebut tidak diubah.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Export Excel dengan banyak row dan image embedded dapat menghasilkan file besar; operator perlu memakai filter tanggal/search agar ukuran tetap wajar.
+- Jika file foto tidak ada di wwwroot sesuai path visitor, cell Photo ID/Photo Face akan berisi Not available.
+
+Next Action:
+- Uji manual download Excel Visitor Logger untuk memastikan Photo ID dan Photo Face muncul sebagai image embedded.
+- Uji ulang PDF untuk memastikan data tetap diambil seluruhnya dari backend sesuai filter.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit output report Visitor Logger agar kolom Photo ID dan Photo Face pada export Excel/PDF tampil sebagai image, serta menyelaraskan backend dengan kebutuhan output export.
 
 Status:
