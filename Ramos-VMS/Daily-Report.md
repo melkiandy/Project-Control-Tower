@@ -10,6 +10,56 @@ Date:
 2026-06-28
 
 Current Task:
+Audit Visitor cancel/delete agar visitor hanya terhapus jika delete pada semua device endpoint terdaftar berhasil.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow cancel visitor dari home.html, VisitorController.Cancel, VisitorService.Delete, DeviceRecognitionService.DeleteVisitor, dan popup Cancel Visitor - Device Sync Queue.
+- Mengidentifikasi root cause: backend sebelumnya melakukan soft-delete visitor dan VisitorDevice sebelum call delete ke device, lalu tetap commit walaupun sebagian endpoint device gagal.
+- Mengubah DeviceRecognitionService.DeleteVisitor agar membaca dan mengembalikan DeviceCommandResponse seperti flow add/save visitor, sehingga result=false dari device tidak lagi dianggap sukses.
+- Mengubah VisitorService.Delete agar delete ke device diproses satu per satu, status setiap device dicatat ke device queue, dan database visitor hanya di-soft-delete setelah seluruh device terdaftar berstatus Success.
+- Jika satu atau lebih device gagal delete, backend mengembalikan response error dengan data status per device dan tidak menghapus visitor/relasi visitor di database.
+- Menyesuaikan VisitorController.Cancel dan Save agar response service returns=false dikembalikan sebagai BadRequest.
+- Menyesuaikan frontend cancel visitor agar popup tetap menampilkan hasil per-device dan tabel hanya reload jika cancel benar-benar sukses.
+- Menyesuaikan caller scheduler expired temporary visitor agar result=false dari delete device dicatat sebagai warning dan tidak dihitung sebagai sukses.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Repo aplikasi VMS sudah memiliki beberapa perubahan lokal dan file foto visitor untracked sebelum task dimulai; tidak diubah atau direvert.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Jika sebagian device berhasil delete tetapi sebagian gagal, data visitor tetap aktif di database sesuai requirement; operator perlu retry cancel setelah device yang gagal normal.
+- Device yang sudah berhasil delete pada attempt pertama akan menerima request delete ulang saat retry, sehingga response device untuk kondisi "data sudah tidak ada" perlu dipantau pada uji device fisik.
+
+Next Action:
+- Uji manual cancel visitor pada visitor yang terdaftar di lebih dari satu device: skenario semua sukses, satu device gagal/offline, dan retry setelah device normal.
+- Validasi popup Cancel Visitor - Device Sync Queue menampilkan Success/Error per device dan data visitor hanya hilang dari tabel saat semua device sukses.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit home.html dan backend Visitor Save untuk menyelesaikan error BadRequest saat fetch POST visitorApi.save.
 
 Status:
