@@ -10,6 +10,54 @@ Date:
 2026-06-28
 
 Current Task:
+Audit home.html dan backend Visitor Save untuk menyelesaikan error BadRequest saat fetch POST visitorApi.save.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur solution VMS dan flow Manajemen Visitor dari home.html, visitor.html, VisitorController.Save, VisitorModel, dan VisitorService.
+- Mengidentifikasi root cause BadRequest: frontend mengirim field schedule nullable seperti duration_hours, start_date, dan end_date sebagai string kosong dari helper GetDataForm, sementara backend VisitorModel memakai int? dan DateTime? sehingga model binding JSON menolak payload sebelum service berjalan.
+- Menambahkan builder payload khusus save visitor pada home.html agar data request sesuai kontrak backend: device_ids tetap array, duration_hours dikirim number untuk Temporary, dan field nullable kosong dikirim null untuk Permanent atau nilai kosong.
+- Menambahkan fallback pesan error dari body.title agar BadRequest otomatis dari model binding tetap tampil jelas pada queue/toast frontend.
+- Menambahkan JsonConverter kecil pada VisitorModel untuk menerima empty string sebagai null pada duration_hours, start_date, dan end_date, sehingga backend lebih defensif terhadap klien lama atau payload form kosong.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Repo aplikasi VMS sudah memiliki beberapa perubahan lokal dan file foto visitor untracked sebelum task dimulai; tidak diubah atau direvert.
+- Beberapa command git diff pada repo VMS masih terganggu safe.directory/dubious ownership dan sandbox path, sehingga verifikasi dilakukan melalui inspeksi file langsung, git status, dan dotnet build.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Perubahan backend converter dibuat spesifik pada VisitorModel agar tidak mengubah behavior JSON global aplikasi.
+- Field start_date dan end_date tetap nullable dan backend VisitorService masih menjadi sumber kebenaran schedule visitor temporary.
+
+Next Action:
+- Uji manual Add Visitor Permanent dan Temporary dari UI untuk memastikan POST /api/Visitor/Save tidak lagi 400 dan data tersimpan.
+- Uji update visitor existing tanpa mengganti schedule/foto untuk memastikan payload edit tetap kompatibel.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit scheduler untuk menambahkan job delete visitor temporary yang sudah expired dari setiap device yang terdaftar pada visitor tersebut.
 
 Status:
