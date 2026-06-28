@@ -1,3 +1,62 @@
+﻿# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
+Audit dan implementasi flow lengkap Delete Visitor dari device Top Security Face Recognition berdasarkan WebSocket + JSON protocol 3.0.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audit solution VMS: flow utama berada di VisitorController.Cancel/Save, VisitorService.Delete, SchedulerJobs.DeleteExpiredTemporaryVisitorJob, DeviceRecognitionService, DeviceRecognitionModel, VisitorDevice mapping, dan popup Cancel Visitor - Device Sync Queue di home.html.
+- Mapping database yang tersedia: crm.Visitor_Device sudah memiliki VisitorId, DeviceId, EnrollId, Active, Created/Updated/Deleted audit fields, dan relasi Device; belum ada kolom persisted untuk device_sync_status, device_sync_message, last_sync_at, atau deleted_from_device_at.
+- Root cause teknis: delete visitor sebelumnya hanya mengirim deleteuser single command, memakai field enrolled, memanggil flow berisiko CleanAllUser, dan belum memvalidasi ulang face/photo setelah result true.
+- Menghapus jalur command mass delete dari implementasi delete visitor; scan command berbahaya cleanuser, cleanadmin, initsys, cleanuserlock, deleteusers sudah tidak ditemukan pada source/appsettings.
+- Mengubah command delete menjadi sequence aman: enableuser enflag 0, deleteuser backupnum 13, deleteuser backupnum 50, deleteuser backupnum 20-27, deleteuserlock, lalu validasi getuserinfo backupnum 50 dan 20-27.
+- Menambahkan fallback disable opsional dengan field enrolled hanya jika response enableuser field enrollid gagal, mengikuti catatan typo dokumen tanpa menjadikannya jalur utama.
+- Menambahkan response handling ret/sn/enrollid/result/message/msg/reason dan validasi ret terhadap command yang dikirim.
+- Menambahkan logging command/response device yang disanitasi agar password dan face image tidak bocor ke log.
+- Menambahkan dukungan transport JSON via HTTP existing dan WebSocket ws/wss; jika Scheme diset ws/wss, endpoint memakai default WebSocketPort 7788 ketika device address tidak memiliki port.
+- Mengubah status per device pada VisitorService.Delete menjadi Success, DeviceOffline, ValidationFailed, PartialDeleted, atau Error agar popup Cancel Visitor - Device Sync Queue menampilkan hasil delete per endpoint.
+- Memastikan visitor manual cancel/delete hanya di-soft-delete dari database jika semua registered device berhasil menjalankan delete dan validasi.
+- Mengubah expired temporary visitor job agar visitor tidak ditandai deleted sebelum semua device delete berhasil; jika partial/offline, job mencatat warning dan bisa retry pada run berikutnya.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Tidak ada blocker build.
+- Repo aplikasi VMS sudah memiliki banyak perubahan lokal dan file foto visitor untracked sebelum task dimulai; tidak diubah atau direvert.
+- Git diff pada repo VMS sebagian terganggu safe.directory/dubious ownership saat memakai path tertentu, sehingga verifikasi utama dilakukan lewat inspeksi file, rg, git status, dan dotnet build.
+
+Need Decision:
+- Rekomendasi migrasi kecil berikutnya: tambahkan kolom persisted di crm.Visitor_Device untuk DeviceSyncStatus, DeviceSyncMessage, LastSyncAt, dan DeletedFromDeviceAt agar status retry/delete device tidak hanya berada di response popup/log aplikasi.
+- Konfirmasi konfigurasi runtime device: untuk direct Top Security WebSocket gunakan DeviceRecognition:Scheme = ws atau wss, EndpointPath sesuai endpoint device, dan WebSocketPort default 7788 jika IP tidak mencantumkan port.
+
+Risk:
+- Jika sebagian device sudah berhasil delete lalu device lain gagal, database visitor tetap aktif agar sesuai requirement all-or-nothing; retry akan mengirim delete ulang ke device yang sebelumnya sudah bersih, sehingga response not-found dari device fisik perlu dipastikan tidak dianggap fatal untuk backupnum yang memang sudah tidak ada.
+- Belum ada tabel command audit khusus; command/response tersimpan di application log. Persisted device sync audit sebaiknya ditambahkan melalui migrasi terpisah yang kecil dan ter-review.
+- Flow WebSocket sudah tersedia secara konfiguratif, tetapi perlu uji fisik device Top Security karena environment lokal tidak menyediakan device endpoint/SN aktif.
+
+Next Action:
+- Test manual dengan visitor test enrollid tertentu pada 2 device: trigger cancel dari VMS, pastikan popup menampilkan enableuser, deleteuser 13/50/20-27, deleteuserlock, dan hasil validasi getuserinfo melalui log.
+- Test device offline: matikan salah satu device, trigger cancel, pastikan status DeviceOffline/ValidationFailed muncul dan visitor tetap ada di database.
+- Test retry setelah device normal dan pastikan visitor baru hilang dari tabel ketika semua device delete tervalidasi.
+- Test expired temporary visitor scheduler untuk memastikan visitor expired hanya deleted setelah semua device selesai dibersihkan.
+
+ETA:
+2026-06-28
+
+---
 # CONTROL TOWER REPORT
 
 Agent:
@@ -1771,3 +1830,4 @@ Next Action:
 
 ETA:
 2026-06-27
+
