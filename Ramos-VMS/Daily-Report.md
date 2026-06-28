@@ -10,6 +10,56 @@ Date:
 2026-06-28
 
 Current Task:
+Audit output report Visitor Logger agar kolom Photo ID dan Photo Face pada export Excel/PDF tampil sebagai image, serta menyelaraskan backend dengan kebutuhan output export.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang flow export Visitor Logger: frontend home.html melakukan flatten data dan generate Excel/PDF, sementara backend ReportsController/ReportService mengirim data report.
+- Menambahkan field photo_id_data_url dan photo_face_data_url pada VisitorLoggerReportDetailModel untuk kebutuhan output export image.
+- Menyesuaikan ReportsController agar saat export_all=true backend membaca file foto dari wwwroot secara aman dan mengembalikan data URL image untuk Photo ID dan Photo Face.
+- Menambahkan cache data URL per path foto pada backend agar foto visitor yang sama tidak dibaca berulang dalam satu request export.
+- Menyesuaikan export Excel agar kolom Photo ID dan Photo Face memakai tag img dari data URL, bukan teks Available/Not Available.
+- Menyesuaikan export PDF A4 agar kolom Photo ID dan Photo Face memakai image cell pdfmake dengan fallback teks jika file foto tidak tersedia.
+- Menjaga tampilan report normal tetap ringan karena data URL image hanya dikirim pada flow export_all.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+- Menjalankan pemeriksaan syntax JavaScript pada inline script home.html dengan hasil JS syntax OK.
+
+Issue / Blocker:
+- Repo aplikasi VMS masih memiliki file visitor untracked sebelum task dimulai; file tersebut tidak diubah.
+- Beberapa perubahan report dari task sebelumnya masih berada di worktree VMS karena belum ada instruksi commit aplikasi; perubahan task ini dibuat di area report yang sama tanpa merevert pekerjaan existing.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Export dengan banyak data dan image Base64 dapat menghasilkan payload dan file yang lebih besar; filter tanggal/search perlu dipakai secara operasional agar export tetap ringan.
+- Jika file foto di path visitor hilang dari wwwroot, kolom image pada export akan tampil fallback teks not available.
+
+Next Action:
+- Uji manual download Excel dan PDF pada Visitor Logger Report untuk memastikan Photo ID dan Photo Face tampil sebagai image di kedua format.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit report Visitor Logger untuk menambahkan download Excel/PDF pada frontend dan menyelaraskan pengambilan data backend dengan filter frontend.
 
 Status:
