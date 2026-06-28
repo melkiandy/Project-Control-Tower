@@ -10,6 +10,55 @@ Date:
 2026-06-28
 
 Current Task:
+Audit scheduler untuk menambahkan job delete visitor temporary yang sudah expired dari setiap device yang terdaftar pada visitor tersebut.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur scheduler Hangfire: IISchedulerJob, SchedulerJobRunner, SchedulerService, SchedulerController, dan registry dependency injection.
+- Memahami ulang flow delete visitor existing di VisitorService agar perilaku scheduler selaras dengan proses soft-delete visitor dan delete ke device berdasarkan EnrollId.
+- Menambahkan job DeleteExpiredTemporaryVisitorJob dengan job key visitor.delete-expired-temporary dan nama Delete Expired Temporary Visitors.
+- Job mencari visitor aktif dengan Visit_Type Temporary, Deleted_Date null, End_Date terisi, dan End_Date <= UTC now.
+- Job melakukan soft-delete visitor dan relasi VisitorDevice yang masih aktif/deleted null, lalu mencoba menghapus visitor dari setiap device terdaftar memakai DeviceRecognitionService.DeleteVisitor.
+- Job mencatat warning bila relasi device tidak lengkap, EnrollId kosong, atau delete ke device gagal; kegagalan satu device tidak menghentikan proses visitor/device lainnya.
+- Mendaftarkan DeleteExpiredTemporaryVisitorJob ke dependency injection sebagai IISchedulerJob agar muncul di Available Jobs scheduler.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Repo aplikasi VMS masih memiliki perubahan report dari task sebelumnya dan file visitor untracked sebelum task ini; tidak diubah atau direvert.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Visitor temporary yang expired akan di-soft-delete di database sebelum attempt delete ke device selesai; jika device offline/gagal, warning akan dicatat dan data visitor tetap inactive agar tidak diproses berulang.
+- Job hanya menargetkan Temporary visitor dengan End_Date valid dan sudah lewat; Temporary visitor dengan tanggal kosong tidak otomatis dihapus untuk menghindari penghapusan agresif.
+
+Next Action:
+- Buat recurring scheduler melalui UI Hangfire Scheduler untuk job key visitor.delete-expired-temporary dengan cron operasional yang disepakati.
+- Uji manual trigger job dengan visitor temporary expired dan validasi visitor terhapus dari device terdaftar.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit export Visitor Logger karena image Photo ID dan Photo Face belum muncul di Excel, serta memastikan download Excel/PDF mengambil seluruh data dari backend dan tidak bentrok dengan paging frontend.
 
 Status:
