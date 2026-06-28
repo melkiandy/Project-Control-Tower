@@ -7,6 +7,52 @@ Project:
 Application VMS HM
 
 Date:
+2026-06-28
+
+Current Task:
+Audit dashboard.html pada elemen welcome-bg-img dan memperbaiki tampilan PNG bg_dashboard agar fit profesional pada card dashboard.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami struktur solution VMS dan posisi dashboard fragment pada App.VMS/wwwroot/pages/dashboards/dashboard.html.
+- Mengidentifikasi root cause: image bg_dashboard.png dipasang sebagai img tanpa sizing scoped pada dashboard, sementara class img-bg hanya didefinisikan di home.html dan memakai object-fit fill yang berpotensi membuat PNG tampak tidak proporsional.
+- Menambahkan style scoped dashboard-welcome-card agar card-body punya tinggi stabil, container welcome-bg-img mengisi area card, dan image menggunakan width/height 100% dengan object-fit cover serta object-position center.
+- Menambahkan class dashboard-welcome-card pada card dashboard agar override tidak mengganggu halaman lain atau CSS global/minified.
+- Menghapus commented fallback image welcome-bg.svg pada area tersebut agar markup lebih bersih.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+
+Issue / Blocker:
+- Repo aplikasi VMS memiliki perubahan lokal lain sebelum task dimulai; perubahan task dibatasi hanya pada dashboard.html tanpa merevert perubahan existing.
+- Beberapa command git diff/status path-specific pada repo VMS terkena safe.directory/dubious ownership, namun build dan inspeksi file berhasil diverifikasi.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- object-fit cover dapat melakukan cropping tipis pada sisi gambar jika rasio card berbeda dari rasio PNG, tetapi menjaga tampilan tetap proporsional dan profesional.
+
+Next Action:
+- Uji manual halaman dashboard pada desktop dan mobile untuk memastikan background welcome card terlihat rapi pada ukuran layar target.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
 2026-06-27
 
 Current Task:
