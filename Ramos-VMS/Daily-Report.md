@@ -10,6 +10,57 @@ Date:
 2026-06-28
 
 Current Task:
+Audit report Visitor Logger untuk menambahkan download Excel/PDF pada frontend dan menyelaraskan pengambilan data backend dengan filter frontend.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Memahami ulang struktur report Visitor Logger: report_monitoring.html sebagai fragment UI, home.html sebagai handler frontend, ReportsController, ReportService, dan VisitorLoggerReportModel.
+- Menambahkan dropdown Download pada header Visitor Logger Report dengan pilihan Excel dan PDF.
+- Menambahkan flow frontend export yang memakai filter tanggal/search yang sama dengan tampilan report dan memanggil endpoint GetReportMonitoring dengan export_all=true.
+- Menambahkan export Excel dalam format .xls berbasis tabel HTML agar dapat dibuka Microsoft Excel tanpa menambah dependency baru.
+- Menambahkan export PDF A4 memakai pdfmake yang sudah tersedia, dengan header logo DPRD dan nama DPRD Jakarta.
+- Menambahkan helper frontend untuk flatten data visitor logger, metadata filter, generated time, nama file timestamp, dan state tombol download.
+- Menyelaraskan backend dengan menambahkan parameter export_all pada request/controller/service agar export mengambil seluruh data hasil filter tanpa paging.
+- Menambahkan metadata response generated_at, filter_date_from, filter_date_to, filter_search, dan export_all untuk kebutuhan export frontend.
+- Menjalankan dotnet build Application_VMS_HM.sln dengan hasil sukses, 0 warning, 0 error.
+- Menjalankan pemeriksaan syntax JavaScript pada inline script home.html dengan hasil JS syntax OK.
+
+Issue / Blocker:
+- Repo aplikasi VMS memiliki file visitor untracked sebelum task dimulai; file tersebut tidak diubah.
+- Beberapa command git diff pada repo VMS masih terkena safe.directory/dubious ownership, sehingga verifikasi diff dilakukan melalui git status, inspeksi file, build, dan syntax check.
+
+Need Decision:
+- Tidak ada.
+
+Risk:
+- Export PDF/Excel menampilkan status ketersediaan Photo ID dan Photo Face, bukan embed seluruh gambar per row, agar ukuran file tetap terkendali dan export stabil.
+- Export all mengambil seluruh data sesuai filter; rentang tanggal yang terlalu luas dapat menghasilkan file besar.
+
+Next Action:
+- Uji manual halaman Report Visitor Logger: filter tanggal/search, download Excel, download PDF A4, dan validasi header logo DPRD Jakarta pada file PDF.
+
+ETA:
+2026-06-28
+
+---
+
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos VMS
+
+Project:
+Application VMS HM
+
+Date:
+2026-06-28
+
+Current Task:
 Audit dashboard.html pada elemen welcome-bg-img dan memperbaiki tampilan PNG bg_dashboard agar fit profesional pada card dashboard.
 
 Status:
