@@ -10,6 +10,56 @@ Date:
 2026-06-29
 
 Current Task:
+Correct Hardcode Role_Code dataset and audit Roles backend/frontend consumption for role_code.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Replaced incorrect Hardcode:Role_Code values in Application.Web.Admin/appsettings.json with the requested grouped role code dataset for GLOBAL, TENANT_GROUP, and COMPANY categories.
+- Updated Core.Common HardcodeModel with RoleCodeGroupOption so Role_Code can be bound as Scope, Category, and Codes from appsettings.
+- Updated IHardcodeHelperService and HardcodeHelperService to expose role code groups, flatten codes, filter by roleScope, remove blanks/duplicates, and return Select2-ready id/name/text data.
+- Updated Web Admin RolesService.RoleCodeOptions and RolesController.RoleCodeOptions to accept optional roleScope while keeping the same /Roles/RoleCodeOptions endpoint.
+- Updated Application.Web.Admin/wwwroot/js/pages/roles.js so changing Role Scope clears Role Code, reloads the Role Code Select2, and sends roleScope to /Roles/RoleCodeOptions.
+- Verified Application.Web.Admin/appsettings.json parses as valid JSON.
+- Verified JavaScript syntax with node --check Application.Web.Admin/wwwroot/js/pages/roles.js.
+- Verified dotnet build Application.sln succeeded with 0 errors and 4 existing nullable warnings in Core.Common.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No implementation blocker remains for the Role_Code hardcode correction and Select2 consumption flow.
+- Live browser/API smoke test was not run in this task; verification was limited to config parse, JavaScript syntax, solution build, and existing automated tests.
+- Application worktree still contains unrelated uncommitted changes from other work; those were preserved and not reverted.
+
+Need Decision:
+- Decide whether API backend must also enforce Role_Code membership against the hardcode dataset. Current API validation enforces required and duplicate role code, while Web Admin controls selectable values through the hardcode helper.
+
+Risk:
+- Non-Web clients could still submit a syntactically valid but non-hardcoded role_code until the hardcode dataset is shared with, or mirrored into, API-side validation.
+- Existing saved roles with old codes remain in the database and may need review if they do not match the new Role_Code catalog.
+
+Next Action:
+- Smoke-test Roles create/update in browser to confirm Role Code dropdown changes correctly for GLOBAL, TENANT_GROUP, and COMPANY.
+- If required, add API-side Role_Code membership validation in a separate small change using a shared source of hardcode truth.
+
+ETA:
+2026-06-29
+
+---# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-29
+
+Current Task:
 Audit and update CRUD Roles flow for Role Scope, Role Code, Tenant Group, and Tenant selection rules.
 
 Status:
@@ -3164,6 +3214,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
