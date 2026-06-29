@@ -10,6 +10,58 @@ Date:
 2026-06-30
 
 Current Task:
+Audit Hardcode Menu_Catalog and align Master Menu sequence flow to database source of truth.
+
+Status:
+Done with runtime smoke-test blocker
+
+Progress:
+90%
+
+Completed:
+- Removed technical columns Id, Sequence, Is_Active, and Is_Navigation from Application.Web.Admin Hardcode.Menu_Catalog.
+- Removed the same technical properties from Core.Common MenuCatalogOption model so catalog config remains template-only.
+- Updated HardcodeHelperService Menu_Catalog filtering to use Code presence and preserve appsettings order.
+- Removed catalog sequence/is_active/is_navigation mapping from Web Admin MenuCatalogOptionModel and service response.
+- Added Web Admin endpoint NextSequenceByCatalogParent to request sequence calculation for selected catalog parent code.
+- Added Core API endpoint GET /api/core/menu/next-sequence/by-parent-code.
+- Added Application.Service.Core logic to resolve Parent_Code against cms.menu by tenant and calculate sequence using MenuOrderingService.GetNextSequenceAsync.
+- Updated Master Menu JavaScript so selecting Menu Catalog autofills fields, then requests sequence from DB based on Parent_Code and selects the resolved DB parent when available.
+- Kept manual Parent Menu selection flow recalculating sequence by selected parent menu id.
+- Set URL textbox in Master Menu form to readonly as requested.
+- Verified dotnet build Application.sln succeeded: 4 existing warnings, 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/menu.js passed.
+
+Issue / Blocker:
+- Runtime browser/API smoke test was not executed because authenticated Web Admin/API Core/PostgreSQL runtime was not started in this turn.
+- If a catalog item has Parent_Code but that parent menu has not been created in cms.menu, the API returns validation and UI shows the parent-code error; admin must create/select the parent first.
+
+Need Decision:
+- Decide whether Home/Auth non-navigation pages should stay in Menu_Catalog as selectable templates or be removed from selectable catalog later.
+
+Risk:
+- New parent-code sequence endpoint must be smoke-tested with real cms.menu data to verify parent lookup, root sequence, and child sequence behavior.
+
+Next Action:
+- Start the runtime stack and test selecting SYSTEM_ADMINISTRATION, TENANT_TYPE, TENANT, ROLES, PERMISSION, and MENU catalog items with/without existing parent rows.
+- Validate create/update flows do not allow duplicate code and keep sequence normalized in DB.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Rapikan Master Menu agar dapat consume Menu_Catalog dari appsettings.json untuk template input menu.
 
 Status:
