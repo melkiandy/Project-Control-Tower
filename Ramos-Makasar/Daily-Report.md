@@ -7,6 +7,63 @@ Project:
 Project SaaS Application - Makasar
 
 Date:
+2026-06-30
+
+Current Task:
+Refactor runtime boundary between Application.API.Account and Application.API.Core for core platform endpoints.
+
+Status:
+Done with staged migration TODO
+
+Progress:
+80%
+
+Completed:
+- Audited solution structure and confirmed Application.API.Core, Application.Model.Core, Application.Service.Core, and Application.Data.Core already exist but were not registered in Application.sln.
+- Audited Application.API.Account and found core platform controllers still hosted there: TenantType, Tenant, Menu, Permission, and Roles.
+- Moved TenantTypeController, TenantController, MenuController, PermissionController, and RolesController from Application.API.Account to Application.API.Core.
+- Updated Core controller namespaces and routes to /api/core/tenant-type, /api/core/tenant, /api/core/menu, /api/core/permission, and /api/core/role.
+- Left Application.API.Account with AccountController only for login/logout/refresh token responsibility.
+- Replaced Application.API.Core weatherforecast template Program.cs with controller API host using existing JWT/auth, infrastructure, schema initializer, and seeder flow.
+- Registered Application.API.Core, Application.Model.Core, Application.Service.Core, and Application.Data.Core in Application.sln so solution build validates Core projects.
+- Split Application.Service.Account dependency registration into auth-only and core-platform registration methods.
+- Updated Application.Web.Admin to use BaseUrlCore for Tenant, Role, Menu, and Permission API clients while AuthApiClient remains on BaseUrlAccount.
+- Updated Web Admin API client paths from /api/{module} to /api/core/{module} for core platform features.
+- Updated BaseApiClient token refresh so refresh calls always go to BaseUrlAccount even when the current client targets Core API.
+- Verified dotnet build Application.API.Core/Application.API.Core.csproj succeeded with 0 warnings and 0 errors.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Full physical migration of service/model/entity/data projects to Application.Service.Core, Application.Model.Core, and Application.Data.Core was not completed in this staged change to avoid schema/data risk.
+- Core API currently references Application.Service.Account, Application.Model.Account, Infrastructure.Data.Account, and Core.Common as a temporary compatibility bridge.
+- Physical database schema remains existing idt/cms schema from Infrastructure.Data.Account; no table drop, data delete, or schema migration was performed.
+- Runtime browser/API smoke test was not run; verification was build/test/static boundary audit only.
+
+Need Decision:
+- Decide whether the next phase should physically move Tenant/Menu/Role/Permission models, services, and data infrastructure into Core projects, or keep the current compatibility bridge until schema migration is planned.
+
+Risk:
+- Account API controller boundary is clean, but code ownership is not fully clean until services/models/entities are moved to Core projects.
+- Running Account API and Core API together may execute shared schema/seeder initialization paths until data infrastructure is split.
+- Web Admin now depends on Application.API.Core being hosted at ApiSettings:BaseUrlCore for core platform modules.
+
+Next Action:
+- Start Application.API.Account, Application.API.Core, and Application.Web.Admin together, then smoke-test login, refresh token, Tenant Type CRUD, Tenant CRUD, Menu CRUD, Permission CRUD, and Role CRUD.
+- Plan phase 2 to move Application.Model.Account core DTOs, Application.Service.Account core services, and Infrastructure.Data.Account core entities/seeders into Core-named projects safely.
+
+ETA:
+2026-06-30
+
+---# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
 2026-06-29
 
 Current Task:
@@ -3261,6 +3318,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
