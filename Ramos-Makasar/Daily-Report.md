@@ -10,6 +10,67 @@ Date:
 2026-06-29
 
 Current Task:
+Audit and update CRUD Roles flow for Role Scope, Role Code, Tenant Group, and Tenant selection rules.
+
+Status:
+Done with runtime testing blocker
+
+Progress:
+85%
+
+Completed:
+- Audited Roles module flow across API model, Web Admin model, identity role schema seeder, API controller, application service, Web Admin ApiClient, Web Admin service, Web Admin controller, Index.cshtml, and roles.js.
+- Confirmed Roles persists on identity table idt.aspnetroles.
+- Updated Web Admin hardcode Role_Code to GLOBAL, TENANT_GROUP, and COMPANY, matching requested Role Scope values.
+- Updated hardcode helper mapping so Role Scope Select2 uses GLOBAL/TENANT_GROUP/COMPANY as option values instead of numeric ids.
+- Added role_scope and tenant_group_id support to ApplicationRole, AppDbContext mapping, and RoleSchemaSeeder for SQL Server/PostgreSQL.
+- Added standard API endpoints POST /api/Roles/GetRolesByAll/{page}/{take} and POST /api/Roles/Submit while keeping existing endpoints compatible.
+- Updated Roles application service list/query/search/order mapping for scope, tenant group, tenant, role name, and code.
+- Implemented backend validation rules: GLOBAL requires tenant group null and tenant null; TENANT_GROUP requires tenant group and tenant null; COMPANY requires tenant group and tenant, and tenant must belong to selected tenant group.
+- Updated Web Admin RoleApiClient to use the standard Roles API endpoints and payload fields role_scope, tenant_group_id, tenant_id, name, code, and status.
+- Added Web Admin Roles service/controller options for Role Scope, Role Code, Tenant Group, and Tenant by selected group.
+- Updated Roles form: Role Scope Select2, Role Code Select2, Tenant Group Select2, and single Tenant Select2.
+- Replaced old Parent Tenant / Child Tenants behavior with requested scope UI rules and automatic clear/disable for hidden fields.
+- Updated Roles datatable columns and footer search for Scope, Tenant Group, Tenant, Role Name, and Code.
+- Verified JavaScript syntax with node --check Application.Web.Admin/wwwroot/js/pages/roles.js.
+- Verified dotnet build Application.sln succeeded with 0 errors and 4 existing nullable warnings in Core.Common.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Runtime load table/create/update/delete/browser console/API response testing could not be completed because starting API via dotnet run attempted NuGet access and failed with NU1301 network/socket restriction.
+- Running the built API DLL from workspace root reached startup but failed because project appsettings were not loaded from that content root, causing missing Account database connection string.
+- Retrying the built API DLL from Application.API.Account folder required outside-sandbox execution and was rejected by approval, so live API/Web/browser smoke testing stopped there.
+- Application worktree already had unrelated uncommitted changes before this task; those were preserved and not reverted.
+
+Need Decision:
+- Confirm whether existing historical roles with tenant_id but no tenant_group_id should be migrated to a specific scope, or left as GLOBAL defaults until manually updated.
+
+Risk:
+- Existing roles created before role_scope/tenant_group_id columns are seeded will default to GLOBAL; if they still carry tenant_id from legacy data, operators should review them after deployment.
+- Tenant dropdown depends on Tenant Group membership data already existing in cms.tenant_group and cms.tenant_group_member.
+- Full browser CRUD smoke test is still required after API/Web can be started with proper local database configuration.
+
+Next Action:
+- Start Account API and Web Admin from the correct project content roots after approval/environment is available.
+- Allow RoleSchemaSeeder to run, then smoke-test Roles table load, create GLOBAL, create TENANT_GROUP, create COMPANY, update, delete, duplicate validation, browser console, and API response shapes.
+- Decide whether a one-time data migration is needed for legacy roles.
+
+ETA:
+2026-06-29
+
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-29
+
+Current Task:
 Audit hardcode Role_Code in Web Admin appsettings and extend common hardcode helper/service for Select2 dropdown data.
 
 Status:
@@ -3103,5 +3164,6 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
