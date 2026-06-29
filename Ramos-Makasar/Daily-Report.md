@@ -1,3 +1,51 @@
+﻿# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-29
+
+Current Task:
+Audit hardcode data in Web Admin appsettings and create common hardcode helper/service for Role_Scope Select2 dropdown data.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Web.Admin/appsettings.json and confirmed Hardcode:Role_Scope contains GLOBAL, TENANT_GROUP, and COMPANY.
+- Extended Core.Common HardcodeModel with Role_Scope and a reusable HardcodeOption contract.
+- Added Core.Common hardcode helper service contract and implementation to expose Role Scope raw data and Select2-ready data through GetRoleScopeSelect2(search).
+- Extended Select2Model with text while preserving existing id, name, and icon properties for backward compatibility.
+- Registered HardcodeModel binding to the Web Admin Hardcode configuration section and registered IHardcodeHelperService in dependency injection.
+- Added RolesService.RoleScopeOptions and RolesController.RoleScopeOptions endpoint so Web Admin consumers can load Role_Scope dropdown data from /Roles/RoleScopeOptions.
+- Verified dotnet build Application.sln succeeded with 0 errors and 4 existing nullable warnings in Core.Common.
+
+Issue / Blocker:
+- No implementation or build blocker remains.
+- Application worktree already contained unrelated uncommitted changes before this task; those changes were preserved and not reverted.
+
+Need Decision:
+- None for the common hardcode helper and Role_Scope dropdown data service.
+
+Risk:
+- Runtime consumers must use the new /Roles/RoleScopeOptions endpoint or inject IHardcodeHelperService to benefit from the common helper.
+- If Role create/edit later needs persisted scope, model/database/API contracts still need a separate controlled change.
+
+Next Action:
+- Wire Role Scope into the Role create/edit UI and persistence flow if the next approved task requires storing the selected scope.
+- Smoke-test /Roles/RoleScopeOptions after Web Admin is restarted.
+
+ETA:
+2026-06-29
+
+---
 # CONTROL TOWER REPORT
 
 Agent:
@@ -3004,3 +3052,4 @@ Next Action:
 
 ETA:
 2026-06-25
+
