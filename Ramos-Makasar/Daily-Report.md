@@ -10,6 +10,53 @@ Date:
 2026-06-29
 
 Current Task:
+Audit Web Admin pages and add Menu_Catalog hardcode data in appsettings.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Web.Admin controllers and views to identify page endpoints currently available in Web Admin.
+- Added Hardcode:Menu_Catalog to Application.Web.Admin/appsettings.json as manual catalog data for future module development.
+- Added catalog entries for /Home/Index, /TenantType/Index, /Tenant/Index, /Roles/Index, /Permission/Index, /Menu/Index, /Auth/Login, /Home/Privacy, and /Home/Error.
+- Marked application navigation pages with Is_Navigation true and support/non-menu pages with Is_Navigation false.
+- Added Core.Common MenuCatalogOption and HardcodeModel.Menu_Catalog so the new hardcode section can be bound through existing configuration patterns.
+- Verified Application.Web.Admin/appsettings.json parses as valid JSON.
+- Verified dotnet build Application.sln succeeded with 0 errors and 4 existing nullable warnings in Core.Common.
+
+Issue / Blocker:
+- No implementation blocker remains for Menu_Catalog hardcode data.
+- No runtime browser smoke test was run because this task only adds config/model catalog data and does not wire a consumer yet.
+- Application worktree still contains unrelated uncommitted changes from other work; those were preserved and not reverted.
+
+Need Decision:
+- Decide whether Menu_Catalog should later seed cms.menu automatically, or remain manual reference data only.
+
+Risk:
+- Menu_Catalog is currently a hardcode source only; existing menu screens/sidebar will not consume it until a seeder/service flow is explicitly wired.
+- Login, Privacy, and Error are included as page catalog entries but marked Is_Navigation false so they should not be treated as sidebar menu items.
+
+Next Action:
+- If approved, create a small service/seeder flow to compare Menu_Catalog with cms.menu and insert missing menu records safely.
+
+ETA:
+2026-06-29
+
+---# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-29
+
+Current Task:
 Correct Hardcode Role_Code dataset and audit Roles backend/frontend consumption for role_code.
 
 Status:
@@ -3214,6 +3261,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
