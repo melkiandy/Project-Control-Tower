@@ -10,6 +10,52 @@ Date:
 2026-06-30
 
 Current Task:
+Audit and fix VS Code launch configuration so Application.API.Core starts with the development stack.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited .vscode/launch.json and confirmed Application.API.Core was not registered as a launch configuration.
+- Added Development: Core API launch target pointing to Application.API.Core/bin/Debug/net8.0/Application.API.Core.dll with cwd Application.API.Core.
+- Configured Core API launch on http://localhost:5090 with Development environment, PostgreSQL provider, and Redis connection override.
+- Added Development: Core API into Development: Full Solution and Development: Backend APIs compounds.
+- Added ApiSettings__BaseUrlCore=http://localhost:5090 to Development: Web Admin environment so Web Admin can reach Core API during debug.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified Core, Account, and Web Admin debug DLL paths exist after build.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- .vscode/launch.json does not appear in git status, likely because it is ignored or untracked in the application repository; the local launch file was updated successfully.
+- No runtime launch smoke test was executed from VS Code in this turn.
+
+Need Decision:
+- Decide whether .vscode/launch.json should be committed/shared, or kept as local developer configuration.
+
+Risk:
+- If .vscode remains ignored, other developers will not receive the Core API launch configuration unless it is documented or explicitly tracked.
+
+Next Action:
+- Start VS Code compound Development: Full Solution and verify Account API, Core API, Notification API, and Web Admin all listen on expected ports.
+
+ETA:
+2026-06-30
+
+---# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Refactor runtime boundary between Application.API.Account and Application.API.Core for core platform endpoints.
 
 Status:
@@ -3318,6 +3364,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
