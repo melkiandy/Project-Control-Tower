@@ -10,6 +10,49 @@ Date:
 2026-06-30
 
 Current Task:
+Audit frontend Master Menu DataTable and remove top global search while keeping server-side table behavior.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Web.Admin/wwwroot/js/pages/menu.js DataTable configuration for Master Menu.
+- Confirmed Master Menu DataTable uses serverSide processing.
+- Added DataTables dom configuration lrtip to remove the top global search box.
+- Kept length menu, table rendering, info, pagination, and footer column search behavior intact.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/menu.js passed.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- Browser visual smoke test was not executed because Web Admin runtime was not started in this turn.
+
+Need Decision:
+-
+
+Risk:
+- Low; change is isolated to DataTables UI controls and does not alter server-side endpoint or payload mapping.
+
+Next Action:
+- Run Web Admin and visually confirm the Master Menu table no longer shows the top search box while footer column filters still work.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Audit Hardcode Menu_Catalog and align Master Menu sequence flow to database source of truth.
 
 Status:
