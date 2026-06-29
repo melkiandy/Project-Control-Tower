@@ -10,6 +10,57 @@ Date:
 2026-06-29
 
 Current Task:
+Audit hardcode Role_Code in Web Admin appsettings and extend common hardcode helper/service for Select2 dropdown data.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Application.Web.Admin/appsettings.json and confirmed Hardcode:Role_Code contains SUPER_ADMIN, SYSTEM_ADMIN, and PLATFORM_ADMIN as string list data.
+- Extended Core.Common HardcodeModel with Role_Code so the existing Hardcode configuration binding can load role code data.
+- Extended IHardcodeHelperService and HardcodeHelperService with GetRoleCodes and GetRoleCodeSelect2(search).
+- Mapped Role_Code into Select2-ready data using id, name, and text fields with duplicate and blank filtering.
+- Added RolesService.RoleCodeOptions so Web Admin services can consume Role_Code through the common helper instead of reading configuration directly.
+- Added RolesController.RoleCodeOptions endpoint so dropdown consumers can request Role_Code data from /Roles/RoleCodeOptions.
+- Ran dotnet build Application.sln; compile reached project builds but failed during output copy because active .NET Host / Visual Studio Debug Adapter processes locked existing bin/Debug DLLs.
+- Verified implementation with dotnet build Application.Web.Admin/Application.Web.Admin.csproj --no-restore using isolated OutDir; build succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- Normal solution build output is blocked by active local runtime/debug processes locking Application.API.Notification, Application.API.Account, and Application.Web.Admin bin/Debug DLLs.
+- No implementation compile blocker was found in the Role_Code helper or endpoint changes.
+- Application worktree already contained unrelated uncommitted changes before this task; those changes were preserved and not reverted.
+
+Need Decision:
+- None for exposing Role_Code as common hardcode Select2 data.
+
+Risk:
+- Running Web Admin must be restarted before /Roles/RoleCodeOptions reflects the new helper behavior in runtime.
+- If Role_Code later needs labels different from code values, the hardcode structure should be changed from string list to object list in a separate controlled change.
+
+Next Action:
+- Stop or restart active local .NET debug processes before the next normal dotnet build Application.sln verification.
+- Smoke-test /Roles/RoleCodeOptions after Web Admin is restarted.
+- Wire Role_Code into the Role create/edit UI if the next approved task requires selecting role code from dropdown.
+
+ETA:
+2026-06-29
+
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-29
+
+Current Task:
 Audit hardcode data in Web Admin appsettings and create common hardcode helper/service for Role_Scope Select2 dropdown data.
 
 Status:
@@ -3052,4 +3103,5 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
