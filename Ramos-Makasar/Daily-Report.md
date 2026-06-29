@@ -1,4 +1,55 @@
-﻿# CONTROL TOWER REPORT
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
+Rapikan Master Menu agar dapat consume Menu_Catalog dari appsettings.json untuk template input menu.
+
+Status:
+Done with runtime smoke-test blocker
+
+Progress:
+90%
+
+Completed:
+- Audited Web Admin controllers/views and identified existing page URLs: Auth/Login, Home/Index, Home/Privacy, Home/Error, TenantType/Index, Tenant/Index, Roles/Index, Permission/Index, and Menu/Index.
+- Updated Application.Web.Admin appsettings Menu_Catalog with audited page catalog and System Administration parent template.
+- Added reusable HardcodeHelperService accessors for Menu_Catalog.
+- Added Web Admin MenuCatalogOptions service/controller endpoint for select2 consumption.
+- Added Menu Catalog select2 field in Master Menu modal.
+- Added JavaScript autofill from selected catalog for name, code, menu type, URL, icon, and sequence.
+- Kept Parent Menu options sourced from DB and not from appsettings.
+- Adjusted Menu Type behavior so Parent menu can still choose a parent, supporting recursive parent-child menu structure.
+- Updated Core menu parent option query to return tree-indented options and exclude edited menu plus descendants to prevent circular selection.
+- Verified dotnet build Application.sln succeeded: 4 existing warnings, 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/menu.js passed.
+
+Issue / Blocker:
+- Browser CRUD smoke test, load table, create, update, delete, duplicate validation, and live API response validation were not executed because authenticated Web Admin/API Core/PostgreSQL runtime was not started in this turn.
+- Application worktree already contains large staged boundary changes from Account-Core migration; Master Menu changes were kept scoped and did not revert those changes.
+
+Need Decision:
+- Decide whether non-navigation catalog entries Auth/Login, Home/Privacy, and Home/Error should remain selectable in Master Menu catalog or be kept only as documentation/template data.
+
+Risk:
+- Runtime SQL for tree-indented parent options should be smoke-tested against PostgreSQL data to verify recursive ordering and descendant exclusion with real menu rows.
+- Menu_Catalog Parent_Code remains metadata only; admin still selects actual DB parent manually as required.
+
+Next Action:
+- Start Account API, Core API, Web Admin, and PostgreSQL stack; then run Master Menu browser smoke test for table load, catalog autofill, create, update, delete, duplicate code, and circular parent validation.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos Makasar
