@@ -10,6 +10,60 @@ Date:
 2026-06-30
 
 Current Task:
+Finalize Account-Core boundary phase 2 by moving core platform models and services from Account projects to Core projects.
+
+Status:
+Done with infrastructure bridge TODO
+
+Progress:
+90%
+
+Completed:
+- Moved core platform models from Application.Model.Account to Application.Model.Core: Tenant/TenantType, Menu, Permission, and Roles.
+- Moved core platform services from Application.Service.Account to Application.Service.Core: TenantService, MenuService, MenuOrderingService, MenuUrlValidator, PermissionService, RolesService, and UserAccessService.
+- Updated namespaces from Application.Model.Account.* to Application.Model.Core.* for moved models.
+- Updated namespaces from Application.Service.Account.Services to Application.Service.Core.Services for moved core services.
+- Kept AuthService in Application.Service.Account.Services and restored Account auth namespace after mechanical move audit.
+- Added Application.Service.Core dependency injection registration for core platform services.
+- Reduced Application.Service.Account dependency injection to auth responsibility, with a temporary bridge to Core IUserAccessService for token permission claims.
+- Updated Application.API.Core controllers to consume Application.Model.Core and Application.Service.Core namespaces.
+- Updated project references so Application.API.Core references Application.Model.Core and Application.Service.Core instead of model/service Account for core endpoints.
+- Updated Application.Service.Account.Tests to reference Application.Service.Core because MenuUrlValidator moved to Core.
+- Removed placeholder Class1.cs from Application.Model.Core and Application.Service.Core.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Full data/infrastructure migration is still pending; Core services currently use Infrastructure.Data.Account as a compatibility bridge to avoid schema/data risk.
+- Application.Service.Account still references Application.Service.Core only for auth-time permission claim resolution through IUserAccessService.
+- Runtime browser/API smoke test was not run in this turn.
+
+Need Decision:
+- Decide whether phase 3 should create/move Infrastructure.Data.Core and migrate core entities/seeders away from Infrastructure.Data.Account.
+
+Risk:
+- Code ownership for models/services is now Core, but physical data ownership still depends on Account infrastructure until phase 3.
+- Account token generation still depends on Core access claim lookup; this should become an explicit Core contract or API boundary later.
+
+Next Action:
+- Run runtime smoke test for Account login/refresh and Core Tenant Type, Tenant, Menu, Permission, and Role CRUD.
+- Plan Infrastructure.Data.Core migration without dropping existing idt/cms data.
+
+ETA:
+2026-06-30
+
+---# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Audit and fix VS Code launch configuration so Application.API.Core starts with the development stack.
 
 Status:
@@ -3364,6 +3418,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
