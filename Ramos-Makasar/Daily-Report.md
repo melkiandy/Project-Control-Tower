@@ -1,3 +1,53 @@
+﻿# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-01
+
+Current Task:
+Integrate Web Admin Role Permission frontend with backend CRUD endpoints.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited current Role Permission frontend checklist and Core backend role-permission endpoints.
+- Added Web Admin Role Permission assignment and bulk-save request models for roleId, permissionIds, and permissionCodes.
+- Added RoleApiClient integration for GET /api/core/role-permission/by-role/{roleId} and POST /api/core/role-permission/bulk-by-role.
+- Added RolesService and RolesController actions for RolePermissionByRole and SaveRolePermission.
+- Updated Roles page Role Permission modal copy from backend TODO to active assignment behavior.
+- Updated roles.js so selecting a role loads existing active assignments, checks saved permissions, saves selected permissions to backend, and refreshes saved state from response.
+- Kept backend aligned to frontend Master Permission checklist by using role_id plus permission_id in cms.role_permission, not menu access flags.
+- Tightened backend bulk-save validation so duplicate permissionIds are validated before normalization and role load returns active mappings for frontend state.
+- Ran dotnet build Application.sln -p:BaseOutputPath=.codex-tmp\build\ successfully with 0 warnings and 0 errors.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No blocker found during compile verification.
+- Runtime UI/API test with authenticated browser session and real database data was not executed in this task run.
+
+Need Decision:
+- Decide whether the saved payload preview should remain visible after save or be removed once QA confirms the flow.
+
+Risk:
+- Role Permission save replaces the selected role permission set; saving with no checked permissions intentionally clears active permissions for the role.
+- Target environment must have cms.role_permission schema applied before runtime save is tested.
+
+Next Action:
+- Test from Web Admin Roles page with real admin session: open Role Permission, select role, verify existing permissions are checked, save changes, reopen and confirm persistence.
+- Add focused integration tests for bulk-by-role once test database fixtures are ready.
+
+ETA:
+2026-07-01
+---
 # CONTROL TOWER REPORT
 
 Agent:
@@ -3827,3 +3877,5 @@ Next Action:
 
 ETA:
 2026-06-25
+
+
