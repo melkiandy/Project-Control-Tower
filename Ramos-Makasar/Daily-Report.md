@@ -10,6 +10,57 @@ Date:
 2026-06-30
 
 Current Task:
+Audit and align frontend-backend Role Permission integration.
+
+Status:
+Done with runtime-lock build note
+
+Progress:
+100%
+
+Completed:
+- Audited existing Role Permission frontend on Roles page and backend Core Role Permission endpoints.
+- Found mismatch: frontend still used Master Permission checklist and only prepared preview payload, while backend persists cms.role_menu_access using menu_id and access flags.
+- Updated Web Admin Role API client to call Core Role Permission get-by-role and bulk-save endpoints.
+- Updated Web Admin Role API client/service to source Role Permission matrix from active Core Menu data instead of Master Permission data.
+- Added Web Admin role permission assignment and bulk-save models aligned to backend payload: tenant_id, role_id, permissions[], menu_id, is_read, is_created, is_updated, is_deleted_permission, is_mobile, is_active.
+- Added MVC actions for RolePermissionByRole and SaveRolePermission in RolesController.
+- Updated Roles page modal copy from backend TODO/preview to real role menu access assignment.
+- Updated roles.js to load existing role assignments, render menu access flag matrix, auto-enable Read when Create/Update/Delete/Mobile is selected, and save via backend bulk endpoint.
+- Preserved soft-delete behavior by sending only selected menu permissions; removed items are handled by backend bulk soft delete.
+- Ran normal dotnet build Application.sln; compile reached Web Admin but default output copy failed because Application.Web.Admin.dll was locked by running .NET Host/Visual Studio Debug Adapter.
+- Verified compile with dotnet build Application.sln -p:BaseOutputPath=.codex-tmp\build\; result 0 warnings, 0 errors.
+
+Issue / Blocker:
+- Normal build output is blocked by running Application.Web.Admin process locking bin\Debug\net8.0\Application.Web.Admin.dll.
+- No runtime API call test was executed because live authenticated tenant/session data is required.
+
+Need Decision:
+- Confirm whether Role Permission UI should remain menu-based as current access-control source of truth, or later introduce separate Master Permission assignment beyond menu access.
+
+Risk:
+- Role Permission menu list follows current tenant context from Core Menu API; cross-tenant role assignment should be verified with real admin session rules.
+- Empty bulk save intentionally deactivates existing mappings for selected role in current tenant.
+
+Next Action:
+- Test from Web Admin Roles page using real role and tenant session: open Role Permission, verify existing flags load, save changes, reload and confirm persistence.
+- Add automated integration/API tests for role permission bulk save once test database fixtures are available.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Execute backend Role Permission module following existing Core CRUD flow.
 
 Status:
