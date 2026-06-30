@@ -10,6 +10,60 @@ Date:
 2026-06-30
 
 Current Task:
+Build first-stage Role Permission UI/UX inside the existing Roles page without backend final save/load.
+
+Status:
+Done with backend integration TODO
+
+Progress:
+90%
+
+Completed:
+- Audited existing Roles page View, Controller, Service, JavaScript, DataTable, modal, validation, and notification patterns.
+- Audited Tenant page Tenant Group card-header button pattern and matched the Role Permission button placement/style in Roles card header.
+- Audited Permission model/service/seeder and confirmed categories: Basic, Workflow, Data Operation, Assignment, Configuration, and Sensitive.
+- Added Role Permission button to Roles card header without adding a sidebar menu or new page.
+- Added Role Permission modal in Roles page with role dropdown, role information summary, search permission, grouped checklist, Save, Reset, and Close controls.
+- Added Web Admin endpoints for UI data: RolePermissionRoleOptions and RolePermissionPermissions.
+- Added Web Admin service/model support for Role Permission UI option payloads using existing Role and Permission data sources.
+- Rendered active permissions grouped by category order: Basic, Data Operation, Workflow, Assignment, Configuration, Sensitive, then Uncategorized.
+- Added category-level Select All behavior and checkbox state sync.
+- Added permission search by code, name, and category.
+- Added Sensitive category warning text.
+- Save currently prepares payload only with roleId, permissionIds, and permissionCodes, displays TODO note, and does not fake database success.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/roles.js passed.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Runtime browser smoke test was not executed because Web Admin/API Core/PostgreSQL authenticated runtime was not started in this turn.
+- Backend final load/save Role Permission is intentionally not implemented in this UI/UX phase.
+
+Need Decision:
+- Decide backend contract and persistence table/API for final Role Permission save/load integration.
+
+Risk:
+- Role and Permission option endpoints currently load up to 1000 records for UI preparation; final implementation may need paged/search-specific endpoints for very large permission catalogs.
+
+Next Action:
+- Start runtime stack and visually test Role Permission modal on Roles page.
+- Implement final backend Role Permission save/load contract when approved.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Audit frontend Master Menu DataTable and remove top global search while keeping server-side table behavior.
 
 Status:
