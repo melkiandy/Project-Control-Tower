@@ -10,6 +10,55 @@ Date:
 2026-06-30
 
 Current Task:
+Execute backend Role Permission module following existing Core CRUD flow.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited existing Core CRUD flow from Tenant Type, Permission, Role, Menu, service DI, response wrapper, auth, database access, and role_menu_access schema.
+- Confirmed Role Permission mapping table already exists as cms.role_menu_access; no table rename, drop, or migration was added.
+- Added Role Permission DTO models for list/detail/create/update and bulk permission matrix save.
+- Added Core RolePermissionService with list, get by id, get by role, create, update, bulk save by role, and soft delete.
+- Added validation for tenant context, role existence/active scope, menu existence/active status, duplicate tenant-role-menu mapping, duplicate bulk menu items, and invalid menu ids.
+- Added transaction handling for create, update, bulk save, and delete operations.
+- Added cache invalidation for impacted user access after role permission changes.
+- Added API controller under Application.API.Core with authorized endpoints and existing BaseResponse wrapper handling.
+- Registered IRolePermissionService in Core service dependency injection.
+- Ran dotnet build Application.sln successfully with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- Application worktree already had many unrelated modified/deleted/untracked files before/alongside this task; Role Permission changes were kept scoped and unrelated files were not reverted.
+
+Need Decision:
+- Decide whether UI should treat included bulk items with is_active=false as disabled mappings or remove them from the list to trigger soft delete.
+
+Risk:
+- Runtime database validation depends on existing cms.role_menu_access, cms.menu, idt.aspnetroles, cms.user_tenant_role, and tenant group/member tables being present in the target environment.
+- Master Permission table exists separately, but current access-control source of truth uses Menu mapping via cms.role_menu_access.
+
+Next Action:
+- Test API with authenticated tenant context using real role_id and menu_id values.
+- Integrate Roles UI permission matrix with GET by role and bulk save endpoint when frontend wiring is requested.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Create enterprise Document Type Catalog hardcode in appsettings.json as template/reference data.
 
 Status:
