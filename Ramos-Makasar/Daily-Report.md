@@ -10,6 +10,57 @@ Date:
 2026-06-30
 
 Current Task:
+Correct Role Permission alignment direction: backend must follow existing frontend contract.
+
+Status:
+Done with runtime-lock build note
+
+Progress:
+100%
+
+Completed:
+- Audited Role Permission frontend and backend alignment after direction correction.
+- Reverted previous frontend alignment changes that made Web Admin follow menu-based backend behavior.
+- Restored frontend Role Permission behavior to Master Permission checklist with role selector, category grouping, permissionIds/permissionCodes payload preview, and backend integration TODO messaging.
+- Changed backend Role Permission model/service to follow frontend contract: roleId plus permissionIds based on cms.permission, not menu_id/access flags.
+- Added cms.role_permission schema ensure step through PermissionSeeder for SQL Server and PostgreSQL, including role/permission indexes and active unique mapping.
+- Updated Core RolePermissionController bulk save flow to accept frontend camelCase payload without tenant/menu dependency.
+- Updated Core PermissionService usage check so Master Permission delete validation detects cms.role_permission references.
+- Confirmed Role uses Guid identity through existing ApplicationRole/aspnetroles structure.
+- Verified compile with dotnet build Application.sln -p:BaseOutputPath=.codex-tmp\build\; result 0 warnings, 0 errors.
+- Ran normal dotnet build Application.sln; build output copy is still blocked by running .NET Host/Visual Studio Debug Adapter processes locking default bin DLLs.
+
+Issue / Blocker:
+- Normal build to default bin output fails only because local running processes lock Application.API.Core, Application.API.Account, Application.API.Notification, and Application.Web.Admin DLLs.
+- No authenticated runtime UI/API save test was executed in this session.
+
+Need Decision:
+- Confirm when frontend should be wired from payload preview/TODO into the new backend bulk-save endpoint.
+
+Risk:
+- Existing earlier report entry documents the incorrect menu-based alignment; latest entry supersedes it and preserves audit history.
+- Runtime persistence depends on cms.role_permission schema being applied in target database before save endpoint is used.
+
+Next Action:
+- Stop local running .NET Host/debug processes, then rerun normal dotnet build Application.sln.
+- Wire Web Admin Save to /api/core/role-permission/bulk-by-role when UI save integration is approved.
+- Validate Role Permission with real role_id and permission_id data in an authenticated admin session.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Audit and align frontend-backend Role Permission integration.
 
 Status:
@@ -405,7 +456,8 @@ Next Action:
 ETA:
 2026-06-30
 
----# CONTROL TOWER REPORT
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos Makasar
@@ -451,7 +503,8 @@ Next Action:
 ETA:
 2026-06-30
 
----# CONTROL TOWER REPORT
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos Makasar
@@ -508,7 +561,8 @@ Next Action:
 ETA:
 2026-06-30
 
----# CONTROL TOWER REPORT
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos Makasar
@@ -555,7 +609,8 @@ Next Action:
 ETA:
 2026-06-29
 
----# CONTROL TOWER REPORT
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos Makasar
@@ -605,7 +660,8 @@ Next Action:
 ETA:
 2026-06-29
 
----# CONTROL TOWER REPORT
+---
+# CONTROL TOWER REPORT
 
 Agent:
 Ramos Makasar
@@ -3771,11 +3827,3 @@ Next Action:
 
 ETA:
 2026-06-25
-
-
-
-
-
-
-
-
