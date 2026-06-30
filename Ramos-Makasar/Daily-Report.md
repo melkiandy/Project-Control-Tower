@@ -10,6 +10,59 @@ Date:
 2026-06-30
 
 Current Task:
+Create enterprise Document Type Catalog hardcode in appsettings.json as template/reference data.
+
+Status:
+Done with runtime-lock build note
+
+Progress:
+95%
+
+Completed:
+- Audited Hardcode configuration pattern in Application.Web.Admin/appsettings.json and HardCodeData pattern in Application.API.Core/appsettings.json.
+- Audited Core.Common HardcodeModel and HardcodeHelperService binding pattern.
+- Added DocumentTypeCatalog to Application.Web.Admin/appsettings.json under Hardcode.
+- Added the same DocumentTypeCatalog to Application.API.Core/appsettings.json under HardCodeData so Core can act as catalog source.
+- Added Core.Common DocumentTypeCatalogOption model with only allowed fields: AppCode, ModuleCode, DocumentTypeCode, DocumentTypeName, ApiOwner, Description.
+- Added read-only helper methods: GetAllDocumentTypes, GetByDocumentTypeCode, GetByAppCode, GetByModuleCode, GetByApiOwner, ValidateDocumentTypeCode.
+- Added 152 active catalog template entries across available API owners only.
+- Validated no duplicate DocumentTypeCode, no bad AppCode/ModuleCode/DocumentTypeCode format, no unsupported ApiOwner, and no empty Description.
+- Confirmed banned fields were not added: IsWorkflowEnabled, IsNumberingEnabled, IsAttachmentEnabled, IsAuditTrailEnabled, IsActive.
+- Confirmed available API folders exist for Account, Accounting, Core, Distribution, Document, Finance, Integration, Inventory, MasterData, Notification, Payment, Procurement, Reporting, Sales, Workflow.
+- Ran dotnet build Application.sln; normal output build was blocked by running .NET Host processes locking existing bin DLLs.
+- Verified compile with dotnet build Application.sln using alternate BaseOutputPath; result 0 warnings, 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- Normal dotnet build to default bin output failed because running .NET Host/Visual Studio debug adapter processes locked DLLs for Application.API.Notification, Application.Web.Admin, Application.API.Core, and Application.API.Account.
+- No database/table/migration was created by design.
+
+Need Decision:
+- Decide when Document Type Catalog should move from appsettings template data to database-backed Document Type Catalog/Configuration UI.
+
+Risk:
+- Catalog is currently hardcoded in appsettings; future admin configuration should persist selected document types and feature flags in database.
+- Application.Web.Admin and Application.API.Core currently contain duplicate catalog config for accessibility; final ownership may need one source of truth when Core catalog endpoint is introduced.
+
+Next Action:
+- Add read-only Core endpoint for Document Type Catalog when UI/API consumption is requested.
+- Build Form Input Document Type, Document Type Configuration, Workflow Configuration, Numbering Configuration, Attachment Configuration, and permission generation in later phases.
+
+ETA:
+2026-06-30
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-06-30
+
+Current Task:
 Build first-stage Role Permission UI/UX inside the existing Roles page without backend final save/load.
 
 Status:
