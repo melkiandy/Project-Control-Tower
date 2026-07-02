@@ -10,6 +10,62 @@ Date:
 2026-07-02
 
 Current Task:
+Execute BRD User CRUD foundation after open decisions were answered.
+
+Status:
+Done with runtime smoke-test note
+
+Progress:
+100%
+
+Completed:
+- Updated docs/BRD-User-CRUD.md with final decisions: tenant is mandatory, admin may view temporary password, deactivate may revoke active sessions, delete is blocked when active cms.user_tenant_role exists, and mobile login requires a user flag plus mobile permission.
+- Added Core User contract models under Application.Model.Core/User.
+- Added Core UserService and Core UserController with server-side list/search/sort, detail, options, tenant options, create, update, activate, deactivate, soft delete, reset password, and force logout.
+- Added mobile user flag to ApplicationUser and identity schema baseline with idempotent SQL Server/PostgreSQL column ensure.
+- Tightened Account login/refresh behavior so inactive or soft-deleted users cannot authenticate, mobile login requires is_mobile_user plus mobile permission, and refresh validates the stored DB refresh token.
+- Updated logout to remove refresh token cache.
+- Added Web Admin User module: MVC controller, model, service, API client, User/Index page, and user.js DataTables/modal workflow.
+- Added UI actions for create/update, reset password with visible temporary password, activate/deactivate, force logout, and delete.
+- Registered User API client/service and loaded user.js in Web Admin layout.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/user.js passed.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No build or test blocker remains.
+- Runtime browser/API/database smoke test was not executed in this task run.
+- Application worktree still contains unrelated pre-existing changes such as Application.Web.Admin/appsettings.json and MobileSFA project folders; those were preserved and not reverted.
+
+Need Decision:
+- Confirm whether User menu should be added through Master Menu seed/catalog now or configured later from the Master Menu screen.
+- Confirm whether create-user temporary password should also be returned from backend response or remain generated/visible in the Web Admin form before save.
+
+Risk:
+- Target databases must apply the updated identity baseline/EF migration path so idt.aspnetusers.is_mobile_user exists before runtime use.
+- Delete User is intentionally blocked while active cms.user_tenant_role exists; admins must deactivate first or remove access in point 7/8 later.
+- Mobile login depends on both user flag and role_menu_access mobile permission claims.
+
+Next Action:
+- Restart API Core, API Account, and Web Admin, then smoke-test /User with real admin session and database data.
+- Test create user, login web, mobile-login rejection/allowance, deactivate active session, reset password token revoke, force logout, and delete-blocking with active cms.user_tenant_role.
+- Continue to User Company Access after CRUD User runtime smoke test is accepted.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Audit kebutuhan CRUD User dari frontend dan backend, lalu buat BRD untuk modul User foundation.
 
 Status:
@@ -3928,6 +3984,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
