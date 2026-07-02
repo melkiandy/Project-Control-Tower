@@ -10,6 +10,58 @@ Date:
 2026-07-02
 
 Current Task:
+Convert uploaded BRD Point 7 User Company Access to Markdown and execute User Company Access CRUD foundation.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Converted uploaded BRD_Point_7_User_Company_Access_Project_Makassar.docx into docs/BRD_Point_7_User_Company_Access_Project_Makassar.md.
+- Added backend model contract for User Company Access in Application.Model.Core/UserCompanyAccess.
+- Added cms.user_company_access database seeder for SQL Server and PostgreSQL with active duplicate prevention, default company uniqueness, audit, cancel fields, and indexes.
+- Added UserCompanyAccessService with list/detail/create/update/cancel/reactivate, active company list, validate-company, business validation, cache invalidation, and target user token revoke.
+- Added API Core controller api/core/user-company-access with DataTables compatibility endpoint and login/switch-company support endpoints.
+- Added Web Admin User Company Access page, MVC controller, service, API client, models, Select2 lookups, DataTables server-side grid, add/edit/cancel/reactivate actions, and validation mapping.
+- Added Company Access launcher button in User page header.
+- Registered new services/API clients and page script in Web Admin.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No build blocker.
+- Runtime browser/API/database smoke test was not executed in this task run.
+
+Need Decision:
+- Confirm whether User Company Access should be added to sidebar/menu seed and exact permission codes for Role Permission enforcement.
+- Confirm whether login flow should immediately consume cms.user_company_access for company selector in this phase or in a separate integration task.
+
+Risk:
+- New table is additive and preserves point 7/point 8 separation, but production database requires seeder execution before the new API is used.
+- Access changes revoke target user runtime token; this is secure but may force re-login after admin updates.
+- Sidebar/menu permission wiring is not yet seeded, so direct URL works but menu visibility still depends on follow-up permission seed.
+
+Next Action:
+- Run API and Web Admin smoke test for create/update/cancel/reactivate User Company Access against live database.
+- Add menu/permission seed for User Company Access after permission code naming is confirmed.
+- Integrate login/switch-company flow with active cms.user_company_access list.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Update BRD User Company Access page layout decision for User header button placement.
 
 Status:
@@ -4280,6 +4332,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
