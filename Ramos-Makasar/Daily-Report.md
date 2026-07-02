@@ -10,6 +10,59 @@ Date:
 2026-07-02
 
 Current Task:
+Audit kebutuhan CRUD User Company Access point 7 and document BRD.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited Foundation System status and confirmed point 7 User Company Access is not yet implemented while User, Tenant, Role, Permission, and Role Permission foundations are available.
+- Audited existing backend support around cms.user_tenant_role, UserService, RolesService, UserAccessService, AuthService tenant resolution, role delete guard, and user delete guard.
+- Audited Web Admin CRUD patterns from User, Roles, Tenant, API clients, services, DataTables, Select2, modal form, action buttons, and validation mapping.
+- Found key design gap: existing cms.user_tenant_role couples user, tenant, and role, while roadmap separates point 7 User Company Access and point 8 User Role Assignment.
+- Created docs/BRD-User-Company-Access.md covering business goals, scope, existing functions, gap analysis, recommended data model, API endpoints, frontend UX, validation, security, acceptance criteria, risks, and open decisions.
+- Recommended separating company access eligibility from role assignment, with cms.user_company_access as preferred design if point 7 must remain independent from point 8.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No build or test blocker.
+- Implementation requires decision whether to add cms.user_company_access or reuse cms.user_tenant_role and merge point 7 with point 8 semantics.
+
+Need Decision:
+- Decide whether point 7 must be role-independent with a new cms.user_company_access table.
+- Decide whether default user tenant should automatically become first company access.
+- Decide whether deactivate company access blocks or automatically deactivates related role assignments.
+- Decide whether access changes must force logout target user every time.
+- Decide whether company access is limited to root/company tenants or can include child tenants.
+
+Risk:
+- Reusing cms.user_tenant_role for point 7 will blur the boundary with User Role Assignment.
+- JWT permission claims can become stale if access changes do not revoke session or refresh claims.
+- UserAccessService runtime source currently depends on PostgreSQL behavior.
+
+Next Action:
+- Review and answer BRD open decisions before implementing User Company Access.
+- After approval, implement point 7 in small scoped changes following existing CRUD patterns.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Audit and fix Web Admin Tenant Type create error in BaseApiClient response parsing.
 
 Status:
@@ -4183,6 +4236,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
