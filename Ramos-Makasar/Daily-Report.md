@@ -10,6 +10,59 @@ Date:
 2026-07-02
 
 Current Task:
+Execute BRD User Authentication decisions and harden Web/API authentication flow.
+
+Status:
+Done with runtime smoke-test note
+
+Progress:
+100%
+
+Completed:
+- Updated docs/BRD-User-Authentication.md with final decisions: Web Admin remains BFF/server-side session, deployment can support same/different domains, single active session remains policy, refresh token 30 minutes applies to Web and Mobile, and refresh token must be hashed in phase one.
+- Hardened API Account refresh token storage so raw refresh token is returned only to trusted BFF/mobile client while database and Redis store only SHA-256 hash.
+- Added backend refresh expiry configuration Jwt:RefreshExpiryInMinutes=30 and kept legacy RefreshExpiryInDays as fallback.
+- Added refresh token expiry validation, rotation with hashed storage, and active-session revoke when refresh token is expired/invalid/reused.
+- Fixed logout user resolution to use ClaimTypes.NameIdentifier and remove Redis refresh key through auth service.
+- Selaraskan Web Admin BFF session/cookie timeout and security policy through appsettings: idle timeout, cookie expiry, sliding expiration, cookie names, SameSite, and Auto secure policy.
+- Preserved separate Web session expiry and API access-token expiry by no longer overwriting API ExpiresAtUtc in Web Admin session data.
+- Ensured Web Admin refresh sends channel flag and preserves user id, tenant, roles, permissions, and mobile flag after refresh.
+- Enriched Web Admin cookie claims with tenant, mobile flag, roles, and permissions from session data.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No build or test blocker remains.
+- Runtime login/refresh/logout smoke test with live database and Redis was not executed in this task run.
+
+Need Decision:
+- Confirm production override values for cookie secure policy if any environment must run behind non-standard TLS termination.
+- Confirm whether old active sessions may be invalidated during deployment because existing plain refresh tokens will no longer match hashed storage.
+
+Risk:
+- Existing sessions created before hashed refresh token deployment will need re-login after deployment.
+- Single active session policy remains enforced through one token/refresh token on the user row; multi-device support would require a separate session table in the future.
+- SameSite Strict is safe for BFF Web Admin cookies, but production reverse proxy/domain setup should still be smoke-tested.
+
+Next Action:
+- Run API Account, Web Admin, Redis, and database smoke test: login, wait for access token expiry, auto refresh, invalid refresh reuse, logout, and mobile flag flow.
+- Review whether dedicated auth integration tests should be added around refresh hash/rotation/reuse behavior.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Audit user authentication Web Admin and API Account, then document BRD for target secure login/refresh flow.
 
 Status:
@@ -4082,6 +4135,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
