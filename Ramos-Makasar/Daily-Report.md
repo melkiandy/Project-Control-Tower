@@ -10,6 +10,54 @@ Date:
 2026-07-02
 
 Current Task:
+Audit and fix Web Admin Tenant Type create error in BaseApiClient response parsing.
+
+Status:
+Done with runtime smoke-test note
+
+Progress:
+100%
+
+Completed:
+- Audited Tenant Type create flow from Web Admin tenantType.js, TenantTypeController, TenantTypeService, TenantApiClient, BaseApiClient, API Core TenantTypeController, and TenantService.Save.
+- Found root cause: Web Admin BaseApiClient directly deserialized API response to Core.Common.Base.BaseResponse, but ASP.NET validation/problem responses can contain numeric status, causing System.Text.Json conversion failure for BaseResponse.status string.
+- Added resilient response handling in Web Admin BaseApiClient so BaseResponse and ASP.NET ProblemDetails responses are normalized without crashing.
+- Updated BaseApiClient to treat BaseResponse.code >= 400 as failed even when HTTP status is 200, preserving existing API business-validation pattern.
+- Ensured Tenant Type submit payload explicitly sends status from the clicked Save/Update button so create sends status=s reliably.
+- Verified node --check Application.Web.Admin/wwwroot/js/pages/tenantType.js passed.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No build or test blocker remains.
+- Browser/API/database runtime create Tenant Type smoke test was not executed in this task run.
+
+Need Decision:
+- None for this fix.
+
+Risk:
+- BaseApiClient now normalizes ASP.NET ProblemDetails globally for Web Admin API calls, which should improve stability but still needs regression smoke test on key CRUD modules.
+- Tenant Type API still returns some business errors with HTTP 200 and BaseResponse.code=400; BaseApiClient now handles this as failure for Web Admin clients.
+
+Next Action:
+- Run Web Admin Tenant Type create/update/delete smoke test against live API Core and database.
+- Trigger a validation error intentionally to confirm Web Admin shows API validation message instead of BaseApiClient JSON conversion error.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Execute BRD User Authentication decisions and harden Web/API authentication flow.
 
 Status:
@@ -4135,6 +4183,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
