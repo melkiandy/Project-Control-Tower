@@ -10,6 +10,54 @@ Date:
 2026-07-02
 
 Current Task:
+Audit user authentication Web Admin and API Account, then document BRD for target secure login/refresh flow.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited existing Web Admin authentication flow: login controller/service, server-side session, cookie auth, bearer token attachment, and automatic refresh after 401.
+- Audited existing API Account authentication flow: login, JWT generation, refresh token generation, Redis/database validation, refresh rotation, logout, and JWT bearer validation against active database token.
+- Identified current gap against requested target: refresh token is still returned through response body/request body, not issued as HttpOnly Secure SameSite=Strict cookie.
+- Identified session/token alignment gap: Web Admin session is 30 minutes, API access token is 10 minutes, and backend refresh token development config is 7 days instead of target 30 minutes for Web flow.
+- Documented existing authentication functions/endpoints and recommended enterprise target flow in docs/BRD-User-Authentication.md.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No build blocker.
+- No code was changed for this audit per instruction.
+
+Need Decision:
+- Decide whether Web Admin final architecture remains BFF/server-side session or changes to direct browser-to-API refresh cookie flow.
+- Confirm whether refresh token 30 minutes applies only to Web Admin or also to Mobile.
+- Confirm whether single active session per user remains desired or multi-device session tracking is required.
+
+Risk:
+- SameSite=Strict refresh cookie requires deployment/domain validation when Web Admin and API Account are on different origins.
+- Moving away from server-side token storage to browser-side handling could reduce current XSS posture if access/refresh token storage is not designed carefully.
+
+Next Action:
+- Review and approve docs/BRD-User-Authentication.md before implementing authentication hardening.
+- After approval, implement timeout consolidation, refresh-cookie behavior or BFF-safe alternative, refresh reuse detection, and audit logging in small reviewable steps.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Audit startup seeder administrator and align super admin with User CRUD/access foundation.
 
 Status:
@@ -4034,6 +4082,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
