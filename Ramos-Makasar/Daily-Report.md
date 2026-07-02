@@ -10,6 +10,50 @@ Date:
 2026-07-02
 
 Current Task:
+Update BRD User Company Access page layout decision for User header button placement.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited docs/BRD-User-Company-Access.md point 10.2 Page Layout and current Web Admin User/Tenant page patterns.
+- Confirmed Tenant Group pattern places contextual action button in the Tenant page card header.
+- Updated BRD point 10.1 and 10.2 so User Company Access entry point is a Company Access button in the User page header, right side of Users title.
+- Added target header HTML example using btn btn-sm btn-light and ti ti-building-community icon.
+- Clarified that User table remains focused on User CRUD, while User Company Access opens modal/workspace like Tenant Group.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+
+Issue / Blocker:
+- No blocker.
+- No runtime code was changed for this task.
+
+Need Decision:
+- None for this layout clarification.
+
+Risk:
+- None; documentation-only update.
+
+Next Action:
+- Continue with BRD open decisions before implementing User Company Access.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Audit kebutuhan CRUD User Company Access point 7 and document BRD.
 
 Status:
@@ -4236,6 +4280,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
