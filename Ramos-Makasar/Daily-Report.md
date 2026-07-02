@@ -7,6 +7,57 @@ Project:
 Project SaaS Application - Makasar
 
 Date:
+2026-07-02
+
+Current Task:
+Audit kebutuhan CRUD User dari frontend dan backend, lalu buat BRD untuk modul User foundation.
+
+Status:
+Done
+
+Progress:
+100%
+
+Completed:
+- Audited solution structure for User foundation across Account API, Core API, Core service, Identity infrastructure, Web Admin MVC, typed API clients, and existing CRUD patterns.
+- Confirmed CRUD User module is not yet implemented end-to-end.
+- Confirmed existing user-related functions already available: login, logout, refresh token, admin identity seed, tenant context resolve, permission claims, user access cache, and cms.user_tenant_role foundation table.
+- Created BRD document at docs/BRD-User-CRUD.md covering scope, current state, gaps, backend/frontend requirements, API recommendation, UX requirement, security, validation, login/mobile impact, risks, acceptance criteria, and implementation recommendations.
+- Kept task audit/documentation-only as requested; no source code was changed for CRUD User implementation.
+- Ran dotnet build Application.sln successfully with 4 existing nullable warnings and 0 errors.
+
+Issue / Blocker:
+- No blocker found for BRD creation.
+- Runtime UI/API/database smoke test was not executed because this task was audit/documentation-only.
+
+Need Decision:
+- Decide whether default tenant is mandatory when creating a user or optional for global/system users.
+- Decide whether temporary password is displayed once to admin or delivered through email.
+- Decide delete behavior when user still has active cms.user_tenant_role mapping: block delete or deactivate mappings.
+- Decide whether mobile access needs a dedicated flag/channel or follows role/permission only.
+
+Risk:
+- Login flow should be updated during implementation to reject inactive or soft-deleted users.
+- Password reset and force logout must revoke access token, refresh token, and Redis refresh token cache to avoid stale sessions.
+- Physical delete must be avoided because user has identity and tenant-role references; soft delete is recommended.
+
+Next Action:
+- Review BRD decisions, then implement User CRUD backend in Core API/service/model following Role/Menu pattern.
+- After backend is stable, implement Web Admin User page with DataTables, modal CRUD, reset password, deactivate, delete, and force logout actions.
+- Continue to User Company Access and User Role Assignment after CRUD User is accepted.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
 2026-07-01
 
 Current Task:
@@ -3877,5 +3928,6 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
