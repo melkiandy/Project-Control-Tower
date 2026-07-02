@@ -10,6 +10,56 @@ Date:
 2026-07-02
 
 Current Task:
+Audit startup seeder administrator and align super admin with User CRUD/access foundation.
+
+Status:
+Done with runtime smoke-test note
+
+Progress:
+100%
+
+Completed:
+- Audited startup database initialization flow in API Account and API Core: AccountDatabaseInitializer, SeederEngine, schema/data seeders, and IdentitySeeder.SeedAdminAsync.
+- Found root cause: administrator seed created/updated identity user, role, and cms.user_tenant_role, but did not guarantee full role_menu_access and role_permission coverage for all active menus/permissions.
+- Updated IdentitySeeder to align both new and existing administrator users: active=true, EmailConfirmed=true, deleted fields cleared, default tenant ensured, and is_mobile_user=true.
+- Updated administrator role alignment: role_scope=GLOBAL, normalized code, default tenant assignment, and existing role update idempotently.
+- Added idempotent super admin full-access seeding for cms.role_menu_access so administrator role gets read/create/update/delete/mobile access for all active menus in admin default tenant.
+- Added idempotent super admin role-permission seeding for cms.role_permission so administrator role gets all active master permissions.
+- Preserved delete/access architecture: admin full access is granted through role and tenant-role relationship, not direct broad architecture changes.
+- Added optional Core API call to IdentitySeeder.SeedAdminAsync with required=false so Core can align admin when SeedAdmin config exists but does not fail when only Account API owns SeedAdmin config.
+- Verified dotnet build Application.sln succeeded with 0 warnings and 0 errors.
+- Verified dotnet test Application.Service.Account.Tests/Application.Service.Account.Tests.csproj --no-build --no-restore passed: 18 passed, 0 failed.
+
+Issue / Blocker:
+- No build or test blocker remains.
+- Runtime database startup smoke test was not executed, so actual SQL idempotency must still be validated against live PostgreSQL/SQL Server data.
+
+Need Decision:
+- Confirm whether administrator should also receive full access for future menus created after startup immediately through trigger/service logic, or whether restart/re-run seeder is acceptable.
+
+Risk:
+- Super admin full access follows admin default tenant. Menus without matching tenant_id will not be granted by this seeder until tenant/menu ownership is normalized.
+- Existing duplicate role_menu_access or role_permission historical data can still require cleanup in live databases if unique active indexes are later enforced.
+
+Next Action:
+- Restart API Account and API Core against live database and verify administrator user, role, cms.user_tenant_role, cms.role_menu_access, and cms.role_permission rows.
+- Login as administrator and confirm all Web Admin menus/actions are accessible, including User CRUD and mobile permission claims.
+
+ETA:
+2026-07-02
+---
+# CONTROL TOWER REPORT
+
+Agent:
+Ramos Makasar
+
+Project:
+Project SaaS Application - Makasar
+
+Date:
+2026-07-02
+
+Current Task:
 Execute BRD User CRUD foundation after open decisions were answered.
 
 Status:
@@ -3984,6 +4034,7 @@ Next Action:
 
 ETA:
 2026-06-25
+
 
 
 
